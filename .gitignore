@@ -22,3 +22,13 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+# Editor temporaries
+*.*.sw[op]
+*~
+\#*\#
+.\#*
+
+# OS X junk
+.DS_Store
+._.DS_Store
