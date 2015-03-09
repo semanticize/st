@@ -6,11 +6,11 @@ import (
 )
 
 type Page struct {
-    title, text string
+    title, Text string
 }
 
 type Redirect struct {
-    title, target string
+    Title, Target string
 }
 
 // Parse out a single page or redirect. Assumes a <page> start tag has just

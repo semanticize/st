@@ -7,13 +7,13 @@ import (
     "io"
     "log"
     "os"
-    "strings"
+    "path/filepath"
     "sync"
 )
 
 func open(path string) (r io.ReadCloser, err error) {
     r, err = os.Open(path)
-    if err == nil && strings.HasSuffix(path, ".bz2") {
+    if err == nil && filepath.Ext(path) == ".bz2" {
         r = struct {
             io.Reader
             io.Closer
@@ -38,41 +38,42 @@ func main() {
     redirects := make(chan *wikidump.Redirect)
     go wikidump.GetPages(f, articles, redirects)
 
+    links := make(chan *wikidump.Link)
+    go func() {
+        for a := range articles {
+            text := wikidump.Cleanup(a.Text)
+            wikidump.ExtractLinks(text, links)
+        }
+        close(links)
+    }()
+
     var wg sync.WaitGroup
     wg.Add(2)
+
     done := make(chan struct{})
     go func() {
         wg.Wait()
         close(done)
     }()
 
-    var narticles, nredirects int
-loop:
     for {
         select {
-        case _, ok := <-articles:
+        case lnk, ok := <-links:
             if ok {
-                narticles++
-                if narticles % 10000 == 0 {
-                    log.Printf("%d articles", narticles)
-                }
+                fmt.Printf("link: %q → %q\n", lnk.Anchor, lnk.Target)
             } else {
-                articles = nil
+                links = nil
                 wg.Done()
             }
-        case _, ok := <-redirects:
+        case redir, ok := <-redirects:
             if ok {
-                nredirects++
-                if nredirects % 10000 == 0 {
-                    log.Printf("%d redirects", nredirects)
-                }
+                fmt.Printf("redirect: %q → %q\n", redir.Title, redir.Target)
             } else {
                 redirects = nil
                 wg.Done()
             }
         case <-done:
-            break loop
+            return
         }
     }
-    log.Printf("%d articles, %d redirects", narticles, nredirects)
 }

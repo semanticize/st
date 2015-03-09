@@ -19,7 +19,7 @@ var (
 //
 // Assumes tables, templates and tags are properly nested, except for spurious
 // end-of-{table,template,element} tags, which are ignored.
-func cleanup(s string) string {
+func Cleanup(s string) string {
     var depth int
     output := bytes.NewBuffer(make([]byte, 0, len(s)))
 
@@ -60,8 +60,8 @@ func cleanup(s string) string {
     return html.UnescapeString(output.String())
 }
 
-type link struct {
-    anchor, target string
+type Link struct {
+    Anchor, Target string
 }
 
 var (
@@ -69,7 +69,8 @@ var (
     whitespace = regexp.MustCompile(`\s+`)
 )
 
-func extractLinks(s string, out chan<- *link) {
+// Extract all the wikilinks from s and send them to out. Does not close out.
+func ExtractLinks(s string, out chan<- *Link) {
     normSpace := func(s string) string {
         s = strings.TrimSpace(s)
         return whitespace.ReplaceAllString(s, " ")
@@ -117,6 +118,6 @@ func extractLinks(s string, out chan<- *link) {
         }
 
         anchor = before + anchor + after
-        out <- &link{anchor, target}
+        out <- &Link{anchor, target}
     }
 }

@@ -12,13 +12,13 @@ func assertStringEq(t *testing.T, a, b string) {
 
 func TestCleanup(t *testing.T) {
     in := "|}Hello,<ref group=\"note\">1</rf> world{{math|bla{{?}}}}!{{bla"
-    assertStringEq(t, cleanup(in), "Hello, world!")
+    assertStringEq(t, Cleanup(in), "Hello, world!")
 }
 
 func TestExtractLinks(t *testing.T) {
-    links := make(chan *link)
-    go extractLinks("before[[_target _page_ #\nsection|inside]]after", links)
+    links := make(chan *Link)
+    go ExtractLinks("before[[_target _page_ #\nsection|inside]]after", links)
     l := <-links
-    assertStringEq(t, l.anchor, "beforeinsideafter")
-    assertStringEq(t, l.target, "Target page")
+    assertStringEq(t, l.Anchor, "beforeinsideafter")
+    assertStringEq(t, l.Target, "Target page")
 }
