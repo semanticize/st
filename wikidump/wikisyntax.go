@@ -120,15 +120,3 @@ func extractLinks(s string, out chan<- *link) {
         out <- &link{anchor, target}
     }
 }
-
-// XXX refactor me into a test
-/*
-func main() {
-    fmt.Println(cleanup("|}Hello,<ref group=\"note\">1</rf> world{{math|bla{{?}}}}!{{bla"))
-
-    links := make(chan *link)
-    go extractLinks("before[[_target _page_ #\nsection|inside]]after", links)
-    l := <-links
-    fmt.Printf("%q -> %q\n", l.anchor, l.target)
-}
-*/
