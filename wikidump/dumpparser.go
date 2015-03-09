@@ -1,26 +1,21 @@
-package main
+package wikidump
 
 import (
-    "compress/bzip2"
     "encoding/xml"
     "io"
-    "log"
-    "os"
-    "strings"
-    "sync"
 )
 
-type page struct {
+type Page struct {
     title, text string
 }
 
-type redirect struct {
+type Redirect struct {
     title, target string
 }
 
 // Parse out a single page or redirect. Assumes a <page> start tag has just
 // been consumed.
-func parsePage(d *xml.Decoder, pages chan<- *page, redirs chan<- *redirect) {
+func parsePage(d *xml.Decoder, pages chan<- *Page, redirs chan<- *Redirect) {
     var mainNS bool
     var text, title string
 
@@ -40,7 +35,7 @@ func parsePage(d *xml.Decoder, pages chan<- *page, redirs chan<- *redirect) {
                 if mainNS {
                     for _, attr := range tok.Attr {
                         if attr.Name.Local == "title" {
-                            redirs <- &redirect{title, attr.Value}
+                            redirs <- &Redirect{title, attr.Value}
                             return
                         }
                     }
@@ -58,7 +53,7 @@ func parsePage(d *xml.Decoder, pages chan<- *page, redirs chan<- *redirect) {
         case xml.EndElement:
             if tok.Name.Local == "page" {
                 if mainNS {
-                    pages <- &page{title, text}
+                    pages <- &Page{title, text}
                 }
                 return
             }
@@ -78,7 +73,11 @@ func getText(d *xml.Decoder) string {
     return text
 }
 
-func getPages(r io.Reader, pages chan<- *page, redirs chan<- *redirect) {
+// Get pages and redirects from wikidump r. Only retrieves the pages in the
+// main namespace.
+//
+// XXX needs cleaner error handling. Currently panics.
+func GetPages(r io.Reader, pages chan<- *Page, redirs chan<- *Redirect) {
     d := xml.NewDecoder(r)
 
     defer close(pages)
@@ -99,65 +98,4 @@ func getPages(r io.Reader, pages chan<- *page, redirs chan<- *redirect) {
             }
         }
     }
-}
-
-func open(path string) (r io.ReadCloser, err error) {
-    r, err = os.Open(path)
-    if err == nil && strings.HasSuffix(path, ".bz2") {
-        r = struct {
-            io.Reader
-            io.Closer
-        }{bzip2.NewReader(r), r}
-    }
-    return
-}
-
-func main() {
-    f, err := open(os.Args[1])
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer f.Close()
-
-    articles := make(chan *page)
-    redirects := make(chan *redirect)
-    go getPages(f, articles, redirects)
-
-    var wg sync.WaitGroup
-    wg.Add(2)
-    done := make(chan struct{})
-    go func() {
-        wg.Wait()
-        close(done)
-    }()
-
-    var narticles, nredirects int
-loop:
-    for {
-        select {
-        case _, ok := <-articles:
-            if ok {
-                narticles++
-                if narticles % 10000 == 0 {
-                    log.Printf("%d articles", narticles)
-                }
-            } else {
-                articles = nil
-                wg.Done()
-            }
-        case _, ok := <-redirects:
-            if ok {
-                nredirects++
-                if nredirects % 10000 == 0 {
-                    log.Printf("%d redirects", nredirects)
-                }
-            } else {
-                redirects = nil
-                wg.Done()
-            }
-        case <-done:
-            break loop
-        }
-    }
-    log.Printf("%d articles, %d redirects", narticles, nredirects)
 }

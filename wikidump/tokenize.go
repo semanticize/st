@@ -1,11 +1,8 @@
 // Simplistic tokenizer for English/similar languages.
 
-package dumpparser
+package wikidump
 
 import (
-    "bufio"
-    "fmt"
-    "os"
     "regexp"
 )
 

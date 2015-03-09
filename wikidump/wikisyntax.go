@@ -1,8 +1,7 @@
-package main
+package wikidump
 
 import (
     "bytes"
-    "fmt"
     "html"
     "regexp"
     "strings"
@@ -122,6 +121,8 @@ func extractLinks(s string, out chan<- *link) {
     }
 }
 
+// XXX refactor me into a test
+/*
 func main() {
     fmt.Println(cleanup("|}Hello,<ref group=\"note\">1</rf> world{{math|bla{{?}}}}!{{bla"))
 
@@ -130,3 +131,4 @@ func main() {
     l := <-links
     fmt.Printf("%q -> %q\n", l.anchor, l.target)
 }
+*/
