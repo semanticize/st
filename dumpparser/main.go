@@ -2,6 +2,7 @@ package main
 
 import (
     "compress/bzip2"
+    "fmt"
     "github.com/semanticize/dumpparser/wikidump"
     "io"
     "log"
@@ -22,6 +23,11 @@ func open(path string) (r io.ReadCloser, err error) {
 }
 
 func main() {
+    if len(os.Args) != 2 {
+        fmt.Fprintf(os.Stderr, "usage: %s wikidump\n", os.Args[0])
+        os.Exit(1)
+    }
+
     f, err := open(os.Args[1])
     if err != nil {
         log.Fatal(err)
