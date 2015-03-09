@@ -69,8 +69,8 @@ var (
     whitespace = regexp.MustCompile(`\s+`)
 )
 
-// Extract all the wikilinks from s and send them to out. Does not close out.
-func ExtractLinks(s string, out chan<- *Link) {
+// Extract all the wikilinks from s.
+func ExtractLinks(s string) (links []Link) {
     normSpace := func(s string) string {
         s = strings.TrimSpace(s)
         return whitespace.ReplaceAllString(s, " ")
@@ -118,6 +118,7 @@ func ExtractLinks(s string, out chan<- *Link) {
         }
 
         anchor = before + anchor + after
-        out <- &Link{anchor, target}
+        links = append(links, Link{anchor, target})
     }
+    return
 }

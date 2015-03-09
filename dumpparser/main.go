@@ -42,7 +42,9 @@ func main() {
     go func() {
         for a := range articles {
             text := wikidump.Cleanup(a.Text)
-            wikidump.ExtractLinks(text, links)
+            for _, lnk := range wikidump.ExtractLinks(text) {
+                links <- &lnk
+            }
         }
         close(links)
     }()
