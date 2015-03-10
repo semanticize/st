@@ -2,6 +2,7 @@ package wikidump
 
 import (
     "bytes"
+    "golang.org/x/text/unicode/norm"
     "html"
     "regexp"
     "strings"
@@ -57,7 +58,7 @@ func Cleanup(s string) string {
 
         s = s[j:]
     }
-    return html.UnescapeString(output.String())
+    return norm.NFC.String(html.UnescapeString(output.String()))
 }
 
 type Link struct {
