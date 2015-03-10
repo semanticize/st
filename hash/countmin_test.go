@@ -24,3 +24,14 @@ func TestCountMin(t *testing.T) {
         }
     }
 }
+
+func BenchmarkCountMinAdd(b *testing.B) {
+    sketch := New(256, 256)
+
+    rng := rand.New(rand.NewSource(42))
+    for i := 0; i < b.N; i++ {
+        for j := 0; j < 2000000; j++ {
+            sketch.Add(rng.Uint32(), 1)
+        }
+    }
+}
