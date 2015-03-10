@@ -43,6 +43,19 @@ func (sketch *CountMin) Add(i, c uint32) {
     }
 }
 
+// Add one observation of type i.
+func (sketch *CountMin) Add1(i uint32) {
+    ncols := uint32(len(sketch.rows[0]))
+    for j, row := range sketch.rows {
+        k := i ^ pi[j]
+        k %= ncols
+        count := row[k]
+        if count < math.MaxUint32 {
+            row[k] = count + 1
+        }
+    }
+}
+
 // Point query for observations of type i. Returns an approximate count.
 func (sketch *CountMin) Get(i uint32) (count uint32) {
     ncols := uint32(len(sketch.rows[0]))
