@@ -1,6 +1,10 @@
 package hash
 
-import "math"
+import (
+    "errors"
+    "fmt"
+    "math"
+)
 
 // Count-min sketch: approximate frequency table, indexed by hash values.
 //
@@ -27,9 +31,13 @@ func New(nrows, ncols int) *CountMin {
     return &CountMin{rows}
 }
 
+func (sketch *CountMin) ncols() uint32 {
+    return uint32(len(sketch.rows[0]))
+}
+
 // Add c observations of type i.
 func (sketch *CountMin) Add(i, c uint32) {
-    ncols := uint32(len(sketch.rows[0]))
+    ncols := sketch.ncols()
     for j, row := range sketch.rows {
         k := i ^ pi[j]
         k %= ncols
@@ -45,7 +53,7 @@ func (sketch *CountMin) Add(i, c uint32) {
 
 // Add one observation of type i.
 func (sketch *CountMin) Add1(i uint32) {
-    ncols := uint32(len(sketch.rows[0]))
+    ncols := sketch.ncols()
     for j, row := range sketch.rows {
         k := i ^ pi[j]
         k %= ncols
@@ -66,6 +74,35 @@ func (sketch *CountMin) Get(i uint32) (count uint32) {
         count = min(count, row[k % ncols])
     }
     return count
+}
+
+// Add counts of other into sketch.
+//
+// Returns an error iff the two sketches are not of the same shape.
+func (sketch *CountMin) Sum(other *CountMin) error {
+    if len(other.rows) != len(sketch.rows) {
+        msg := fmt.Sprintf("number of rows %d doesn't match %d",
+                           len(other.rows), len(sketch.rows))
+        return errors.New(msg)
+    }
+    if other.ncols() != sketch.ncols() {
+        msg := fmt.Sprintf("number of columns %d doesn't match %d",
+                           other.ncols(), sketch.ncols())
+        return errors.New(msg)
+    }
+
+    for i, row := range other.rows {
+        for j, add := range row {
+            count := sketch.rows[i][j]
+            if count + add < count {
+                count = math.MaxUint32
+            } else {
+                count = count + add
+            }
+            sketch.rows[i][j] = count
+        }
+    }
+    return nil
 }
 
 func min(a, b uint32) uint32 {

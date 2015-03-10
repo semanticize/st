@@ -31,6 +31,27 @@ func TestCountMin(t *testing.T) {
     }
 }
 
+func TestCountMinSum(t *testing.T) {
+    a := New(25, 126)
+    b := New(25, 126)
+    sum := New(25, 126)
+    rng := rand.New(rand.NewSource(42))
+
+    for i := 0; i < 2000; i++ {
+        h := rng.Uint32()
+        a.Add1(h)
+        b.Add(h, h % 100)
+        sum.Add(h, h % 100 + 1)
+    }
+    a.Sum(b)
+
+    for i := uint32(0); i < 126; i++ {
+        if a.Get(i) != sum.Get(i) {
+            t.Errorf("expected %d, got %d", sum.Get(i), a.Get(i))
+        }
+    }
+}
+
 func BenchmarkCountMinAdd(b *testing.B) {
     sketch := New(256, 256)
 
