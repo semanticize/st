@@ -71,7 +71,7 @@ func (sketch *CountMin) Get(i uint32) (count uint32) {
     count = math.MaxUint32
     for j, row := range sketch.rows {
         k := i ^ pi[j]
-        count = min(count, row[k % ncols])
+        count = min32(count, row[k % ncols])
     }
     return count
 }
@@ -105,7 +105,7 @@ func (sketch *CountMin) Sum(other *CountMin) error {
     return nil
 }
 
-func min(a, b uint32) uint32 {
+func min32(a, b uint32) uint32 {
     if a < b {
         return a
     }
