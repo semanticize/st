@@ -17,10 +17,10 @@ func hashNGram(ngram []string) uint32 {
 }
 
 // Generate n-grams.
-func ngrams(tokens []string, maxn int) [][]string {
+func ngrams(tokens []string, minN, maxN int) [][]string {
     out := make([][]string, 0)
     for i := range tokens {
-        for n := 1; n <= min(maxn, len(tokens) - i); n++ {
+        for n := minN; n <= min(maxN, len(tokens) - i); n++ {
             out = append(out, tokens[i:i+n])
         }
     }
@@ -29,13 +29,22 @@ func ngrams(tokens []string, maxn int) [][]string {
 
 // Test that our n-gram hasher matches the naïve implementation.
 func TestNGrams(t *testing.T) {
-    for maxn := 1; maxn < 6; maxn++ {
-        tokens := strings.Split("and or not xor lsh rsh shift foo bar baz", " ")
+    tokens := strings.Split("and or not xor lsh rsh shift foo bar baz", " ")
+    for minN := 1; minN < 4; minN++ {
+        for maxN := minN; maxN < 6; maxN++ {
 
-        hashes := NGrams(tokens, maxn)
-        for i, gram := range ngrams(tokens, maxn) {
-            if hashes[i] != hashNGram(gram) {
-                t.Errorf("expected %d, got %d", hashes[i], hashNGram(gram))
+            hashes := NGrams(tokens, minN, maxN)
+            grams := ngrams(tokens, minN, maxN)
+            if len(hashes) != len(grams) {
+                t.Errorf("length mismatch, %d != %d (%d, %d)",
+                    len(hashes), len(grams), minN, maxN)
+            } else {
+                for i, gram := range grams {
+                    if hashes[i] != hashNGram(gram) {
+                        t.Errorf("expected %d, got %d (%d, %d)",
+                            hashes[i], hashNGram(gram), minN, maxN)
+                    }
+                }
             }
         }
     }
@@ -78,13 +87,15 @@ var benchdata = strings.Split(
     " ")
 
 func BenchmarkNGrams(b *testing.B) {
-    for maxn := 1; maxn < 70; maxn++ {
-        NGrams(benchdata, maxn)
-        // Uncomment to benchmark the naïve way of doing this (~2.5× slower).
-        /*
-        for _, gram := range ngrams(benchdata, maxn) {
-            hashNGram(gram)
+    for minN := 1; minN < 5; minN++ {
+        for maxN := minN; maxN < 70; maxN++ {
+            NGrams(benchdata, minN, maxN)
+            // Uncomment to benchmark the naïve way of doing this (~2.5× slower).
+            /*
+            for _, gram := range ngrams(benchdata, maxN) {
+                hashNGram(gram)
+            }
+            */
         }
-        */
     }
 }
