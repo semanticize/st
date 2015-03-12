@@ -1,4 +1,4 @@
-package wikidump
+package nlp
 
 import "testing"
 
@@ -10,7 +10,7 @@ func TestTokenize(t *testing.T) {
         {"Kahaani is a 2012 Indian mystery",
          []string{"Kahaani", "is", "a", "<NUM>", "Indian", "mystery"}},
     } {
-        got := tokenize(c.in)
+        got := Tokenize(c.in)
         if len(got) != len(c.want) {
             t.Errorf("len(tokenize(%q)) != len(%q)", c.in, c.want)
         }
