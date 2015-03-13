@@ -2,6 +2,7 @@ package main
 
 import (
     "compress/bzip2"
+    "flag"
     "fmt"
     "github.com/semanticize/dumpparser/wikidump"
     "io"
@@ -22,16 +23,39 @@ func open(path string) (r io.ReadCloser, err error) {
     return
 }
 
+var download = flag.String("download", "",
+                           "download Wikipedia dump (e.g., 'enwiki')")
+
 func main() {
-    if len(os.Args) != 2 {
-        fmt.Fprintf(os.Stderr, "usage: %s wikidump\n", os.Args[0])
-        os.Exit(1)
+    var err error
+    check := func() {
+        if err != nil {
+            log.Fatal(err)
+        }
     }
 
-    f, err := open(os.Args[1])
-    if err != nil {
-        log.Fatal(err)
+    flag.Parse()
+    args := flag.Args()
+
+    var filepath string
+    if *download != "" {
+        if len(args) != 1 {
+            fmt.Fprintf(os.Stderr,
+                        "usage: %s -download=wikiname model.db\n", os.Args[0])
+            os.Exit(1)
+        }
+        inputpath, err = wikidump.Download(*download, true)
+        check()
+    } else {
+        if len(args) != 2 {
+            fmt.Fprintf(os.Stderr, "usage: %s wikidump model.db\n", os.Args[0])
+            os.Exit(1)
+        }
+        filepath = args[0]
     }
+
+    f, err := open(filepath)
+    check()
     defer f.Close()
 
     articles := make(chan *wikidump.Page)
