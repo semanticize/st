@@ -1,58 +1,58 @@
 package hash
 
 import (
-    "hash/fnv"
-    "strings"
-    "testing"
+	"hash/fnv"
+	"strings"
+	"testing"
 )
 
 func hashNGram(ngram []string) uint32 {
-    h := fnv.New32()
-    h.Write([]byte(ngram[0]))
-    for _, w := range ngram[1:] {
-        h.Write([]byte("\x00"))
-        h.Write([]byte(w))
-    }
-    return h.Sum32()
+	h := fnv.New32()
+	h.Write([]byte(ngram[0]))
+	for _, w := range ngram[1:] {
+		h.Write([]byte("\x00"))
+		h.Write([]byte(w))
+	}
+	return h.Sum32()
 }
 
 // Generate n-grams.
 func ngrams(tokens []string, minN, maxN int) [][]string {
-    out := make([][]string, 0)
-    for i := range tokens {
-        for n := minN; n <= min(maxN, len(tokens) - i); n++ {
-            out = append(out, tokens[i:i+n])
-        }
-    }
-    return out
+	out := make([][]string, 0)
+	for i := range tokens {
+		for n := minN; n <= min(maxN, len(tokens)-i); n++ {
+			out = append(out, tokens[i:i+n])
+		}
+	}
+	return out
 }
 
 // Test that our n-gram hasher matches the naïve implementation.
 func TestNGrams(t *testing.T) {
-    tokens := strings.Split("and or not xor lsh rsh shift foo bar baz", " ")
-    for minN := 1; minN < 4; minN++ {
-        for maxN := minN; maxN < 6; maxN++ {
+	tokens := strings.Split("and or not xor lsh rsh shift foo bar baz", " ")
+	for minN := 1; minN < 4; minN++ {
+		for maxN := minN; maxN < 6; maxN++ {
 
-            hashes := NGrams(tokens, minN, maxN)
-            grams := ngrams(tokens, minN, maxN)
-            if len(hashes) != len(grams) {
-                t.Errorf("length mismatch, %d != %d (%d, %d)",
-                    len(hashes), len(grams), minN, maxN)
-            } else {
-                for i, gram := range grams {
-                    if hashes[i] != hashNGram(gram) {
-                        t.Errorf("expected %d, got %d (%d, %d)",
-                            hashes[i], hashNGram(gram), minN, maxN)
-                    }
-                }
-            }
-        }
-    }
+			hashes := NGrams(tokens, minN, maxN)
+			grams := ngrams(tokens, minN, maxN)
+			if len(hashes) != len(grams) {
+				t.Errorf("length mismatch, %d != %d (%d, %d)",
+					len(hashes), len(grams), minN, maxN)
+			} else {
+				for i, gram := range grams {
+					if hashes[i] != hashNGram(gram) {
+						t.Errorf("expected %d, got %d (%d, %d)",
+							hashes[i], hashNGram(gram), minN, maxN)
+					}
+				}
+			}
+		}
+	}
 }
 
 // From https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
 var benchdata = strings.Split(
-    `In computer science, the Rabin–Karp algorithm or Karp–Rabin algorithm is
+	`In computer science, the Rabin–Karp algorithm or Karp–Rabin algorithm is
      a string searching algorithm created by Richard M. Karp and Michael O.
      Rabin (1987) that uses hashing to find any one of a set of pattern
      strings in a text. For text of length n and p patterns of combined length
@@ -84,18 +84,18 @@ var benchdata = strings.Split(
      take a long time for long substrings. Luckily, a good hash function
      promises us that on most reasonable inputs, this won't happen too often,
      which keeps the average search time within an acceptable range.`,
-    " ")
+	" ")
 
 func BenchmarkNGrams(b *testing.B) {
-    for minN := 1; minN < 5; minN++ {
-        for maxN := minN; maxN < 70; maxN++ {
-            NGrams(benchdata, minN, maxN)
-            // Uncomment to benchmark the naïve way of doing this (~2.5× slower).
-            /*
-            for _, gram := range ngrams(benchdata, maxN) {
-                hashNGram(gram)
-            }
-            */
-        }
-    }
+	for minN := 1; minN < 5; minN++ {
+		for maxN := minN; maxN < 70; maxN++ {
+			NGrams(benchdata, minN, maxN)
+			// Uncomment to benchmark the naïve way of doing this (~2.5× slower).
+			/*
+			   for _, gram := range ngrams(benchdata, maxN) {
+			       hashNGram(gram)
+			   }
+			*/
+		}
+	}
 }
