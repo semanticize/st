@@ -134,10 +134,10 @@ func main() {
 			}
 			for _, h := range hashes {
 				_, err = db.Exec(`insert or ignore into linkstats values
-                                 (?, ?, 0)`, h, link.Target)
+								  (?, ?, 0)`, h, link.Target)
 				check()
 				_, err = db.Exec(`update linkstats set count = count + ?
-                                 where ngramhash = ? and target = ?`,
+								  where ngramhash = ? and target = ?`,
 					count, h, link.Target)
 				check()
 			}
@@ -149,6 +149,9 @@ func main() {
 
 	wg.Wait()
 	close(done)
+
+	log.Printf("Processing %d redirects", len(redirmap))
+	storage.ProcessRedirects(db, redirmap)
 
 	log.Println("Finalizing database")
 	err = storage.Finalize(db)
