@@ -76,7 +76,7 @@ func main() {
 	// The numbers here are completely arbitrary.
 	nworkers := runtime.GOMAXPROCS(0)
 	articles := make(chan *wikidump.Page, 10*nworkers)
-	links := make(chan *wikidump.Link, 100*nworkers)
+	links := make(chan map[wikidump.Link]int, 10*nworkers)
 	redirects := make(chan *wikidump.Redirect, 100)
 
 	var wg sync.WaitGroup
@@ -104,9 +104,7 @@ func main() {
 		go func(ngramcount *countmin.Sketch) {
 			for a := range articles {
 				text := wikidump.Cleanup(a.Text)
-				for _, link := range wikidump.ExtractLinks(text) {
-					links <- &link
-				}
+				links <- wikidump.ExtractLinks(text)
 
 				tokens := nlp.Tokenize(text)
 				for _, h := range hash.NGrams(tokens, 1, maxN) {
@@ -139,19 +137,21 @@ func main() {
 		update := storage.MustPrepare(db,
 			`update linkstats set count = count + ? where ngramhash = ? and target = ?`)
 
-		for link := range links {
-			tokens := nlp.Tokenize(link.Anchor)
-			n := min(maxN, len(tokens))
-			hashes := hash.NGrams(tokens, n, n)
-			count := 1.
-			if len(hashes) > 1 {
-				count = 1 / float64(len(hashes))
-			}
-			for _, h := range hashes {
-				_, err = ins.Exec(h, link.Target)
-				check()
-				_, err = update.Exec(count, h, link.Target)
-				check()
+		for linkFreq := range links {
+			for link, freq := range linkFreq {
+				tokens := nlp.Tokenize(link.Anchor)
+				n := min(maxN, len(tokens))
+				hashes := hash.NGrams(tokens, n, n)
+				count := float64(freq)
+				if len(hashes) > 1 {
+					count = 1 / float64(len(hashes))
+				}
+				for _, h := range hashes {
+					_, err = ins.Exec(h, link.Target)
+					check()
+					_, err = update.Exec(count, h, link.Target)
+					check()
+				}
 			}
 		}
 		wg.Done()

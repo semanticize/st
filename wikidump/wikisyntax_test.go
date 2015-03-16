@@ -28,9 +28,15 @@ func TestExtractLinks_single(t *testing.T) {
 	onlyLink := func(text string) Link {
 		links := ExtractLinks(text)
 		if len(links) != 1 {
-			t.Errorf("expected one link, got %d", len(links))
+			t.Errorf("expected one link, got at least %d", len(links))
 		}
-		return links[0]
+		for link, count := range links {
+			if count != 1 {
+				t.Errorf("expected one link, got %d", count)
+			}
+			return link
+		}
+		panic("no links")
 	}
 
 	cases := []struct {
@@ -73,6 +79,17 @@ func TestExtractLinks_single(t *testing.T) {
 	}
 }
 
+// Simulate the old API.
+func extractLinks(s string) []Link {
+	links := make([]Link, 0)
+	for k, v := range ExtractLinks(s) {
+		for i := 0; i < v; i++ {
+			links = append(links, k)
+		}
+	}
+	return links
+}
+
 func TestExtractLinks_multiple(t *testing.T) {
 	cases := [][]string{
 		// This construct appears in enwiki for chemical formulae etc.,
@@ -95,7 +112,7 @@ func TestExtractLinks_multiple(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		links := ExtractLinks(c[0])
+		links := extractLinks(c[0])
 		if len(links) != (len(c)-1)/2 {
 			t.Errorf("Wrong number of links %d in %q", len(links), c[0])
 		}
