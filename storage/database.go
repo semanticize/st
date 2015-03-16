@@ -61,6 +61,15 @@ func Finalize(db *sql.DB) (err error) {
 	return
 }
 
+// Prepares statement; panics on error.
+func MustPrepare(db *sql.DB, statement string) *sql.Stmt {
+	stmt, err := db.Prepare(statement)
+	if err != nil {
+		panic(err)
+	}
+	return stmt
+}
+
 type linkCount struct {
 	hash  int64
 	count float64
@@ -69,9 +78,15 @@ type linkCount struct {
 func ProcessRedirects(db *sql.DB, redirs map[string]string) error {
 	counts := make([]linkCount, 0)
 
+	old := MustPrepare(db,
+		`select ngramhash, count from linkstats where target = ?`)
+	del := MustPrepare(db, `delete from linkstats where target = ?`)
+	ins := MustPrepare(db, `insert or ignore into linkstats values (?, ?, 0)`)
+	update := MustPrepare(db,
+		`update linkstats set count = count + ? where target = ? and ngramhash = ?`)
+
 	for from, to := range redirs {
-		rows, err := db.Query(`select ngramhash, count from linkstats
-							   where target = ?`, from)
+		rows, err := old.Query(from)
 		if err != nil {
 			return err
 		}
@@ -89,21 +104,18 @@ func ProcessRedirects(db *sql.DB, redirs map[string]string) error {
 			return err
 		}
 
-		_, err = db.Exec(`delete from linkstats where target = ?`, from)
+		_, err = del.Exec(from)
 		if err != nil {
 			return err
 		}
 
 		for _, c := range counts {
-			_, err = db.Exec(`insert or ignore into linkstats values (?, ?, 0)`,
-				c.hash, to)
+			_, err = ins.Exec(c.hash, to)
 			if err != nil {
 				return err
 			}
 
-			_, err = db.Exec(`update linkstats set count = count + ?
-							  where target = ? and ngramhash = ?`,
-				c.count, to, c.hash)
+			_, err = update.Exec(c.count, to, c.hash)
 			if err != nil {
 				return err
 			}

@@ -124,6 +124,11 @@ func main() {
 	wg.Add(1)
 	done := make(chan struct{})
 	go func() {
+		ins := storage.MustPrepare(db,
+			`insert or ignore into linkstats values (?,?,0)`)
+		update := storage.MustPrepare(db,
+			`update linkstats set count = count + ? where ngramhash = ? and target = ?`)
+
 		for link := range links {
 			tokens := nlp.Tokenize(link.Anchor)
 			n := min(maxN, len(tokens))
@@ -133,12 +138,9 @@ func main() {
 				count = 1 / float64(len(hashes))
 			}
 			for _, h := range hashes {
-				_, err = db.Exec(`insert or ignore into linkstats values
-								  (?, ?, 0)`, h, link.Target)
+				_, err = ins.Exec(h, link.Target)
 				check()
-				_, err = db.Exec(`update linkstats set count = count + ?
-								  where ngramhash = ? and target = ?`,
-					count, h, link.Target)
+				_, err = update.Exec(count, h, link.Target)
 				check()
 			}
 		}
