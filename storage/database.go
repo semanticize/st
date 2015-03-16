@@ -28,11 +28,11 @@ const create = (`
 
     create table linkstats (
         ngramhash integer not NULL,
-        target    text not NULL,
-        count     integer not NULL
+        target    text    not NULL,
+        count     float   not NULL
     );
 
-    create index link_target on linkstats(target);
+    create index link_target on linkstats(ngramhash, target);
 `)
 
 func MakeDB(path string, overwrite bool) (db *sql.DB, err error) {
@@ -46,5 +46,14 @@ func MakeDB(path string, overwrite bool) (db *sql.DB, err error) {
 	db.Ping()
 
 	_, err = db.Exec(create)
+	return
+}
+
+func Finalize(db *sql.DB) (err error) {
+	_, err = db.Exec("drop index link_target;")
+	if err != nil {
+		return
+	}
+	_, err = db.Exec("vacuum;")
 	return
 }

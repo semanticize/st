@@ -1,105 +1,165 @@
 package main
 
 import (
-    "compress/bzip2"
-    "flag"
-    "fmt"
-    "github.com/semanticize/dumpparser/wikidump"
-    "io"
-    "log"
-    "os"
-    "path/filepath"
-    "sync"
+	"compress/bzip2"
+	"flag"
+	"fmt"
+	"github.com/semanticize/dumpparser/hash"
+	"github.com/semanticize/dumpparser/hash/countmin"
+	"github.com/semanticize/dumpparser/nlp"
+	"github.com/semanticize/dumpparser/storage"
+	"github.com/semanticize/dumpparser/wikidump"
+	"io"
+	"log"
+	"os"
+	"path/filepath"
+	"sync"
 )
 
 func open(path string) (r io.ReadCloser, err error) {
-    r, err = os.Open(path)
-    if err == nil && filepath.Ext(path) == ".bz2" {
-        r = struct {
-            io.Reader
-            io.Closer
-        }{bzip2.NewReader(r), r}
-    }
-    return
+	r, err = os.Open(path)
+	if err == nil && filepath.Ext(path) == ".bz2" {
+		r = struct {
+			io.Reader
+			io.Closer
+		}{bzip2.NewReader(r), r}
+	}
+	return
 }
 
 var download = flag.String("download", "",
-                           "download Wikipedia dump (e.g., 'enwiki')")
+	"download Wikipedia dump (e.g., 'enwiki')")
+var nrows = flag.Uint("nrows", 16, "number of rows in count-min sketch")
+var ncols = flag.Uint("ncols", 262144, "number of columns in count-min sketch")
+var maxNGram = flag.Uint("ngram", 7, "max. length of n-grams")
 
 func main() {
-    var err error
-    check := func() {
-        if err != nil {
-            log.Fatal(err)
-        }
-    }
+	log.SetPrefix("dumpparser ")
 
-    flag.Parse()
-    args := flag.Args()
+	var err error
+	check := func() {
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 
-    var filepath string
-    if *download != "" {
-        if len(args) != 1 {
-            fmt.Fprintf(os.Stderr,
-                        "usage: %s -download=wikiname model.db\n", os.Args[0])
-            os.Exit(1)
-        }
-        inputpath, err = wikidump.Download(*download, true)
-        check()
-    } else {
-        if len(args) != 2 {
-            fmt.Fprintf(os.Stderr, "usage: %s wikidump model.db\n", os.Args[0])
-            os.Exit(1)
-        }
-        filepath = args[0]
-    }
+	flag.Parse()
+	args := flag.Args()
 
-    f, err := open(filepath)
-    check()
-    defer f.Close()
+	var dbpath, inputpath string
+	if *download != "" {
+		if len(args) != 1 {
+			fmt.Fprintf(os.Stderr,
+				"usage: %s -download=wikiname model.db\n", os.Args[0])
+			os.Exit(1)
+		}
+		inputpath, err = wikidump.Download(*download, true)
+		check()
+		dbpath = args[0]
+	} else {
+		if len(args) != 2 {
+			fmt.Fprintf(os.Stderr, "usage: %s wikidump model.db\n", os.Args[0])
+			os.Exit(1)
+		}
+		inputpath, dbpath = args[0], args[1]
+	}
 
-    articles := make(chan *wikidump.Page)
-    redirects := make(chan *wikidump.Redirect)
-    go wikidump.GetPages(f, articles, redirects)
+	f, err := open(inputpath)
+	check()
+	defer f.Close()
 
-    links := make(chan *wikidump.Link)
-    go func() {
-        for a := range articles {
-            text := wikidump.Cleanup(a.Text)
-            for _, lnk := range wikidump.ExtractLinks(text) {
-                links <- &lnk
-            }
-        }
-        close(links)
-    }()
+	log.Printf("Creating database at %s", dbpath)
+	db, err := storage.MakeDB(dbpath, true)
+	check()
 
-    var wg sync.WaitGroup
-    wg.Add(2)
+	// The number 10 is completely arbitrary, but seems to speed things up.
+	articles := make(chan *wikidump.Page, 10)
+	links := make(chan *wikidump.Link, 10)
+	redirects := make(chan *wikidump.Redirect, 10)
+	tocounter := make(chan string, 10)
 
-    done := make(chan struct{})
-    go func() {
-        wg.Wait()
-        close(done)
-    }()
+	var wg sync.WaitGroup
 
-    for {
-        select {
-        case lnk, ok := <-links:
-            if ok {
-                fmt.Printf("link: %q → %q\n", lnk.Anchor, lnk.Target)
-            } else {
-                links = nil
-                wg.Done()
-            }
-        case redir, ok := <-redirects:
-            if ok {
-                fmt.Printf("redirect: %q → %q\n", redir.Title, redir.Target)
-            } else {
-                redirects = nil
-                wg.Done()
-            }
-        case <-done:
-            return
-        }
-    }
+	// Collect redirects.
+	wg.Add(1)
+	redirmap := make(map[string]string)
+	go func() {
+		for r := range redirects {
+			redirmap[r.Title] = r.Target
+		}
+		wg.Done()
+	}()
+
+	// Clean up and tokenize articles, extract links.
+	wg.Add(1)
+	go func() {
+		for a := range articles {
+			log.Printf("processing %q\n", a.Title)
+			text := wikidump.Cleanup(a.Text)
+			tocounter <- text
+			for _, link := range wikidump.ExtractLinks(text) {
+				links <- &link
+			}
+		}
+		close(links)
+		close(tocounter)
+		wg.Done()
+	}()
+
+	// Collect n-gram (hash) counts.
+	wg.Add(1)
+	ngramcount := countmin.New(int(*nrows), int(*ncols))
+	maxN := int(*maxNGram)
+	go func() {
+		for text := range tocounter {
+			tokens := nlp.Tokenize(text)
+			for _, h := range hash.NGrams(tokens, 1, maxN) {
+				ngramcount.Add1(h)
+			}
+		}
+		wg.Done()
+	}()
+
+	// Collect links and store them in the database.
+	wg.Add(1)
+	done := make(chan struct{})
+	go func() {
+		for link := range links {
+			tokens := nlp.Tokenize(link.Anchor)
+			n := min(maxN, len(tokens))
+			hashes := hash.NGrams(tokens, n, n)
+			count := 1.
+			if len(hashes) > 1 {
+				count = 1 / float64(len(hashes))
+			}
+			for _, h := range hashes {
+				_, err = db.Exec(`insert or ignore into linkstats values
+                                 (?, ?, 0)`, h, link.Target)
+				check()
+				_, err = db.Exec(`update linkstats set count = count + ?
+                                 where ngramhash = ? and target = ?`,
+					count, h, link.Target)
+				check()
+			}
+		}
+		wg.Done()
+	}()
+
+	go wikidump.GetPages(f, articles, redirects)
+
+	wg.Wait()
+	close(done)
+
+	log.Println("Finalizing database")
+	err = storage.Finalize(db)
+	check()
+	db.Close()
+	check()
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }

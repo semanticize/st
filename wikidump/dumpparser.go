@@ -6,7 +6,7 @@ import (
 )
 
 type Page struct {
-	title, Text string
+	Title, Text string
 }
 
 type Redirect struct {
