@@ -13,6 +13,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sync"
 )
 
@@ -73,10 +74,11 @@ func main() {
 	check()
 
 	// The number 10 is completely arbitrary, but seems to speed things up.
-	articles := make(chan *wikidump.Page, 10)
-	links := make(chan *wikidump.Link, 10)
+	nworkers := runtime.GOMAXPROCS(0)
+	articles := make(chan *wikidump.Page, 10*nworkers)
+	links := make(chan *wikidump.Link, 10*nworkers)
 	redirects := make(chan *wikidump.Redirect, 10)
-	tocounter := make(chan string, 10)
+	tocounter := make(chan string, 10*nworkers)
 
 	var wg sync.WaitGroup
 
@@ -91,16 +93,25 @@ func main() {
 	}()
 
 	// Clean up and tokenize articles, extract links.
+	var worker sync.WaitGroup
+	worker.Add(nworkers)
+	log.Printf("%d workers", nworkers)
+	for i := 0; i < nworkers; i++ {
+		go func() {
+			for a := range articles {
+				text := wikidump.Cleanup(a.Text)
+				tocounter <- text
+				for _, link := range wikidump.ExtractLinks(text) {
+					links <- &link
+				}
+			}
+			worker.Done()
+		}()
+	}
+
 	wg.Add(1)
 	go func() {
-		for a := range articles {
-			log.Printf("processing %q\n", a.Title)
-			text := wikidump.Cleanup(a.Text)
-			tocounter <- text
-			for _, link := range wikidump.ExtractLinks(text) {
-				links <- &link
-			}
-		}
+		worker.Wait()
 		close(links)
 		close(tocounter)
 		wg.Done()
