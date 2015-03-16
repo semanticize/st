@@ -8,32 +8,34 @@ import (
 )
 
 const create = (`
-    pragma foreign_keys = on;
-    pragma journal_mode = off;
-    pragma synchronous = off;
+	pragma foreign_keys = on;
+	pragma journal_mode = off;
+	pragma synchronous = off;
 
-    drop table if exists linkstats;
-    drop table if exists ngramfreq;
+	drop table if exists linkstats;
+	drop table if exists ngramfreq;
 
-    create table parameters (
-        key   text primary key not NULL,
-        value text default NULL
-    );
+	create table parameters (
+		key   text primary key not NULL,
+		value text default NULL
+	);
 
-    create table ngramfreq (
-        row   integer not NULL,
-        col   integer not NULL,
-        count integer not NULL
-    );
+	create table ngramfreq (
+		row   integer not NULL,
+		col   integer not NULL,
+		count integer not NULL
+	);
 
-    create table linkstats (
-        ngramhash integer not NULL,
-        target    text    not NULL,
-        count     float   not NULL
-    );
+	-- XXX I tried to put the link targets in a separate table with a foreign
+	-- key in this one, but inserting into that table would sometimes fail.
+	create table linkstats (
+		ngramhash integer not NULL,
+		target    string  not NULL,		-- actually UTF-8
+		count     float   not NULL
+	);
 
-    create index target on linkstats(target);
-    create index hash_target on linkstats(ngramhash, target);
+	create index target on linkstats(target);
+	create unique index hash_target on linkstats(ngramhash, target);
 `)
 
 func MakeDB(path string, overwrite bool) (db *sql.DB, err error) {
@@ -52,7 +54,6 @@ func MakeDB(path string, overwrite bool) (db *sql.DB, err error) {
 
 func Finalize(db *sql.DB) (err error) {
 	_, err = db.Exec("drop index target;")
-	_, err = db.Exec("drop index hash_target;")
 	if err != nil {
 		return
 	}
