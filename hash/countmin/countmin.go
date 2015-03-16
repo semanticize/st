@@ -11,11 +11,11 @@ import (
 // The user is responsible for supplying hash values of observations.
 // Multiple hash functions are simulated by XOR'ing the given hash values
 // with built-in seeds (the binary expansion of pi).
-type CountMin struct {
+type Sketch struct {
 	rows [][]uint32
 }
 
-func New(nrows, ncols int) *CountMin {
+func New(nrows, ncols int) *Sketch {
 	if nrows < 1 || ncols < 1 {
 		panic("need at least one seed and one column")
 	} else if nrows > len(pi) {
@@ -28,15 +28,15 @@ func New(nrows, ncols int) *CountMin {
 	for i := range rows {
 		rows[i] = buckets[i*ncols : (i+1)*ncols]
 	}
-	return &CountMin{rows}
+	return &Sketch{rows}
 }
 
-func (sketch *CountMin) ncols() uint32 {
+func (sketch *Sketch) ncols() uint32 {
 	return uint32(len(sketch.rows[0]))
 }
 
 // Add c observations of type i.
-func (sketch *CountMin) Add(i, c uint32) {
+func (sketch *Sketch) Add(i, c uint32) {
 	ncols := sketch.ncols()
 	for j, row := range sketch.rows {
 		k := i ^ pi[j]
@@ -52,7 +52,7 @@ func (sketch *CountMin) Add(i, c uint32) {
 }
 
 // Add one observation of type i.
-func (sketch *CountMin) Add1(i uint32) {
+func (sketch *Sketch) Add1(i uint32) {
 	ncols := sketch.ncols()
 	for j, row := range sketch.rows {
 		k := i ^ pi[j]
@@ -65,7 +65,7 @@ func (sketch *CountMin) Add1(i uint32) {
 }
 
 // Point query for observations of type i. Returns an approximate count.
-func (sketch *CountMin) Get(i uint32) (count uint32) {
+func (sketch *Sketch) Get(i uint32) (count uint32) {
 	ncols := uint32(len(sketch.rows[0]))
 
 	count = math.MaxUint32
@@ -79,7 +79,7 @@ func (sketch *CountMin) Get(i uint32) (count uint32) {
 // Add counts of other into sketch.
 //
 // Returns an error iff the two sketches are not of the same shape.
-func (sketch *CountMin) Sum(other *CountMin) error {
+func (sketch *Sketch) Sum(other *Sketch) error {
 	if len(other.rows) != len(sketch.rows) {
 		msg := fmt.Sprintf("number of rows %d doesn't match %d",
 			len(other.rows), len(sketch.rows))

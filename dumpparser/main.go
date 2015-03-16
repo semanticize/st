@@ -73,12 +73,11 @@ func main() {
 	db, err := storage.MakeDB(dbpath, true)
 	check()
 
-	// The number 10 is completely arbitrary, but seems to speed things up.
+	// The numbers here are completely arbitrary.
 	nworkers := runtime.GOMAXPROCS(0)
 	articles := make(chan *wikidump.Page, 10*nworkers)
-	links := make(chan *wikidump.Link, 10*nworkers)
-	redirects := make(chan *wikidump.Redirect, 10)
-	tocounter := make(chan string, 10*nworkers)
+	links := make(chan *wikidump.Link, 100*nworkers)
+	redirects := make(chan *wikidump.Redirect, 100)
 
 	var wg sync.WaitGroup
 
@@ -92,42 +91,42 @@ func main() {
 		wg.Done()
 	}()
 
-	// Clean up and tokenize articles, extract links.
+	// Clean up and tokenize articles, extract links, count n-grams.
+	maxN := int(*maxNGram)
+	counters := make([]*countmin.Sketch, nworkers)
+
 	var worker sync.WaitGroup
 	worker.Add(nworkers)
 	log.Printf("%d workers", nworkers)
 	for i := 0; i < nworkers; i++ {
-		go func() {
+		counters[i] = countmin.New(int(*nrows), int(*ncols))
+
+		go func(ngramcount *countmin.Sketch) {
 			for a := range articles {
 				text := wikidump.Cleanup(a.Text)
-				tocounter <- text
 				for _, link := range wikidump.ExtractLinks(text) {
 					links <- &link
 				}
+
+				tokens := nlp.Tokenize(text)
+				for _, h := range hash.NGrams(tokens, 1, maxN) {
+					ngramcount.Add1(h)
+				}
 			}
 			worker.Done()
-		}()
+		}(counters[i])
 	}
 
 	wg.Add(1)
 	go func() {
 		worker.Wait()
 		close(links)
-		close(tocounter)
-		wg.Done()
-	}()
 
-	// Collect n-gram (hash) counts.
-	wg.Add(1)
-	ngramcount := countmin.New(int(*nrows), int(*ncols))
-	maxN := int(*maxNGram)
-	go func() {
-		for text := range tocounter {
-			tokens := nlp.Tokenize(text)
-			for _, h := range hash.NGrams(tokens, 1, maxN) {
-				ngramcount.Add1(h)
-			}
+		for i := 1; i < nworkers; i++ {
+			counters[0].Sum(counters[i])
 		}
+		counters = counters[:1]
+
 		wg.Done()
 	}()
 
