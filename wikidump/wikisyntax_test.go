@@ -2,6 +2,8 @@ package wikidump
 
 import (
 	"os"
+	"regexp"
+	"strings"
 	"testing"
 )
 
@@ -16,10 +18,13 @@ func TestCleanup(t *testing.T) {
 	assertStringEq(t, Cleanup(in), "Hello, world!")
 }
 
+var ws = regexp.MustCompile(`\s+`)
+
 func checkLink(t *testing.T, got Link, target, anchor string) {
 	// Don't care about whitespace in the anchor...
-	if normSpace(got.Anchor) != anchor {
-		t.Errorf("expected anchor %q, got %q", anchor, got.Anchor)
+	gotAnchor := ws.ReplaceAllString(strings.TrimSpace(got.Anchor), " ")
+	if gotAnchor != anchor {
+		t.Errorf("expected anchor %q, got %q", anchor, gotAnchor)
 	}
 
 	// ... but the target should be normalized.
@@ -125,7 +130,7 @@ func TestExtractLinks_multiple(t *testing.T) {
 	}
 }
 
-func BenchmarkExtractLinks(b *testing.B) {
+func getPages() []string {
 	f, err := os.Open("nlwiki-20140927-sample.xml")
 	if err != nil {
 		panic(err)
@@ -141,7 +146,20 @@ func BenchmarkExtractLinks(b *testing.B) {
 	for p := range pc {
 		pages = append(pages, p.Text)
 	}
+	return pages
+}
 
+var pages = getPages()
+
+func BenchmarkCleanup(b *testing.B) {
+	for i := 0; i < 5; i++ {
+		for _, p := range pages {
+			Cleanup(p)
+		}
+	}
+}
+
+func BenchmarkExtractLinks(b *testing.B) {
 	for i := 0; i < 5; i++ {
 		for _, p := range pages {
 			ExtractLinks(p)

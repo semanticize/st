@@ -67,12 +67,12 @@ type Link struct {
 
 var (
 	linkRE     = regexp.MustCompile(`(\w*)\[\[([^]]+)\]\](\w*)`)
-	whitespace = regexp.MustCompile(`\s+`)
+	whitespace = regexp.MustCompile(`[\s_]+`)
 )
 
 func normSpace(s string) string {
-	s = strings.TrimSpace(s)
-	return whitespace.ReplaceAllString(s, " ")
+	s = whitespace.ReplaceAllString(s, " ")
+	return strings.TrimSpace(s)
 }
 
 // Extract all the wikilinks from s. Returns a frequency table.
@@ -93,29 +93,24 @@ func ExtractLinks(s string) map[Link]int {
 		// If the anchor contains a colon, assume it's a file or category link.
 		// XXX Maybe skip matches for `:\s`? Proper solution would parse the
 		// dump to find non-main namespace prefixes.
-		if strings.Contains(target, ":") {
+		if strings.IndexByte(target, ':') != -1 {
 			continue
 		}
 
 		// Remove section links.
-		if hash := strings.IndexByte(target, '#'); hash != -1 {
-			target = target[:hash]
-		}
-		if len(target) == 0 {
+		if hash := strings.IndexByte(target, '#'); hash == 0 {
 			continue
+		} else if hash != -1 {
+			target = target[:hash]
 		}
 
 		// Normalize to the format used in <redirect> elements:
 		// uppercase first character, spaces instead of underscores.
-		target = strings.Replace(target, "_", " ", -1)
 		target = normSpace(target)
 		first, size := utf8.DecodeRuneInString(target)
 		// XXX Upper case or title case? Should look up the difference...
 		if !unicode.IsUpper(first) {
-			first = unicode.ToUpper(first)
-			b := make([]byte, utf8.RuneLen(first))
-			utf8.EncodeRune(b, first)
-			target = string(b) + target[size:]
+			target = string(unicode.ToUpper(first)) + target[size:]
 		}
 
 		anchor = before + anchor + after
