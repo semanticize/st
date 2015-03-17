@@ -1,6 +1,8 @@
 package wikidump
 
 import (
+	"bytes"
+	"io/ioutil"
 	"os"
 	"sync"
 	"testing"
@@ -17,8 +19,7 @@ func TestGetPages(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	pages := make(chan *Page)
-	redirs := make(chan *Redirect)
+	pages, redirs := make(chan *Page), make(chan *Redirect)
 	go GetPages(input, pages, redirs)
 
 	var nredirs, npages int
@@ -40,4 +41,29 @@ func TestGetPages(t *testing.T) {
 
 	assertIntEq(t, npages, 19)
 	assertIntEq(t, nredirs, 1)
+}
+
+func BenchmarkGetPages(b *testing.B) {
+	f, err := os.Open("nlwiki-20140927-sample.xml")
+	if err != nil {
+		panic(err)
+	}
+
+	content, err := ioutil.ReadAll(f)
+	if err != nil {
+		panic(err)
+	}
+	f.Close()
+
+	for i := 0; i < 200; i++ {
+		r := bytes.NewBuffer(content)
+		pages, redirs := make(chan *Page), make(chan *Redirect)
+		go GetPages(r, pages, redirs)
+		go func() {
+			for _ = range pages {
+			}
+		}()
+		for _ = range redirs {
+		}
+	}
 }
