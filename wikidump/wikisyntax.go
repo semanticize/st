@@ -70,13 +70,13 @@ var (
 	whitespace = regexp.MustCompile(`\s+`)
 )
 
+func normSpace(s string) string {
+	s = strings.TrimSpace(s)
+	return whitespace.ReplaceAllString(s, " ")
+}
+
 // Extract all the wikilinks from s. Returns a frequency table.
 func ExtractLinks(s string) map[Link]int {
-	normSpace := func(s string) string {
-		s = strings.TrimSpace(s)
-		return whitespace.ReplaceAllString(s, " ")
-	}
-
 	freq := make(map[Link]int)
 
 	for _, candidate := range linkRE.FindAllStringSubmatch(s, -1) {
@@ -96,8 +96,6 @@ func ExtractLinks(s string) map[Link]int {
 		if strings.Contains(target, ":") {
 			continue
 		}
-
-		anchor = normSpace(anchor)
 
 		// Remove section links.
 		if hash := strings.IndexByte(target, '#'); hash != -1 {

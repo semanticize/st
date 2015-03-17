@@ -1,6 +1,7 @@
 package wikidump
 
 import (
+	"os"
 	"testing"
 )
 
@@ -16,9 +17,12 @@ func TestCleanup(t *testing.T) {
 }
 
 func checkLink(t *testing.T, got Link, target, anchor string) {
-	if got.Anchor != anchor {
+	// Don't care about whitespace in the anchor...
+	if normSpace(got.Anchor) != anchor {
 		t.Errorf("expected anchor %q, got %q", anchor, got.Anchor)
 	}
+
+	// ... but the target should be normalized.
 	if got.Target != target {
 		t.Errorf("expected target %q, got %q", target, got.Target)
 	}
@@ -100,7 +104,6 @@ func TestExtractLinks_multiple(t *testing.T) {
 			"Tera-", "tera", "Becquerel", "becquerels"},
 
 		// Newlines in links.
-		// Shouldn't we keep the newline in the anchor?
 		{`[[Lord's
           prayer]]
           [[Dismissal
@@ -118,6 +121,30 @@ func TestExtractLinks_multiple(t *testing.T) {
 		}
 		for i := range links {
 			checkLink(t, links[i], c[i*2+1], c[i*2+2])
+		}
+	}
+}
+
+func BenchmarkExtractLinks(b *testing.B) {
+	f, err := os.Open("nlwiki-20140927-sample.xml")
+	if err != nil {
+		panic(err)
+	}
+	pc, rc := make(chan *Page), make(chan *Redirect)
+	go GetPages(f, pc, rc)
+	go func() {
+		for _ = range rc {
+		}
+	}()
+
+	pages := make([]string, 0)
+	for p := range pc {
+		pages = append(pages, p.Text)
+	}
+
+	for i := 0; i < 5; i++ {
+		for _, p := range pages {
+			ExtractLinks(p)
 		}
 	}
 }
