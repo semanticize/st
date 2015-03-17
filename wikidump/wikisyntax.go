@@ -71,7 +71,7 @@ var (
 )
 
 func normSpace(s string) string {
-	s = whitespace.ReplaceAllString(s, " ")
+	s = whitespace.ReplaceAllLiteralString(s, " ")
 	return strings.TrimSpace(s)
 }
 
@@ -109,7 +109,7 @@ func ExtractLinks(s string) map[Link]int {
 		target = normSpace(target)
 		first, size := utf8.DecodeRuneInString(target)
 		// XXX Upper case or title case? Should look up the difference...
-		if !unicode.IsUpper(first) {
+		if unicode.IsLower(first) {
 			target = string(unicode.ToUpper(first)) + target[size:]
 		}
 
