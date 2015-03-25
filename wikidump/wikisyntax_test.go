@@ -157,7 +157,7 @@ func getPages() []string {
 var pages = getPages()
 
 func BenchmarkCleanup(b *testing.B) {
-	for i := 0; i < 5; i++ {
+	for i := 0; i < b.N; i++ {
 		for _, p := range pages {
 			Cleanup(p)
 		}
@@ -165,7 +165,7 @@ func BenchmarkCleanup(b *testing.B) {
 }
 
 func BenchmarkExtractLinks(b *testing.B) {
-	for i := 0; i < 5; i++ {
+	for i := 0; i < b.N; i++ {
 		for _, p := range pages {
 			ExtractLinks(p)
 		}

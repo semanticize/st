@@ -87,15 +87,18 @@ var benchdata = strings.Split(
 	" ")
 
 func BenchmarkNGrams(b *testing.B) {
-	for minN := 1; minN < 5; minN++ {
-		for maxN := minN; maxN < 70; maxN++ {
-			NGrams(benchdata, minN, maxN)
-			// Uncomment to benchmark the naïve way of doing this (~2.5× slower).
-			/*
-			   for _, gram := range ngrams(benchdata, maxN) {
-			       hashNGram(gram)
-			   }
-			*/
+	for i := 0; i < b.N; i++ {
+		for minN := 1; minN < 5; minN++ {
+			for maxN := minN; maxN < 7; maxN++ {
+				NGrams(benchdata, minN, maxN)
+				// Uncomment to benchmark the naïve way of doing this
+				// (~2× slower).
+				/*
+				for _, gram := range ngrams(benchdata, minN, maxN) {
+					hashNGram(gram)
+				}
+				*/
+			}
 		}
 	}
 }
