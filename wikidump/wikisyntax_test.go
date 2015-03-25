@@ -3,6 +3,7 @@ package wikidump
 import (
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 	"testing"
 )
@@ -93,25 +94,41 @@ func TestExtractLinks_single(t *testing.T) {
 	}
 }
 
-// Simulate the old API.
+type sortByAnchor []Link
+
+func (s sortByAnchor) Len() int { return len(s) }
+
+func (s sortByAnchor) Less(i, j int) bool {
+	l := ([]Link)(s)
+	return l[i].Anchor < l[j].Anchor
+}
+
+func (s sortByAnchor) Swap(i, j int) {
+	l := ([]Link)(s)
+	l[i], l[j] = l[j], l[i]
+}
+
+// Simulate the old API, except for the ordering.
 func extractLinks(s string) []Link {
-	links := make([]Link, 0)
+	links := make(sortByAnchor, 0)
 	for k, v := range ExtractLinks(s) {
 		for i := 0; i < v; i++ {
 			links = append(links, k)
 		}
 	}
-	return links
+	sort.Sort(links)
+	return ([]Link)(links)
 }
 
 func TestExtractLinks_multiple(t *testing.T) {
+	// Expected links have to be sorted by anchor, UTF8-betically.
 	cases := [][]string{
 		// This construct appears in enwiki for chemical formulae etc.,
 		// but also in nlwiki (and dewiki?) for more general compound nouns.
-		{"[[Lithium|Li]][[Fluorine|F]]", "Lithium", "Li", "Fluorine", "F"},
+		{"[[Lithium|Li]][[Fluorine|F]]", "Fluorine", "F", "Lithium", "Li"},
 
 		{"[[tera-|tera]][[becquerel]]s",
-			"Tera-", "tera", "Becquerel", "becquerels"},
+			"Becquerel", "becquerels", "Tera-", "tera"},
 
 		// Newlines in links.
 		{`[[Lord's
@@ -119,9 +136,9 @@ func TestExtractLinks_multiple(t *testing.T) {
           [[Dismissal
           (cricket)|dismissal]] [[Badass|Chuck
           Norris]]`,
+			"Badass", "Chuck Norris",
 			"Lord's prayer", "Lord's prayer",
-			"Dismissal (cricket)", "dismissal",
-			"Badass", "Chuck Norris"},
+			"Dismissal (cricket)", "dismissal"},
 	}
 
 	for _, c := range cases {
@@ -129,8 +146,8 @@ func TestExtractLinks_multiple(t *testing.T) {
 		if len(links) != (len(c)-1)/2 {
 			t.Errorf("Wrong number of links %d in %q", len(links), c[0])
 		}
-		for i := range links {
-			checkLink(t, links[i], c[i*2+1], c[i*2+2])
+		for i, l := range links {
+			checkLink(t, l, c[i*2+1], c[i*2+2])
 		}
 	}
 }
