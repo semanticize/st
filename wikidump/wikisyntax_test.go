@@ -81,6 +81,11 @@ func TestExtractLinks_single(t *testing.T) {
 		// We're not interested in section links
 		{"[[#Some section|elsewhere]] [[other_article]]",
 			"Other article", "other_article"},
+
+		// Nor file and category links
+		{"[[File:foo.png]] [[foo|see picture]]",
+			"Foo", "see picture"},
+		{"[[Category:Foos of the world]] [[foo]]", "Foo", "foo"},
 	}
 
 	for _, c := range cases {
