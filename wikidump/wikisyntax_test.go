@@ -15,7 +15,9 @@ func assertStringEq(t *testing.T, a, b string) {
 }
 
 func TestCleanup(t *testing.T) {
-	in := "|}Hello,<ref group=\"note\">1</rf> world{{math|bla{{?}}}}!{{bla"
+	in := "Hello, table! {|\n|bla\n|bla\n|}"
+	assertStringEq(t, strings.TrimSpace(Cleanup(in)), "Hello, table!")
+	in = `|}Hello,<ref group="note">1</rf> world{{math|bla{{?}}}}!{{bla`
 	assertStringEq(t, Cleanup(in), "Hello, world!")
 }
 
