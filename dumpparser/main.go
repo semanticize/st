@@ -2,6 +2,7 @@ package main
 
 import (
 	"compress/bzip2"
+	"database/sql"
 	"flag"
 	"fmt"
 	"github.com/semanticize/dumpparser/hash"
@@ -132,28 +133,8 @@ func main() {
 	wg.Add(1)
 	done := make(chan struct{})
 	go func() {
-		ins := storage.MustPrepare(db,
-			`insert or ignore into linkstats values (?,?,0)`)
-		update := storage.MustPrepare(db,
-			`update linkstats set count = count + ? where ngramhash = ? and target = ?`)
 
-		for linkFreq := range links {
-			for link, freq := range linkFreq {
-				tokens := nlp.Tokenize(link.Anchor)
-				n := min(maxN, len(tokens))
-				hashes := hash.NGrams(tokens, n, n)
-				count := float64(freq)
-				if len(hashes) > 1 {
-					count = 1 / float64(len(hashes))
-				}
-				for _, h := range hashes {
-					_, err = ins.Exec(h, link.Target)
-					check()
-					_, err = update.Exec(count, h, link.Target)
-					check()
-				}
-			}
-		}
+		storeLinks(db, links, maxN)
 		wg.Done()
 	}()
 
@@ -170,6 +151,45 @@ func main() {
 	check()
 	db.Close()
 	check()
+}
+
+func storeLinks(db *sql.DB, links <-chan map[wikidump.Link]int,
+	maxN int) (err error) {
+
+	ins, err := db.Prepare(
+		`insert or ignore into linkstats values (?,?,0)`)
+	if err != nil {
+		return
+	}
+	update, err := db.Prepare(
+		`update linkstats set count = count + ?
+			where ngramhash = ? and target = ?`)
+	if err != nil {
+		return
+	}
+
+	for linkFreq := range links {
+		for link, freq := range linkFreq {
+			tokens := nlp.Tokenize(link.Anchor)
+			n := min(maxN, len(tokens))
+			hashes := hash.NGrams(tokens, n, n)
+			count := float64(freq)
+			if len(hashes) > 1 {
+				count = 1 / float64(len(hashes))
+			}
+			for _, h := range hashes {
+				_, err = ins.Exec(h, link.Target)
+				if err != nil {
+					return
+				}
+				_, err = update.Exec(count, h, link.Target)
+				if err != nil {
+					return
+				}
+			}
+		}
+	}
+	return
 }
 
 func min(a, b int) int {
