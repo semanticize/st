@@ -15,19 +15,23 @@ type Sketch struct {
 	rows [][]uint32
 }
 
+func makerows(nrows, ncols int) (rows [][]uint32) {
+	buckets := make([]uint32, nrows*ncols)
+	rows = make([][]uint32, nrows)
+
+	for i := range rows {
+		rows[i] = buckets[i*ncols : (i+1)*ncols]
+	}
+	return
+}
+
 func New(nrows, ncols int) *Sketch {
 	if nrows < 1 || ncols < 1 {
 		panic("need at least one seed and one column")
 	} else if nrows > len(pi) {
 		panic("I don't know more than 32768 bits of pi.")
 	}
-
-	buckets := make([]uint32, nrows*ncols)
-	rows := make([][]uint32, nrows)
-
-	for i := range rows {
-		rows[i] = buckets[i*ncols : (i+1)*ncols]
-	}
+	rows := makerows(nrows, ncols)
 	return &Sketch{rows}
 }
 
@@ -62,6 +66,16 @@ func (sketch *Sketch) Add1(i uint32) {
 			row[k] = count + 1
 		}
 	}
+}
+
+// Returns a copy of the counts in the sketch.
+func (sketch *Sketch) Counts() (rows [][]uint32) {
+	nrows, ncols := len(sketch.rows), int(sketch.ncols())
+	rows = makerows(nrows, ncols)
+	for i, origrow := range sketch.rows {
+		copy(rows[i], origrow)
+	}
+	return
 }
 
 // Point query for observations of type i. Returns an approximate count.

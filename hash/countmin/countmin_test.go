@@ -31,6 +31,23 @@ func TestCountMin(t *testing.T) {
 	}
 }
 
+func TestCounts(t *testing.T) {
+	nrows := 14
+	a := New(nrows, 51)
+	a.Add1(2613621)
+	rows := a.Counts()
+
+	var total int
+	for _, row := range rows {
+		for _, c := range row {
+			total += int(c)
+		}
+	}
+	if total != nrows {
+		t.Errorf("expected %d, got %d", nrows, total)
+	}
+}
+
 func TestCountMinSum(t *testing.T) {
 	a := New(25, 126)
 	b := New(25, 126)
