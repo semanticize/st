@@ -1,3 +1,9 @@
+|Travis|_
+
+.. |Travis| image:: https://api.travis-ci.org/semanticizest/dumpparser.png?branch=master
+.. _Travis: https://travis-ci.org/semanticizest/dumpparser
+
+
 Wikipedia dump parser for semanticizest
 =======================================
 
