@@ -20,6 +20,8 @@ func TestRedirects(t *testing.T) {
 
 	err = ProcessRedirects(db, redirects)
 	check()
+	err = Finalize(db)
+	check()
 
 	rows, err := db.Query(`select * from linkstats`)
 	if !rows.Next() {
