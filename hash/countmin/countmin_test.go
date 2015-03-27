@@ -31,6 +31,28 @@ func TestCountMin(t *testing.T) {
 	}
 }
 
+// Test inserting more than 2**32 occurrences of an event.
+func TestWraparound(t *testing.T) {
+	a := New(10, 4)
+	check := func(expected uint32) {
+		if got := a.Get(1); got != expected {
+			t.Errorf("expected %d, got %d", expected, got)
+		}
+	}
+
+	a.Add(1, 3e9)
+	check(3e9)
+	a.Add(1, 3e9)
+	check(math.MaxUint32)
+	a.Add1(1)
+	check(math.MaxUint32)
+
+	b := New(10, 4)
+	b.Add(1, 4e9)
+	a.Sum(b)
+	check(math.MaxUint32)
+}
+
 func TestCounts(t *testing.T) {
 	nrows := 14
 	a := New(nrows, 51)
