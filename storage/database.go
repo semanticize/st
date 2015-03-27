@@ -4,6 +4,7 @@ package storage
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/semanticize/dumpparser/hash/countmin"
 	"os"
 )
 
@@ -122,4 +123,22 @@ func ProcessRedirects(db *sql.DB, redirs map[string]string) error {
 		}
 	}
 	return nil
+}
+
+// Store count-min sketch into table ngramfreq.
+func StoreCM(db *sql.DB, sketch *countmin.Sketch) (err error) {
+	insCM, err := db.Prepare(`insert into ngramfreq values (?, ?, ?)`)
+	if err != nil {
+		return
+	}
+
+	for i, row := range sketch.Counts() {
+		for j, v := range row {
+			_, err = insCM.Exec(i, j, int(v))
+			if err != nil {
+				return
+			}
+		}
+	}
+	return
 }

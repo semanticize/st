@@ -146,10 +146,13 @@ func main() {
 	log.Printf("Processing %d redirects", len(redirmap))
 	storage.ProcessRedirects(db, redirmap)
 
+	err = storage.StoreCM(db, counters[0])
+	check()
+
 	log.Println("Finalizing database")
 	err = storage.Finalize(db)
 	check()
-	db.Close()
+	err = db.Close()
 	check()
 }
 
