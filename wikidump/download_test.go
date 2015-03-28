@@ -32,11 +32,11 @@ func (t mockTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 	content := []byte("all went well")
 	resp := http.Response{
-		Status: "200 OK",
-		StatusCode: 200,
-		Body: ioutil.NopCloser(bytes.NewBuffer(content)),
-		ContentLength:  int64(len(content)),
-		Request: req,
+		Status:        "200 OK",
+		StatusCode:    200,
+		Body:          ioutil.NopCloser(bytes.NewBuffer(content)),
+		ContentLength: int64(len(content)),
+		Request:       req,
 	}
 	return &resp, nil
 }
