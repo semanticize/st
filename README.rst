@@ -30,7 +30,7 @@ Set up a Go workspace, if you haven't already. For example::
 
 Fetch and compile the dump parser::
 
-    go get github.com/semanticize/dumpparser/dumpparser
-    go install github.com/semanticize/dumpparser/dumpparser
+    go get github.com/semanticize/dumpparser
+    go install github.com/semanticize/dumpparser
 
 You now have a working parser at ``${GOPATH}/bin/dumpparser``.
