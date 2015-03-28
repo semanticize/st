@@ -41,6 +41,12 @@ func nullLogger(string, ...interface{}) {
 //
 // Logs its progress on the standard log if logProgress is true.
 func Download(wikiname string, logProgress bool) (filepath string, err error) {
+	return download(wikiname, ".", logProgress, http.DefaultClient)
+}
+
+func download(wikiname, directory string, logProgress bool,
+	client *http.Client) (filepath string, err error) {
+
 	logprint := nullLogger
 	if logProgress {
 		logprint = log.Printf
@@ -49,13 +55,13 @@ func Download(wikiname string, logProgress bool) (filepath string, err error) {
 	urlstr := fmt.Sprintf(
 		"https://dumps.wikimedia.org/%s/latest/%s-latest-pages-articles.xml.bz2",
 		wikiname, wikiname)
-	resp, err := http.Get(urlstr)
-	defer resp.Body.Close()
+	resp, err := client.Get(urlstr)
 	if err != nil {
 		return
-	} else if resp.StatusCode != http.StatusOK {
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
 		err = fmt.Errorf("HTTP error %d for %s", resp.StatusCode, urlstr)
-		return
 	}
 
 	u, err := url.Parse(urlstr)
@@ -66,10 +72,10 @@ func Download(wikiname string, logProgress bool) (filepath string, err error) {
 
 	var out io.WriteCloser
 	out, err = os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0666)
-	defer out.Close()
 	if err != nil {
 		return
 	}
+	defer out.Close()
 
 	logprint("downloading from %s to %s", urlstr, filepath)
 	if logProgress && resp.ContentLength >= 0 {
