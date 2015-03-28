@@ -1,7 +1,6 @@
 package wikidump
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -55,8 +54,8 @@ func Download(wikiname string, logProgress bool) (filepath string, err error) {
 	if err != nil {
 		return
 	} else if resp.StatusCode != http.StatusOK {
-		msg := fmt.Sprintf("HTTP error %d for %s", resp.StatusCode, urlstr)
-		return "", errors.New(msg)
+		err = fmt.Errorf("HTTP error %d for %s", resp.StatusCode, urlstr)
+		return
 	}
 
 	u, err := url.Parse(urlstr)

@@ -1,7 +1,6 @@
 package countmin
 
 import (
-	"errors"
 	"fmt"
 	"math"
 )
@@ -95,14 +94,12 @@ func (sketch *Sketch) Get(i uint32) (count uint32) {
 // Returns an error iff the two sketches are not of the same shape.
 func (sketch *Sketch) Sum(other *Sketch) error {
 	if len(other.rows) != len(sketch.rows) {
-		msg := fmt.Sprintf("number of rows %d doesn't match %d",
+		return fmt.Errorf("number of rows %d doesn't match %d",
 			len(other.rows), len(sketch.rows))
-		return errors.New(msg)
 	}
 	if other.ncols() != sketch.ncols() {
-		msg := fmt.Sprintf("number of columns %d doesn't match %d",
+		return fmt.Errorf("number of columns %d doesn't match %d",
 			other.ncols(), sketch.ncols())
-		return errors.New(msg)
 	}
 
 	for i, row := range other.rows {
