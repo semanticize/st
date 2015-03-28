@@ -61,6 +61,14 @@ func TestDownload(t *testing.T) {
 		}
 	}
 
+	content, err := ioutil.ReadFile(path)
+	if err != nil {
+		t.Error(err)
+	}
+	if string(content) != "all went well" {
+		t.Errorf("expected %q, got %q", "all went well", string(content))
+	}
+
 	err = os.Remove(path)
 	if err != nil {
 		panic(err)
