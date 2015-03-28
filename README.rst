@@ -1,7 +1,7 @@
 |Travis|_
 
-.. |Travis| image:: https://api.travis-ci.org/semanticizest/dumpparser.png?branch=master
-.. _Travis: https://travis-ci.org/semanticizest/dumpparser
+.. |Travis| image:: https://api.travis-ci.org/semanticize/dumpparser.png?branch=master
+.. _Travis: https://travis-ci.org/semanticize/dumpparser
 
 
 Wikipedia dump parser for semanticizest
