@@ -31,6 +31,17 @@ func TestCountMin(t *testing.T) {
 	}
 }
 
+func TestNewFromProb(t *testing.T) {
+	ε, δ := 0.001, .00001
+	cm := NewFromProb(ε, δ)
+	if len(cm.Counts()) != 12 {
+		t.Errorf("expected %d rows, got %d", 12, cm.Counts)
+	}
+	if len(cm.Counts()[0]) != 2719 {
+		t.Errorf("expected %d rows, got %d", 2719, cm.Counts)
+	}
+}
+
 // Test inserting more than 2**32 occurrences of an event.
 func TestWraparound(t *testing.T) {
 	a := New(10, 4)

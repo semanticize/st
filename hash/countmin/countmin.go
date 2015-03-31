@@ -9,7 +9,7 @@ import (
 //
 // The user is responsible for supplying hash values of observations.
 // Multiple hash functions are simulated by XOR'ing the given hash values
-// with built-in seeds (the binary expansion of pi).
+// with built-in seeds (the binary expansion of π).
 type Sketch struct {
 	rows [][]uint32
 }
@@ -27,11 +27,19 @@ func makerows(nrows, ncols int) (rows [][]uint32) {
 func New(nrows, ncols int) *Sketch {
 	if nrows < 1 || ncols < 1 {
 		panic("need at least one seed and one column")
-	} else if nrows > len(pi) {
-		panic("I don't know more than 32768 bits of pi.")
+	} else if nrows > len(π) {
+		panic("I don't know more than 32768 bits of π.")
 	}
 	rows := makerows(nrows, ncols)
 	return &Sketch{rows}
+}
+
+// Make a count-min sketch that answers point queries within a factor ε off
+// from the true count with probability 1−δ.
+func NewFromProb(ε, δ float64) *Sketch {
+	ncols := int(math.Ceil(math.E / ε))
+	nrows := int(math.Ceil(math.Log(1 / δ)))
+	return New(nrows, ncols)
 }
 
 func (sketch *Sketch) ncols() uint32 {
@@ -42,7 +50,7 @@ func (sketch *Sketch) ncols() uint32 {
 func (sketch *Sketch) Add(i, c uint32) {
 	ncols := sketch.ncols()
 	for j, row := range sketch.rows {
-		k := i ^ pi[j]
+		k := i ^ π[j]
 		k %= ncols
 		count := row[k]
 		if count+c < count { // wraparound
@@ -58,7 +66,7 @@ func (sketch *Sketch) Add(i, c uint32) {
 func (sketch *Sketch) Add1(i uint32) {
 	ncols := sketch.ncols()
 	for j, row := range sketch.rows {
-		k := i ^ pi[j]
+		k := i ^ π[j]
 		k %= ncols
 		count := row[k]
 		if count < math.MaxUint32 {
@@ -83,7 +91,7 @@ func (sketch *Sketch) Get(i uint32) (count uint32) {
 
 	count = math.MaxUint32
 	for j, row := range sketch.rows {
-		k := i ^ pi[j]
+		k := i ^ π[j]
 		count = min32(count, row[k%ncols])
 	}
 	return count
@@ -123,8 +131,8 @@ func min32(a, b uint32) uint32 {
 	return b
 }
 
-// The first 2**15 bits of pi, from http://www.befria.nu/elias/pi/binpi.html.
-var pi = [1024]uint32{
+// The first 2**15 bits of π, from http://www.befria.nu/elias/pi/binpi.html.
+var π = [1024]uint32{
 	0x243F6A88, 0x85A308D3, 0x13198A2E, 0x03707344, 0xA4093822, 0x299F31D0,
 	0x082EFA98, 0xEC4E6C89, 0x452821E6, 0x38D01377, 0xBE5466CF, 0x34E90C6C,
 	0xC0AC29B7, 0xC97C50DD, 0x3F84D5B5, 0xB5470917, 0x9216D5D9, 0x8979FB1B,
