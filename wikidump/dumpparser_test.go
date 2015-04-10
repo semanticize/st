@@ -44,20 +44,22 @@ func TestGetPages(t *testing.T) {
 }
 
 func BenchmarkGetPages(b *testing.B) {
+	b.StopTimer()
 	f, err := os.Open("nlwiki-20140927-sample.xml")
 	if err != nil {
 		panic(err)
 	}
-
 	content, err := ioutil.ReadAll(f)
 	if err != nil {
 		panic(err)
 	}
 	f.Close()
 
-	for i := 0; i < 200; i++ {
+	for i := 0; i < b.N; i++ {
 		r := bytes.NewBuffer(content)
 		pages, redirs := make(chan *Page), make(chan *Redirect)
+
+		b.StartTimer()
 		go GetPages(r, pages, redirs)
 		go func() {
 			for _ = range pages {
@@ -65,5 +67,6 @@ func BenchmarkGetPages(b *testing.B) {
 		}()
 		for _ = range redirs {
 		}
+		b.StopTimer()
 	}
 }
