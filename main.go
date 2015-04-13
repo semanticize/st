@@ -18,6 +18,14 @@ import (
 	"sync"
 )
 
+func init() {
+	if os.Getenv("GOMAXPROCS") == "" {
+		// Four is about the number of cores that we can put to useful work
+		// when the disk is fast.
+		runtime.GOMAXPROCS(min(runtime.NumCPU(), 4))
+	}
+}
+
 func open(path string) (r io.ReadCloser, err error) {
 	r, err = os.Open(path)
 	if err == nil && filepath.Ext(path) == ".bz2" {
