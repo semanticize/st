@@ -133,8 +133,9 @@ func main() {
 	wg.Add(1)
 	done := make(chan struct{})
 	go func() {
-
-		storeLinks(db, links, maxN)
+		if slerr := storeLinks(db, links, maxN); slerr != nil {
+			panic(slerr)
+		}
 		wg.Done()
 	}()
 
