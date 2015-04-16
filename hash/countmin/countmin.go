@@ -38,6 +38,40 @@ func New(nrows, ncols int) (*Sketch, error) {
 	return &Sketch{rows}, nil
 }
 
+// Make a count-min sketch with exactly the given rows. The contents of rows
+// is copied into the sketch.
+//
+// Errors if the rows are not all of the same length, if any dimension is
+// zero, or any element is negative.
+func NewFromCounts(rows [][]uint32) (sketch *Sketch, err error) {
+	if len(rows) == 0 {
+		err = errors.New("refusing to create a sketch with zero rows")
+		return
+	}
+	ncols := len(rows[0])
+	if ncols == 0 {
+		err = errors.New("refusing to create a sketch with zero columns")
+		return
+	}
+	for i := 1; i < len(rows); i++ {
+		if len(rows[i]) != ncols {
+			err = errors.New("rows must be of equal length")
+			return
+		}
+	}
+	return newFromCounts(rows), nil
+}
+
+func newFromCounts(rows [][]uint32) *Sketch {
+	cmrows := makerows(len(rows), len(rows[0]))
+	for i, row := range cmrows {
+		for j := range row {
+			row[j] = rows[i][j]
+		}
+	}
+	return &Sketch{cmrows}
+}
+
 // Make a count-min sketch that answers point queries within a factor ε off
 // from the true count with probability 1−δ.
 func NewFromProb(ε, δ float64) (sketch *Sketch, err error) {
@@ -47,8 +81,16 @@ func NewFromProb(ε, δ float64) (sketch *Sketch, err error) {
 	return
 }
 
+func (sketch *Sketch) NCols() int {
+	return len(sketch.rows[0])
+}
+
 func (sketch *Sketch) ncols() uint32 {
-	return uint32(len(sketch.rows[0]))
+	return uint32(sketch.NCols())
+}
+
+func (sketch *Sketch) NRows() int {
+	return len(sketch.rows)
 }
 
 // Add c observations of type i.
@@ -80,6 +122,11 @@ func (sketch *Sketch) Add1(i uint32) {
 	}
 }
 
+// Returns a copy of the sketch.
+func (sketch *Sketch) Copy() *Sketch {
+	return newFromCounts(sketch.rows)
+}
+
 // Returns a copy of the counts in the sketch.
 func (sketch *Sketch) Counts() (rows [][]uint32) {
 	nrows, ncols := len(sketch.rows), int(sketch.ncols())
@@ -92,7 +139,7 @@ func (sketch *Sketch) Counts() (rows [][]uint32) {
 
 // Point query for observations of type i. Returns an approximate count.
 func (sketch *Sketch) Get(i uint32) (count uint32) {
-	ncols := uint32(len(sketch.rows[0]))
+	ncols := sketch.ncols()
 
 	count = math.MaxUint32
 	for j, row := range sketch.rows {

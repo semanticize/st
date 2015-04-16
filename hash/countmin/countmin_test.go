@@ -31,6 +31,36 @@ func TestCountMin(t *testing.T) {
 	}
 }
 
+func TestNewFromCounts(t *testing.T) {
+	var rows [][]uint32
+	checkerr := func() {
+		cm, err := NewFromCounts(rows)
+		if err == nil {
+			t.Error("expected an error, got nil")
+		} else if cm != nil {
+			t.Error("non-nil *Sketch despite error")
+		}
+	}
+
+	rows = make([][]uint32, 3)
+	checkerr()
+
+	rows[0] = make([]uint32, 4)
+	rows[1] = make([]uint32, 4)
+	checkerr()
+
+	rows[2] = make([]uint32, 3)
+	checkerr()
+
+	rows[2] = make([]uint32, 4)
+	cm, err := NewFromCounts(rows)
+	if err != nil {
+		t.Fatalf("unexpected error: %q", err)
+	} else if cm == nil {
+		t.Fatal("got nil *Sketch but no error")
+	}
+}
+
 func TestNewFromProb(t *testing.T) {
 	ε, δ := 0.001, .00001
 	cm, _ := NewFromProb(ε, δ)
@@ -39,6 +69,22 @@ func TestNewFromProb(t *testing.T) {
 	}
 	if len(cm.Counts()[0]) != 2719 {
 		t.Errorf("expected %d rows, got %d", 2719, cm.Counts)
+	}
+}
+
+func TestCopy(t *testing.T) {
+	cm, _ := New(5, 8)
+	for _, x := range []uint32{216, 121, 7, 1, 834, 8015, 15, 1266, 162, 16} {
+		cm.Add1(x)
+	}
+	clone := cm.Copy()
+	for i := 0; i < cm.NRows(); i++ {
+		for j := 0; j < cm.NCols(); j++ {
+			if old, cpy := cm.rows[i][j], clone.rows[i][j]; cpy != old {
+				t.Errorf("Copy() not equal to original at %d, %d: %d != %d",
+					i, j, cpy, old)
+			}
+		}
 	}
 }
 
