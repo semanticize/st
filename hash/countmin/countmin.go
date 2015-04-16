@@ -1,6 +1,7 @@
 package countmin
 
 import (
+	"errors"
 	"fmt"
 	"math"
 )
@@ -24,22 +25,26 @@ func makerows(nrows, ncols int) (rows [][]uint32) {
 	return
 }
 
-func New(nrows, ncols int) *Sketch {
+// Make a new count-min sketch with the given number of rows and columns.
+//
+// Returns an error if nrows<1, ncols<1, or nrows exceeds MaxRows.
+func New(nrows, ncols int) (*Sketch, error) {
 	if nrows < 1 || ncols < 1 {
-		panic("need at least one seed and one column")
+		return nil, errors.New("need at least one row and one column")
 	} else if nrows > len(π) {
-		panic("I don't know more than 32768 bits of π.")
+		return nil, errors.New("I don't know more than 32768 bits of π.")
 	}
 	rows := makerows(nrows, ncols)
-	return &Sketch{rows}
+	return &Sketch{rows}, nil
 }
 
 // Make a count-min sketch that answers point queries within a factor ε off
 // from the true count with probability 1−δ.
-func NewFromProb(ε, δ float64) *Sketch {
+func NewFromProb(ε, δ float64) (sketch *Sketch, err error) {
 	ncols := int(math.Ceil(math.E / ε))
 	nrows := int(math.Ceil(math.Log(1 / δ)))
-	return New(nrows, ncols)
+	sketch, err = New(nrows, ncols)
+	return
 }
 
 func (sketch *Sketch) ncols() uint32 {
@@ -130,6 +135,8 @@ func min32(a, b uint32) uint32 {
 	}
 	return b
 }
+
+const MaxRows = len(π)
 
 // The first 2**15 bits of π, from http://www.befria.nu/elias/pi/binpi.html.
 var π = [1024]uint32{

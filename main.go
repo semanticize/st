@@ -108,7 +108,8 @@ func main() {
 	worker.Add(nworkers)
 	log.Printf("%d workers", nworkers)
 	for i := 0; i < nworkers; i++ {
-		counters[i] = countmin.New(int(*nrows), int(*ncols))
+		counters[i], err = countmin.New(int(*nrows), int(*ncols))
+		check()
 
 		go func(ngramcount *countmin.Sketch) {
 			for a := range articles {

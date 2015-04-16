@@ -7,8 +7,8 @@ import (
 )
 
 func TestCountMin(t *testing.T) {
-	sketch := New(210, 1300)
-	sketch1 := New(210, 1300)
+	sketch, _ := New(210, 1300)
+	sketch1, _ := New(210, 1300)
 	freq := make(map[uint32]uint32)
 
 	rng := rand.New(rand.NewSource(42))
@@ -33,7 +33,7 @@ func TestCountMin(t *testing.T) {
 
 func TestNewFromProb(t *testing.T) {
 	ε, δ := 0.001, .00001
-	cm := NewFromProb(ε, δ)
+	cm, _ := NewFromProb(ε, δ)
 	if len(cm.Counts()) != 12 {
 		t.Errorf("expected %d rows, got %d", 12, cm.Counts)
 	}
@@ -44,7 +44,7 @@ func TestNewFromProb(t *testing.T) {
 
 // Test inserting more than 2**32 occurrences of an event.
 func TestWraparound(t *testing.T) {
-	a := New(10, 4)
+	a, _ := New(10, 4)
 	check := func(expected uint32) {
 		if got := a.Get(1); got != expected {
 			t.Errorf("expected %d, got %d", expected, got)
@@ -58,7 +58,7 @@ func TestWraparound(t *testing.T) {
 	a.Add1(1)
 	check(math.MaxUint32)
 
-	b := New(10, 4)
+	b, _ := New(10, 4)
 	b.Add(1, 4e9)
 	a.Sum(b)
 	check(math.MaxUint32)
@@ -66,7 +66,7 @@ func TestWraparound(t *testing.T) {
 
 func TestCounts(t *testing.T) {
 	nrows := 14
-	a := New(nrows, 51)
+	a, _ := New(nrows, 51)
 	a.Add1(2613621)
 	rows := a.Counts()
 
@@ -82,9 +82,9 @@ func TestCounts(t *testing.T) {
 }
 
 func TestCountMinSum(t *testing.T) {
-	a := New(25, 126)
-	b := New(25, 126)
-	sum := New(25, 126)
+	a, _ := New(25, 126)
+	b, _ := New(25, 126)
+	sum, _ := New(25, 126)
 	rng := rand.New(rand.NewSource(42))
 
 	for i := 0; i < 2000; i++ {
@@ -103,7 +103,7 @@ func TestCountMinSum(t *testing.T) {
 }
 
 func BenchmarkCountMinAdd(b *testing.B) {
-	sketch := New(256, 256)
+	sketch, _ := New(256, 256)
 
 	rng := rand.New(rand.NewSource(42))
 	for i := 0; i < b.N; i++ {

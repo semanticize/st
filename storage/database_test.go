@@ -59,7 +59,7 @@ func TestStoreCM(t *testing.T) {
 		}
 	}
 
-	cm := countmin.New(5, 16)
+	cm, _ := countmin.New(5, 16)
 	db, err := MakeDB(":memory:", true)
 	check()
 
@@ -71,7 +71,8 @@ func TestStoreCM(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	got := countmin.New(5, 16).Counts()
+	newcm, _ := countmin.New(5, 16)
+	got := newcm.Counts()
 	rows, err := db.Query(`select * from ngramfreq`)
 	check()
 	for rows.Next() {
