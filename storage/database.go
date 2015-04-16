@@ -132,6 +132,34 @@ func ProcessRedirects(db *sql.DB, redirs map[string]string) error {
 	return nil
 }
 
+// Load count-min sketch from table ngramfreq.
+func LoadCM(db *sql.DB) (sketch *countmin.Sketch, err error) {
+	var nrows, ncols int
+	shapequery := "select max(row) + 1, max(col) + 1 from ngramfreq"
+	err = db.QueryRow(shapequery).Scan(&nrows, &ncols)
+	if err != nil {
+		return
+	}
+
+	cmrows := make([][]uint32, nrows)
+	for i := 0; i < nrows; i++ {
+		cmrows[i] = make([]uint32, ncols)
+	}
+	dbrows, err := db.Query("select row, col, count from ngramfreq")
+	if err != nil {
+		return
+	}
+	for dbrows.Next() {
+		var i, j, count uint32
+		if err = dbrows.Scan(&i, &j, &count); err != nil {
+			return
+		}
+		cmrows[i][j] = count
+	}
+	sketch, err = countmin.NewFromCounts(cmrows)
+	return
+}
+
 // Store count-min sketch into table ngramfreq.
 func StoreCM(db *sql.DB, sketch *countmin.Sketch) (err error) {
 	insCM, err := db.Prepare(`insert into ngramfreq values (?, ?, ?)`)
