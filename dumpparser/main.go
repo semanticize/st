@@ -9,7 +9,7 @@ import (
 	"github.com/semanticize/dumpparser/hash/countmin"
 	"github.com/semanticize/dumpparser/nlp"
 	"github.com/semanticize/dumpparser/storage"
-	"github.com/semanticize/dumpparser/wikidump"
+	"github.com/semanticize/dumpparser/dumpparser/wikidump"
 	"io"
 	"log"
 	"os"
