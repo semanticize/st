@@ -31,7 +31,7 @@ func makerows(nrows, ncols int) (rows [][]uint32) {
 func New(nrows, ncols int) (*Sketch, error) {
 	if nrows < 1 || ncols < 1 {
 		return nil, errors.New("need at least one row and one column")
-	} else if nrows > len(π) {
+	} else if nrows > MaxRows {
 		return nil, errors.New("I don't know more than 32768 bits of π.")
 	}
 	rows := makerows(nrows, ncols)

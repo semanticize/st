@@ -6,6 +6,14 @@ import (
 	"testing"
 )
 
+func expectError(t *testing.T, sketch *Sketch, err error) {
+	if err == nil {
+		t.Error("expected an error, got nil")
+	} else if sketch != nil {
+		t.Errorf("non-nil *Sketch despite error %q", err)
+	}
+}
+
 func TestCountMin(t *testing.T) {
 	sketch, _ := New(210, 1300)
 	sketch1, _ := New(210, 1300)
@@ -29,18 +37,30 @@ func TestCountMin(t *testing.T) {
 				sketch.Get(k), sketch1.Get(k))
 		}
 	}
+
+	var err error
+	check := func() {
+		expectError(t, sketch, err)
+	}
+
+	sketch, err = New(0, 1)
+	check()
+
+	sketch, err = New(1, -1)
+	check()
+
+	sketch, err = New(MaxRows+1, 10)
+	check()
 }
 
 func TestNewFromCounts(t *testing.T) {
 	var rows [][]uint32
 	checkerr := func() {
 		cm, err := NewFromCounts(rows)
-		if err == nil {
-			t.Error("expected an error, got nil")
-		} else if cm != nil {
-			t.Error("non-nil *Sketch despite error")
-		}
+		expectError(t, cm, err)
 	}
+
+	checkerr()
 
 	rows = make([][]uint32, 3)
 	checkerr()
@@ -145,6 +165,17 @@ func TestCountMinSum(t *testing.T) {
 		if a.Get(i) != sum.Get(i) {
 			t.Errorf("expected %d, got %d", sum.Get(i), a.Get(i))
 		}
+	}
+
+	b, _ = New(25, 127)
+	err := a.Sum(b)
+	if err == nil {
+		t.Error("expected an error, got nil")
+	}
+	b, _ = New(26, 126)
+	err = a.Sum(b)
+	if err == nil {
+		t.Error("expected an error, got nil")
 	}
 }
 
