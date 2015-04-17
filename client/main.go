@@ -5,26 +5,27 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/semanticize/dumpparser/hash"
+	"github.com/semanticize/dumpparser/hash/countmin"
 	"github.com/semanticize/dumpparser/nlp"
-	_ "github.com/semanticize/dumpparser/storage"
+	"github.com/semanticize/dumpparser/storage"
 	"log"
 	"os"
 	"regexp"
 )
 
-const maxNGram = 7  // TODO read from database
-
 type semanticizer struct {
-	db *sql.DB
+	db         *sql.DB
+	ngramcount *countmin.Sketch
+	maxNGram   uint
 }
 
 type candidate struct {
-	target     string
-	commonness float64
+	target                string
+	commonness, senseprob float64
 }
 
-// Commonness (prior probability of being a link) for a hash value.
-func (sem semanticizer) commonness(h uint32) (cands []candidate, err error) {
+// Get candidates for hash value h from the database.
+func (sem semanticizer) candidates(h uint32) (cands []candidate, err error) {
 	q := `select target, count from linkstats where ngramhash = ?`
 	rows, err := sem.db.Query(q, h)
 	if err != nil {
@@ -36,7 +37,8 @@ func (sem semanticizer) commonness(h uint32) (cands []candidate, err error) {
 	for rows.Next() {
 		rows.Scan(&target, &count)
 		total += count
-		cands = append(cands, candidate{target, count})
+		// Initially use the commonness field to store the count.
+		cands = append(cands, candidate{target, count, 0})
 	}
 	rows.Close()
 	err = rows.Err()
@@ -45,7 +47,9 @@ func (sem semanticizer) commonness(h uint32) (cands []candidate, err error) {
 	}
 
 	for i := range cands {
-		cands[i].commonness /= total
+		c := &cands[i]
+		c.senseprob = c.commonness / float64(sem.ngramcount.Get(h))
+		c.commonness /= total
 	}
 	return
 }
@@ -68,8 +72,8 @@ func splitPara(data []byte, atEOF bool) (advance int, token []byte, err error) {
 
 func (sem semanticizer) allCandidates(s string) (cands []candidate, err error) {
 	tokens := nlp.Tokenize(s)
-	for _, h := range hash.NGrams(tokens, 1, maxNGram) {
-		add, err := sem.commonness(h)
+	for _, h := range hash.NGrams(tokens, 1, int(sem.maxNGram)) {
+		add, err := sem.candidates(h)
 		if err != nil {
 			break
 		}
@@ -79,7 +83,7 @@ func (sem semanticizer) allCandidates(s string) (cands []candidate, err error) {
 }
 
 func main() {
-	log.SetPrefix("semanticizest")
+	log.SetPrefix("semanticizest ")
 
 	var err error
 	check := func() {
@@ -88,13 +92,12 @@ func main() {
 		}
 	}
 
-	db, err := sql.Open("sqlite3", os.Args[1])
+	db, maxNGram, err := storage.LoadModel(os.Args[1])
+	check()
+	ngramcount, err := storage.LoadCM(db)
 	check()
 
-	sem := semanticizer{db}
-
-	//ngramcount, err := storage.LoadCM(db)
-	//check()
+	sem := semanticizer{db, ngramcount, maxNGram}
 
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Split(splitPara)
@@ -103,7 +106,7 @@ func main() {
 		candidates, err = sem.allCandidates(scanner.Text())
 		check()
 		for _, c := range candidates {
-			fmt.Printf("%f %q\n", c.commonness, c.target)
+			fmt.Printf("%f %f %q\n", c.commonness, c.senseprob, c.target)
 		}
 	}
 	err = scanner.Err()
