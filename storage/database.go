@@ -3,6 +3,7 @@ package storage
 
 import (
 	"database/sql"
+	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/semanticize/dumpparser/hash/countmin"
 	"log"
@@ -70,7 +71,7 @@ func MakeDB(path string, overwrite bool, maxNGram uint) (db *sql.DB, err error) 
 const DefaultMaxNGram = 7
 
 // XXX Load and return the n-gram count-min sketch as well?
-func LoadModel(path string) (db *sql.DB, maxNGram int, err error) {
+func LoadModel(path string) (db *sql.DB, maxNGram uint, err error) {
 	db, err = sql.Open("sqlite3", path)
 	defer func() {
 		if err != nil && db != nil {
@@ -88,7 +89,7 @@ func LoadModel(path string) (db *sql.DB, maxNGram int, err error) {
 	return
 }
 
-func loadModel(db *sql.DB) (maxNGram int, err error) {
+func loadModel(db *sql.DB) (maxNGram uint, err error) {
 	var maxNGramStr string
 	rows := db.QueryRow(`select value from parameters where key = "maxngram"`)
 	err = rows.Scan(&maxNGramStr)
@@ -102,7 +103,11 @@ func loadModel(db *sql.DB) (maxNGram int, err error) {
 	} else {
 		var max64 int64
 		max64, err = strconv.ParseInt(maxNGramStr, 10, 0)
-		maxNGram = int(max64)
+		if max64 <= 0 {
+			err = fmt.Errorf("invalid value maxngram=%d, must be >0")
+		} else {
+			maxNGram = uint(max64)
+		}
 	}
 	return
 }
