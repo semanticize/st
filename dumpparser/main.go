@@ -41,7 +41,8 @@ var download = flag.String("download", "",
 	"download Wikipedia dump (e.g., 'enwiki')")
 var nrows = flag.Uint("nrows", 16, "number of rows in count-min sketch")
 var ncols = flag.Uint("ncols", 262144, "number of columns in count-min sketch")
-var maxNGram = flag.Uint("ngram", 7, "max. length of n-grams")
+var maxNGram = flag.Uint("ngram", storage.DefaultMaxNGram,
+	"max. length of n-grams")
 
 func main() {
 	log.SetPrefix("dumpparser ")
@@ -79,7 +80,7 @@ func main() {
 	defer f.Close()
 
 	log.Printf("Creating database at %s", dbpath)
-	db, err := storage.MakeDB(dbpath, true)
+	db, err := storage.MakeDB(dbpath, true, *maxNGram)
 	check()
 
 	// The numbers here are completely arbitrary.

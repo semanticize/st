@@ -1,13 +1,13 @@
 package main
 
 import (
+	"github.com/semanticize/dumpparser/dumpparser/wikidump"
 	"github.com/semanticize/dumpparser/storage"
-	"github.com/semanticize/dumpparser/wikidump"
 	"testing"
 )
 
 func TestStoreLinks(t *testing.T) {
-	db, _ := storage.MakeDB(":memory:", true)
+	db, _ := storage.MakeDB(":memory:", true, 3)
 
 	links := make(chan map[wikidump.Link]int, 1)
 	links <- map[wikidump.Link]int{

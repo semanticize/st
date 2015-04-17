@@ -7,12 +7,31 @@ import (
 )
 
 func TestMakeDB(t *testing.T) {
-	db, err := MakeDB("/", true)
+	db, err := MakeDB("/", true, 2)
 	if db != nil {
 		t.Error("got non-nil for invalid path name")
 	}
 	if err == nil {
 		t.Error("got no error for invalid path name")
+	}
+}
+
+func TestLoadModel(t *testing.T) {
+	var err error
+	check := func() {
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	db, err := MakeDB(":memory:", true, 6)
+	check()
+	defer db.Close()
+
+	maxNGram, err := loadModel(db)
+	check()
+	if maxNGram != 6 {
+		t.Error("expected 6, got %d for maxNGram", maxNGram)
 	}
 }
 
@@ -24,7 +43,7 @@ func TestRedirects(t *testing.T) {
 		}
 	}
 
-	db, err := MakeDB(":memory:", true)
+	db, err := MakeDB(":memory:", true, 5)
 	check()
 
 	_, err = db.Exec(`insert into linkstats values (42, "Architekt", 10)`)
@@ -70,7 +89,7 @@ func TestCM(t *testing.T) {
 	}
 
 	cm, _ := countmin.New(5, 16)
-	db, err := MakeDB(":memory:", true)
+	db, err := MakeDB(":memory:", true, 8)
 	check()
 
 	for _, i := range []uint32{1, 6, 13, 7, 8, 20, 44} {

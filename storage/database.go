@@ -5,7 +5,9 @@ import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/semanticize/dumpparser/hash/countmin"
+	"log"
 	"os"
+	"strconv"
 )
 
 const create = (`
@@ -39,7 +41,7 @@ const create = (`
 	create unique index hash_target on linkstats(ngramhash, target);
 `)
 
-func MakeDB(path string, overwrite bool) (db *sql.DB, err error) {
+func MakeDB(path string, overwrite bool, maxNGram uint) (db *sql.DB, err error) {
 	if overwrite {
 		os.Remove(path)
 	}
@@ -56,6 +58,51 @@ func MakeDB(path string, overwrite bool) (db *sql.DB, err error) {
 	}
 	if err == nil {
 		_, err = db.Exec(create)
+	}
+	if err == nil {
+		_, err = db.Exec(`insert into parameters values ("maxngram", ?)`,
+			strconv.FormatUint(uint64(maxNGram), 10))
+	}
+	return
+}
+
+// XXX move this elsewhere
+const DefaultMaxNGram = 7
+
+// XXX Load and return the n-gram count-min sketch as well?
+func LoadModel(path string) (db *sql.DB, maxNGram int, err error) {
+	db, err = sql.Open("sqlite3", path)
+	defer func() {
+		if err != nil && db != nil {
+			db.Close()
+			db = nil
+		}
+	}()
+
+	if err == nil {
+		db.Ping()
+	}
+	if err == nil {
+		maxNGram, err = loadModel(db)
+	}
+	return
+}
+
+func loadModel(db *sql.DB) (maxNGram int, err error) {
+	var maxNGramStr string
+	rows := db.QueryRow(`select value from parameters where key = "maxngram"`)
+	err = rows.Scan(&maxNGramStr)
+	if err == sql.ErrNoRows {
+		log.Printf("no maxngram setting in database, using default=%d",
+			DefaultMaxNGram)
+		maxNGram = DefaultMaxNGram
+	} else if maxNGramStr == "" {
+		// go-sqlite3 seems to return this if the parameter is not set...
+		maxNGram = DefaultMaxNGram
+	} else {
+		var max64 int64
+		max64, err = strconv.ParseInt(maxNGramStr, 10, 0)
+		maxNGram = int(max64)
 	}
 	return
 }
