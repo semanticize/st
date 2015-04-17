@@ -6,6 +6,16 @@ import (
 	"testing"
 )
 
+func TestMakeDB(t *testing.T) {
+	db, err := MakeDB("/", true)
+	if db != nil {
+		t.Error("got non-nil for invalid path name")
+	}
+	if err == nil {
+		t.Error("got no error for invalid path name")
+	}
+}
+
 func TestRedirects(t *testing.T) {
 	var err error
 	check := func() {

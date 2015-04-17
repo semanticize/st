@@ -44,12 +44,19 @@ func MakeDB(path string, overwrite bool) (db *sql.DB, err error) {
 		os.Remove(path)
 	}
 	db, err = sql.Open("sqlite3", path)
-	if err != nil {
-		return
-	}
-	db.Ping()
+	defer func() {
+		if err != nil && db != nil {
+			db.Close()
+			db = nil
+		}
+	}()
 
-	_, err = db.Exec(create)
+	if err == nil {
+		err = db.Ping()
+	}
+	if err == nil {
+		_, err = db.Exec(create)
+	}
 	return
 }
 
