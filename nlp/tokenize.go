@@ -5,8 +5,9 @@ package nlp
 import "regexp"
 
 var (
-	numericRE = regexp.MustCompile(`\d[\d\.]+`)
-	tokenRE   = regexp.MustCompile(`(\w|\b['\.]\b)+`)
+	// Four-digit strings are typically years, and are often linked.
+	numericRE = regexp.MustCompile(`^\d([\d\.\,]{4,})?$`)
+	tokenRE   = regexp.MustCompile(`(\w|\b['\.,]\b)+`)
 )
 
 func Tokenize(s string) []string {
