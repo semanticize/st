@@ -106,6 +106,26 @@ func (sketch *Sketch) Add(i, c uint32) {
 	}
 }
 
+// Add c observations of type i with conservative updating (Goyal, Daumé and
+// Cormode, Sketch algorithms for estimating point queries in NLP, Proc.
+// EMNLP-CoNLL, 2012).
+func (sketch *Sketch) AddCU(i, c uint32) {
+	ncols := sketch.ncols()
+	estimate := uint64(sketch.Get(i))
+	for j, row := range sketch.rows {
+		k := (i ^ π[j]) % ncols
+		count := uint64(row[k])
+
+		candidate := estimate + uint64(c)
+		if candidate > math.MaxUint32 {
+			candidate = math.MaxUint32
+		}
+		if candidate > count {
+			row[k] = uint32(candidate)
+		}
+	}
+}
+
 // Add one observation of type i.
 func (sketch *Sketch) Add1(i uint32) {
 	ncols := sketch.ncols()

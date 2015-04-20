@@ -117,11 +117,13 @@ func TestWraparound(t *testing.T) {
 		}
 	}
 
-	a.Add(1, 3e9)
+	a.AddCU(1, 3e9)
 	check(3e9)
 	a.Add(1, 3e9)
 	check(math.MaxUint32)
 	a.Add1(1)
+	check(math.MaxUint32)
+	a.AddCU(1, 3)
 	check(math.MaxUint32)
 
 	b, _ := New(10, 4)
