@@ -2,6 +2,7 @@ package wikidump
 
 import (
 	"fmt"
+	"github.com/cheggaaa/pb"
 	"io"
 	"log"
 	"net/http"
@@ -10,28 +11,30 @@ import (
 	"path"
 )
 
-type loggingWriter struct {
-	w           io.WriteCloser
-	done, total int64
-	threshold   float32
+func nullLogger(string, ...interface{}) {
 }
 
-func (w *loggingWriter) Write(p []byte) (n int, err error) {
-	n, err = w.w.Write(p)
-	w.done += int64(n)
-	if float32(w.done) > w.threshold*float32(w.total) {
-		log.Printf("%3d%% done (%d of %d)",
-			int(100*w.threshold), w.done, w.total)
-		w.threshold += .05
-	}
-	return
+// Writer with progressbar.
+type pbWriter struct {
+	w   io.WriteCloser
+	bar *pb.ProgressBar
 }
 
-func (w loggingWriter) Close() error {
+func newPbWriter(w io.WriteCloser, total int64) *pbWriter {
+	pbw := &pbWriter{w, pb.New64(total)}
+	pbw.bar.Start()
+	return pbw
+}
+
+func (w *pbWriter) Close() error {
+	w.bar.Finish()
 	return w.w.Close()
 }
 
-func nullLogger(string, ...interface{}) {
+func (w *pbWriter) Write(p []byte) (n int, err error) {
+	n, err = w.w.Write(p)
+	w.bar.Add(n)
+	return
 }
 
 // Download database dump for wikiname (e.g., "en", "sco", "nds_nl") from
@@ -79,10 +82,7 @@ func download(wikiname, directory string, logProgress bool,
 
 	logprint("downloading from %s to %s", urlstr, filepath)
 	if logProgress && resp.ContentLength >= 0 {
-		out = &loggingWriter{
-			w:     out,
-			total: resp.ContentLength,
-		}
+		out = newPbWriter(out, resp.ContentLength)
 	}
 	_, err = io.Copy(out, resp.Body)
 	logprint("download of %s done", urlstr)
