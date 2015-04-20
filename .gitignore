@@ -2,6 +2,7 @@
 *.o
 *.a
 *.so
+dumpparser
 
 # Folders
 _obj
