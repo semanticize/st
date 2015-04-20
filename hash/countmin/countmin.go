@@ -97,15 +97,12 @@ func (sketch *Sketch) NRows() int {
 func (sketch *Sketch) Add(i, c uint32) {
 	ncols := sketch.ncols()
 	for j, row := range sketch.rows {
-		k := i ^ π[j]
-		k %= ncols
-		count := row[k]
-		if count+c < count { // wraparound
+		k := (i ^ π[j]) % ncols
+		count := uint64(row[k]) + uint64(c)
+		if count > math.MaxUint32 {
 			count = math.MaxUint32
-		} else {
-			count += c
 		}
-		row[k] = count
+		row[k] = uint32(count)
 	}
 }
 
@@ -113,8 +110,7 @@ func (sketch *Sketch) Add(i, c uint32) {
 func (sketch *Sketch) Add1(i uint32) {
 	ncols := sketch.ncols()
 	for j, row := range sketch.rows {
-		k := i ^ π[j]
-		k %= ncols
+		k := (i ^ π[j]) % ncols
 		count := row[k]
 		if count < math.MaxUint32 {
 			row[k] = count + 1

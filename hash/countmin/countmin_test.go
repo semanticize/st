@@ -184,6 +184,17 @@ func BenchmarkCountMinAdd(b *testing.B) {
 
 	rng := rand.New(rand.NewSource(42))
 	for i := 0; i < b.N; i++ {
+		for j := 0; j < 20000; j++ {
+			sketch.Add(rng.Uint32(), uint32(rng.Int31n(1000)))
+		}
+	}
+}
+
+func BenchmarkCountMinAdd1(b *testing.B) {
+	sketch, _ := New(256, 256)
+
+	rng := rand.New(rand.NewSource(42))
+	for i := 0; i < b.N; i++ {
 		for j := 0; j < 2000000; j++ {
 			sketch.Add1(rng.Uint32())
 		}
