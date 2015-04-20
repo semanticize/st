@@ -7,7 +7,7 @@ import "regexp"
 var (
 	// Four-digit strings are typically years, and are often linked.
 	numericRE = regexp.MustCompile(`^\d([\d\.\,]{4,})?$`)
-	tokenRE   = regexp.MustCompile(`(\w|\b['\.,]\b)+`)
+	tokenRE   = regexp.MustCompile(`([A-Za-z]*\p{Sc}|(\w|\b['\.,]\b)+)`)
 )
 
 func Tokenize(s string) (tokens []string) {

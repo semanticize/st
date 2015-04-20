@@ -16,6 +16,8 @@ func TestTokenize(t *testing.T) {
 			"In", "2012", "Fortune", "ranked", "IBM", "the", "No", "<NUM>",
 			"largest", "U.S", "firm", "in", "terms", "of", "number", "of",
 			"employees", "<NUM>", "worldwide"},
+		{"The €1,000,000 test case", "The", "€", "<NUM>", "test", "case"},
+		{"That's about US$1,080,000", "That's", "about", "US$", "<NUM>"},
 	} {
 		input, want := c[0], c[1:]
 		got := Tokenize(input)
