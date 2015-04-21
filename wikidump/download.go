@@ -65,6 +65,7 @@ func download(wikiname, directory string, logProgress bool,
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		err = fmt.Errorf("HTTP error %d for %s", resp.StatusCode, urlstr)
+		return
 	}
 
 	u, err := url.Parse(urlstr)
