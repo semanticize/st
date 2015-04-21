@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"database/sql"
 	"github.com/semanticize/dumpparser/hash/countmin"
 	"reflect"
 	"testing"
@@ -50,7 +51,11 @@ func TestRedirects(t *testing.T) {
 	db, err := MakeDB(":memory:", true, &Settings{"somewiki", 5})
 	check()
 
-	_, err = db.Exec(`insert into linkstats values (42, "Architekt", 10)`)
+	_, err = db.Exec(`insert or ignore into titles values (NULL, "Architekt")`)
+	check()
+	_, err = db.Exec(`insert into linkstats values
+		(42, (select id from titles where title = "Architekt"), 10)`)
+	check()
 
 	redirects := make(map[string]string)
 	redirects["Architekt"] = "Architect"
@@ -67,20 +72,33 @@ func TestRedirects(t *testing.T) {
 
 	var count float64
 	var hash int64
+	var toId int64
 	var title string
-	err = rows.Scan(&hash, &title, &count)
+	err = rows.Scan(&hash, &toId, &count)
 	if hash != 42 {
 		t.Fatalf("wrong hash: %d", hash)
+	}
+	if count != 10 {
+		t.Fatalf("wrong count: %f", count)
+	}
+	if rows.Next() {
+		t.Fatal("too many rows (original not deleted?)")
+	}
+	rows.Close()
+
+	// Check that the redirect target was stored in the [titles] table,
+	// and the original removed.
+	err = db.QueryRow(`select title from titles where id = ?`,
+		toId).Scan(&title)
+	if err != nil {
+		t.Fatal(err)
 	}
 	if title != "Architect" {
 		t.Fatalf("wrong title: %q", title)
 	}
-	if count != 10 {
-		t.Fatalf("wrong count: %d", count)
-	}
-
-	if rows.Next() {
-		t.Fatal("too many rows (original not deleted?)")
+	err = db.QueryRow(`select id from titles where title = "Architekt"`).Scan(&toId)
+	if err != sql.ErrNoRows {
+		t.Fatalf("expected ErrNoRows, got %q", err)
 	}
 }
 

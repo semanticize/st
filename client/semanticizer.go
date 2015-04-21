@@ -20,7 +20,8 @@ type candidate struct {
 
 // Get candidates for hash value h from the database.
 func (sem semanticizer) candidates(h uint32) (cands []candidate, err error) {
-	q := `select target, count from linkstats where ngramhash = ?`
+	q := `select (select title from titles where id = targetid), count
+	      from linkstats where ngramhash = ?`
 	rows, err := sem.db.Query(q, h)
 	if err != nil {
 		return

@@ -171,14 +171,19 @@ func main() {
 func storeLinks(db *sql.DB, links <-chan map[wikidump.Link]int,
 	maxN int) (err error) {
 
-	ins, err := db.Prepare(
-		`insert or ignore into linkstats values (?,?,0)`)
+	insTitle, err := db.Prepare(`insert or ignore into titles values (NULL, ?)`)
+	if err != nil {
+		return
+	}
+	insLink, err := db.Prepare(
+		`insert or ignore into linkstats values
+		 (?, (select id from titles where title = ?), 0)`)
 	if err != nil {
 		return
 	}
 	update, err := db.Prepare(
 		`update linkstats set count = count + ?
-			where ngramhash = ? and target = ?`)
+			where ngramhash = ? and targetid = ?`)
 	if err != nil {
 		return
 	}
@@ -193,7 +198,11 @@ func storeLinks(db *sql.DB, links <-chan map[wikidump.Link]int,
 				count = 1 / float64(len(hashes))
 			}
 			for _, h := range hashes {
-				_, err = ins.Exec(h, link.Target)
+				_, err = insTitle.Exec(link.Target)
+				if err != nil {
+					return
+				}
+				_, err = insLink.Exec(h, link.Target)
 				if err != nil {
 					return
 				}

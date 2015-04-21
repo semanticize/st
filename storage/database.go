@@ -11,8 +11,8 @@ import (
 	"strconv"
 )
 
-const create = (`
-	pragma foreign_keys = on;
+const create = `
+	--pragma foreign_keys = on;
 	pragma journal_mode = off;
 	pragma synchronous = off;
 
@@ -30,17 +30,22 @@ const create = (`
 		count integer not NULL
 	);
 
-	-- XXX I tried to put the link targets in a separate table with a foreign
-	-- key in this one, but inserting into that table would sometimes fail.
-	create table linkstats (
-		ngramhash integer not NULL,
-		target    string  not NULL,		-- actually UTF-8
-		count     float   not NULL
+	create table titles (
+		id    integer primary key,
+		title text    unique not NULL
 	);
 
-	create index target on linkstats(target);
-	create unique index hash_target on linkstats(ngramhash, target);
-`)
+	create table linkstats (
+		ngramhash integer not NULL,
+		targetid  integer not NULL,
+		count     float   not NULL
+		-- Can't get the following to work.
+		--foreign key(targetid) references titles(id)
+	);
+
+	create index target on linkstats(targetid);
+	create unique index hash_target on linkstats(ngramhash, targetid);
+`
 
 type Settings struct {
 	Dumpname string // Filename of dump
@@ -155,15 +160,30 @@ type linkCount struct {
 func ProcessRedirects(db *sql.DB, redirs map[string]string) error {
 	counts := make([]linkCount, 0)
 
+	titleId := MustPrepare(db,
+		`select id from titles where title = ?`)
 	old := MustPrepare(db,
-		`select ngramhash, count from linkstats where target = ?`)
-	del := MustPrepare(db, `delete from linkstats where target = ?`)
-	ins := MustPrepare(db, `insert or ignore into linkstats values (?, ?, 0)`)
+		`select ngramhash, count from linkstats where targetid = ?`)
+	del := MustPrepare(db, `delete from linkstats where targetid = ?`)
+	delTitle := MustPrepare(db, `delete from titles where id = ?`)
+	insTitle := MustPrepare(db,
+		`insert or ignore into titles values (NULL, ?)`)
+	ins := MustPrepare(db,
+		`insert or ignore into linkstats values
+		 (?, (select id from titles where title = ?), 0)`)
 	update := MustPrepare(db,
-		`update linkstats set count = count + ? where target = ? and ngramhash = ?`)
+		`update linkstats set count = count + ?
+		 where targetid = (select id from titles where title = ?)
+		       and ngramhash = ?`)
 
 	for from, to := range redirs {
-		rows, err := old.Query(from)
+		var fromId int
+		err := titleId.QueryRow(from).Scan(&fromId)
+		if err != nil {
+			return err
+		}
+
+		rows, err := old.Query(fromId)
 		if err != nil {
 			return err
 		}
@@ -177,25 +197,31 @@ func ProcessRedirects(db *sql.DB, redirs map[string]string) error {
 		}
 		rows.Close()
 		err = rows.Err()
-		if err != nil {
-			return err
+
+		if err == nil {
+			_, err = del.Exec(fromId)
+		}
+		if err == nil {
+			_, err = delTitle.Exec(fromId)
 		}
 
-		_, err = del.Exec(from)
 		if err != nil {
 			return err
 		}
 
 		for _, c := range counts {
-			_, err = ins.Exec(c.hash, to)
-			if err != nil {
-				return err
+			if err == nil {
+				_, err = insTitle.Exec(to)
 			}
-
-			_, err = update.Exec(c.count, to, c.hash)
-			if err != nil {
-				return err
+			if err == nil {
+				_, err = ins.Exec(c.hash, to)
 			}
+			if err == nil {
+				_, err = update.Exec(c.count, to, c.hash)
+			}
+		}
+		if err != nil {
+			return err
 		}
 	}
 	return nil
