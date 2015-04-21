@@ -42,7 +42,12 @@ const create = (`
 	create unique index hash_target on linkstats(ngramhash, target);
 `)
 
-func MakeDB(path string, overwrite bool, maxNGram uint) (db *sql.DB, err error) {
+type Settings struct {
+	Dumpname string // Filename of dump
+	MaxNGram uint   // Max. length of n-grams
+}
+
+func MakeDB(path string, overwrite bool, s *Settings) (db *sql.DB, err error) {
 	if overwrite {
 		os.Remove(path)
 	}
@@ -61,8 +66,12 @@ func MakeDB(path string, overwrite bool, maxNGram uint) (db *sql.DB, err error) 
 		_, err = db.Exec(create)
 	}
 	if err == nil {
+		_, err = db.Exec(`insert into parameters values ("dumpname", ?)`,
+			s.Dumpname)
+	}
+	if err == nil {
 		_, err = db.Exec(`insert into parameters values ("maxngram", ?)`,
-			strconv.FormatUint(uint64(maxNGram), 10))
+			strconv.FormatUint(uint64(s.MaxNGram), 10))
 	}
 	return
 }
@@ -71,7 +80,7 @@ func MakeDB(path string, overwrite bool, maxNGram uint) (db *sql.DB, err error) 
 const DefaultMaxNGram = 7
 
 // XXX Load and return the n-gram count-min sketch as well?
-func LoadModel(path string) (db *sql.DB, maxNGram uint, err error) {
+func LoadModel(path string) (db *sql.DB, s *Settings, err error) {
 	db, err = sql.Open("sqlite3", path)
 	defer func() {
 		if err != nil && db != nil {
@@ -84,31 +93,39 @@ func LoadModel(path string) (db *sql.DB, maxNGram uint, err error) {
 		db.Ping()
 	}
 	if err == nil {
-		maxNGram, err = loadModel(db)
+		s, err = loadModel(db)
 	}
 	return
 }
 
-func loadModel(db *sql.DB) (maxNGram uint, err error) {
+func loadModel(db *sql.DB) (s *Settings, err error) {
+	s = new(Settings)
+
 	var maxNGramStr string
 	rows := db.QueryRow(`select value from parameters where key = "maxngram"`)
 	err = rows.Scan(&maxNGramStr)
 	if err == sql.ErrNoRows {
 		log.Printf("no maxngram setting in database, using default=%d",
 			DefaultMaxNGram)
-		maxNGram = DefaultMaxNGram
+		s.MaxNGram = DefaultMaxNGram
 	} else if maxNGramStr == "" {
 		// go-sqlite3 seems to return this if the parameter is not set...
-		maxNGram = DefaultMaxNGram
+		s.MaxNGram = DefaultMaxNGram
 	} else {
 		var max64 int64
 		max64, err = strconv.ParseInt(maxNGramStr, 10, 0)
 		if max64 <= 0 {
 			err = fmt.Errorf("invalid value maxngram=%d, must be >0")
 		} else {
-			maxNGram = uint(max64)
+			s.MaxNGram = uint(max64)
 		}
 	}
+
+	rows = db.QueryRow(`select value from parameters where key = "dumpname"`)
+	if err = rows.Scan(&s.Dumpname); err != nil && err != sql.ErrNoRows {
+		s = nil
+	}
+
 	return
 }
 

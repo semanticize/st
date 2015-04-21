@@ -7,7 +7,7 @@ import (
 )
 
 func TestMakeDB(t *testing.T) {
-	db, err := MakeDB("/", true, 2)
+	db, err := MakeDB("/", true, &Settings{"blawiki-latest", 2})
 	if db != nil {
 		t.Error("got non-nil for invalid path name")
 	}
@@ -18,20 +18,24 @@ func TestMakeDB(t *testing.T) {
 
 func TestLoadModel(t *testing.T) {
 	var err error
+	var s *Settings
 	check := func() {
 		if err != nil {
 			t.Fatal(err)
 		}
 	}
 
-	db, err := MakeDB(":memory:", true, 6)
+	db, err := MakeDB(":memory:", true, &Settings{"foowiki", 6})
 	check()
 	defer db.Close()
 
-	maxNGram, err := loadModel(db)
+	s, err = loadModel(db)
 	check()
-	if maxNGram != 6 {
-		t.Error("expected 6, got %d for maxNGram", maxNGram)
+	if s == nil {
+		t.Fatal("got nil *Settings, but no error")
+	}
+	if s.MaxNGram != 6 {
+		t.Errorf("expected 6, got %d for maxNGram", s.MaxNGram)
 	}
 }
 
@@ -43,7 +47,7 @@ func TestRedirects(t *testing.T) {
 		}
 	}
 
-	db, err := MakeDB(":memory:", true, 5)
+	db, err := MakeDB(":memory:", true, &Settings{"somewiki", 5})
 	check()
 
 	_, err = db.Exec(`insert into linkstats values (42, "Architekt", 10)`)
@@ -89,7 +93,7 @@ func TestCM(t *testing.T) {
 	}
 
 	cm, _ := countmin.New(5, 16)
-	db, err := MakeDB(":memory:", true, 8)
+	db, err := MakeDB(":memory:", true, &Settings{"foowiki.xml.bz2", 8})
 	check()
 
 	for _, i := range []uint32{1, 6, 13, 7, 8, 20, 44} {

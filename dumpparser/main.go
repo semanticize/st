@@ -80,7 +80,8 @@ func main() {
 	defer f.Close()
 
 	log.Printf("Creating database at %s", dbpath)
-	db, err := storage.MakeDB(dbpath, true, *maxNGram)
+	db, err := storage.MakeDB(dbpath, true,
+		&storage.Settings{inputpath, *maxNGram})
 	check()
 
 	// The numbers here are completely arbitrary.
