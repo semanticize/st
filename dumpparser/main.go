@@ -183,7 +183,8 @@ func storeLinks(db *sql.DB, links <-chan map[wikidump.Link]int,
 	}
 	update, err := db.Prepare(
 		`update linkstats set count = count + ?
-			where ngramhash = ? and targetid = ?`)
+		 where ngramhash = ?
+		 and targetid = (select id from titles where title =?)`)
 	if err != nil {
 		return
 	}
