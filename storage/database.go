@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/semanticize/dumpparser/hash/countmin"
+	"github.com/semanticize/st/hash/countmin"
 	"log"
 	"os"
 	"strconv"

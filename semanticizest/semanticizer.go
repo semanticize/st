@@ -2,9 +2,9 @@ package main
 
 import (
 	"database/sql"
-	"github.com/semanticize/dumpparser/hash"
-	"github.com/semanticize/dumpparser/hash/countmin"
-	"github.com/semanticize/dumpparser/nlp"
+	"github.com/semanticize/st/hash"
+	"github.com/semanticize/st/hash/countmin"
+	"github.com/semanticize/st/nlp"
 )
 
 type semanticizer struct {

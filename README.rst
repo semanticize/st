@@ -1,7 +1,7 @@
 |Travis|_
 
-.. |Travis| image:: https://api.travis-ci.org/semanticize/dumpparser.png?branch=master
-.. _Travis: https://travis-ci.org/semanticize/dumpparser
+.. |Travis| image:: https://api.travis-ci.org/semanticize/st.png?branch=master
+.. _Travis: https://travis-ci.org/semanticize/st
 
 
 Wikipedia dump parser for semanticizest
@@ -28,9 +28,10 @@ Set up a Go workspace, if you haven't already. For example::
     cd /some/where/go
     export GOPATH=$(pwd)
 
-Fetch and compile the dump parser::
+Fetch and compile::
 
-    go get github.com/semanticize/dumpparser
-    go install github.com/semanticize/dumpparser/dumpparser
+    go get github.com/semanticize/st
+    go install github.com/semanticize/st/dumpparser
+    go install github.com/semanticize/st/semanticizest
 
 You now have a working parser at ``${GOPATH}/bin/dumpparser``.

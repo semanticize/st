@@ -2,7 +2,7 @@ package storage
 
 import (
 	"database/sql"
-	"github.com/semanticize/dumpparser/hash/countmin"
+	"github.com/semanticize/st/hash/countmin"
 	"reflect"
 	"testing"
 )

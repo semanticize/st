@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/semanticize/dumpparser/storage"
+	"github.com/semanticize/st/storage"
 	"io/ioutil"
 	"net/http"
 )

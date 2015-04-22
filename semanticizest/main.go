@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/semanticize/dumpparser/storage"
+	"github.com/semanticize/st/storage"
 	"log"
 	"os"
 	"regexp"

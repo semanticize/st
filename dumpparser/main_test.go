@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/semanticize/dumpparser/dumpparser/wikidump"
-	"github.com/semanticize/dumpparser/storage"
+	"github.com/semanticize/st/dumpparser/wikidump"
+	"github.com/semanticize/st/storage"
 	"testing"
 )
 
