@@ -33,7 +33,6 @@ func main() {
 	log.SetPrefix("semanticizest ")
 
 	flag.Parse()
-	fmt.Printf("%q\n", *dohttp)
 
 	var err error
 	check := func() {
