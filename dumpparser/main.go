@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"compress/bzip2"
 	"database/sql"
 	"flag"
@@ -27,12 +28,19 @@ func init() {
 }
 
 func open(path string) (r io.ReadCloser, err error) {
-	r, err = os.Open(path)
-	if err == nil && filepath.Ext(path) == ".bz2" {
+	rf, err := os.Open(path)
+	if err != nil {
+		return
+	}
+	r = struct {
+		*bufio.Reader
+		io.Closer
+	}{bufio.NewReader(rf), rf}
+	if filepath.Ext(path) == ".bz2" {
 		r = struct {
 			io.Reader
 			io.Closer
-		}{bzip2.NewReader(r), r}
+		}{bzip2.NewReader(r), rf}
 	}
 	return
 }
