@@ -14,8 +14,9 @@ type semanticizer struct {
 }
 
 type candidate struct {
-	target                string
-	commonness, senseprob float64
+	Target     string  `json:"target"`
+	Commonness float64 `json:"commonness"`
+	Senseprob  float64 `json:"senseprob"`
 }
 
 // Get candidates for hash value h from the database.
@@ -32,7 +33,7 @@ func (sem semanticizer) candidates(h uint32) (cands []candidate, err error) {
 	for rows.Next() {
 		rows.Scan(&target, &count)
 		total += count
-		// Initially use the commonness field to store the count.
+		// Initially use the Commonness field to store the count.
 		cands = append(cands, candidate{target, count, 0})
 	}
 	rows.Close()
@@ -43,8 +44,8 @@ func (sem semanticizer) candidates(h uint32) (cands []candidate, err error) {
 
 	for i := range cands {
 		c := &cands[i]
-		c.senseprob = c.commonness / float64(sem.ngramcount.Get(h))
-		c.commonness /= total
+		c.Senseprob = c.Commonness / float64(sem.ngramcount.Get(h))
+		c.Commonness /= total
 	}
 	return
 }

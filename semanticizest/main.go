@@ -2,8 +2,8 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"flag"
-	"fmt"
 	"github.com/semanticize/st/storage"
 	"log"
 	"os"
@@ -51,13 +51,16 @@ func main() {
 	if *dohttp == "" {
 		scanner := bufio.NewScanner(os.Stdin)
 		scanner.Split(splitPara)
+
+		out := json.NewEncoder(os.Stdout)
+
 		for scanner.Scan() {
 			var candidates []candidate
 			candidates, err = sem.allCandidates(scanner.Text())
 			check()
-			for _, c := range candidates {
-				fmt.Printf("%f %f %q\n", c.commonness, c.senseprob, c.target)
-			}
+
+			err = out.Encode(candidates)
+			check()
 		}
 		err = scanner.Err()
 		check()
