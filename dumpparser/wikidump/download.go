@@ -21,7 +21,7 @@ type pbWriter struct {
 }
 
 func newPbWriter(w io.WriteCloser, total int64) *pbWriter {
-	pbw := &pbWriter{w, pb.New64(total)}
+	pbw := &pbWriter{w, pb.New64(total).SetUnits(pb.U_BYTES)}
 	pbw.bar.Start()
 	return pbw
 }
