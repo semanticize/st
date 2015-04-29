@@ -4,6 +4,7 @@ package storage
 import (
 	"database/sql"
 	"fmt"
+	"github.com/cheggaaa/pb"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/semanticize/st/hash/countmin"
 	"log"
@@ -157,7 +158,7 @@ type linkCount struct {
 	count float64
 }
 
-func ProcessRedirects(db *sql.DB, redirs map[string]string) error {
+func ProcessRedirects(db *sql.DB, redirs map[string]string, verbose bool) error {
 	counts := make([]linkCount, 0)
 
 	titleId := MustPrepare(db,
@@ -175,6 +176,11 @@ func ProcessRedirects(db *sql.DB, redirs map[string]string) error {
 		`update linkstats set count = count + ?
 		 where targetid = (select id from titles where title = ?)
 		       and ngramhash = ?`)
+
+	var bar *pb.ProgressBar
+	if verbose {
+		bar = pb.StartNew(len(redirs))
+	}
 
 	for from, to := range redirs {
 		var fromId int
@@ -223,6 +229,12 @@ func ProcessRedirects(db *sql.DB, redirs map[string]string) error {
 		if err != nil {
 			return err
 		}
+		if verbose {
+			bar.Increment()
+		}
+	}
+	if verbose {
+		bar.Finish()
 	}
 	return nil
 }
