@@ -40,15 +40,18 @@ func (w *pbWriter) Write(p []byte) (n int, err error) {
 // Download database dump for wikiname (e.g., "en", "sco", "nds_nl") from
 // WikiMedia.
 //
-// Returns the local file path of the dump, derived from the URL.
+// If path is not nil, writes the dump to path. Else, derives an appropriate
+// path from the URL and returns that.
 //
 // Logs its progress on the standard log if logProgress is true.
-func Download(wikiname string, logProgress bool) (filepath string, err error) {
-	return download(wikiname, ".", logProgress, http.DefaultClient)
+func Download(wikiname, path string, logProgress bool) (string, error) {
+	return download(wikiname, path, logProgress, http.DefaultClient)
 }
 
-func download(wikiname, directory string, logProgress bool,
-	client *http.Client) (filepath string, err error) {
+func download(wikiname, filepath string, logProgress bool,
+	client *http.Client) (string, error) {
+
+	var err error
 
 	logprint := nullLogger
 	if logProgress {
@@ -60,24 +63,25 @@ func download(wikiname, directory string, logProgress bool,
 		wikiname, wikiname)
 	resp, err := client.Get(urlstr)
 	if err != nil {
-		return
+		return "", err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		err = fmt.Errorf("HTTP error %d for %s", resp.StatusCode, urlstr)
-		return
+		return "", fmt.Errorf("HTTP error %d for %s", resp.StatusCode, urlstr)
 	}
 
 	u, err := url.Parse(urlstr)
 	if err != nil {
-		return
+		return "", err
 	}
-	filepath = path.Base(u.Path)
+	if filepath == "" {
+		filepath = path.Base(u.Path)
+	}
 
 	var out io.WriteCloser
 	out, err = os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0666)
 	if err != nil {
-		return
+		return "", err
 	}
 	defer out.Close()
 
@@ -87,5 +91,5 @@ func download(wikiname, directory string, logProgress bool,
 	}
 	_, err = io.Copy(out, resp.Body)
 	logprint("download of %s done", urlstr)
-	return
+	return filepath, nil
 }

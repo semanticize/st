@@ -51,13 +51,16 @@ func TestDownload(t *testing.T) {
 		panic(err)
 	}
 
-	path, err := download("scowiki", d, false, &mockClient)
+	path := filepath.Join(d, "sco.bz2")
+	path, err = download("scowiki", path, false, &mockClient)
 	if err != nil {
 		t.Error(err)
 	} else {
-		base := filepath.Base(path)
-		if base != "scowiki-latest-pages-articles.xml.bz2" {
+		if base := filepath.Base(path); base != "sco.bz2" {
 			t.Errorf("unexpected filename: %s", base)
+		}
+		if dir := filepath.Dir(path); dir != d {
+			t.Errorf("downloaded to wrong directory %q (wanted %q)", dir, d)
 		}
 	}
 

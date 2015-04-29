@@ -4,18 +4,18 @@ import (
 	"bufio"
 	"compress/bzip2"
 	"database/sql"
-	"flag"
-	"fmt"
 	"github.com/semanticize/st/hash"
 	"github.com/semanticize/st/hash/countmin"
 	"github.com/semanticize/st/nlp"
 	"github.com/semanticize/st/storage"
 	"github.com/semanticize/st/dumpparser/wikidump"
+	"gopkg.in/alecthomas/kingpin.v1"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"sync"
 )
 
@@ -45,14 +45,22 @@ func open(path string) (r io.ReadCloser, err error) {
 	return
 }
 
-var download = flag.String("download", "",
-	"download Wikipedia dump (e.g., 'enwiki')")
-var nrows = flag.Uint("nrows", 16, "number of rows in count-min sketch")
-var ncols = flag.Uint("ncols", 262144, "number of columns in count-min sketch")
-var maxNGram = flag.Uint("ngram", storage.DefaultMaxNGram,
-	"max. length of n-grams")
+var (
+	dbpath = kingpin.Arg("model", "path to model").Required().String()
+	dumppath = kingpin.Arg("dump", "path to Wikipedia dump").String()
+	download = kingpin.Flag("download",
+		"download Wikipedia dump (e.g., enwiki)").String()
+	nrows = kingpin.Flag("nrows",
+		"number of rows in count-min sketch").Default("16").Int()
+	ncols = kingpin.Flag("ncols",
+		"number of columns in count-min sketch").Default("65536").Int()
+	maxNGram = kingpin.Flag("ngram",
+		"max. length of n-grams").Default(strconv.Itoa(storage.DefaultMaxNGram)).Int()
+)
 
 func main() {
+	kingpin.Parse()
+
 	log.SetPrefix("dumpparser ")
 
 	var err error
@@ -62,34 +70,20 @@ func main() {
 		}
 	}
 
-	flag.Parse()
-	args := flag.Args()
-
-	var dbpath, inputpath string
 	if *download != "" {
-		if len(args) != 1 {
-			fmt.Fprintf(os.Stderr,
-				"usage: %s -download=wikiname model.db\n", os.Args[0])
-			os.Exit(1)
-		}
-		inputpath, err = wikidump.Download(*download, true)
+		*dumppath, err = wikidump.Download(*download, *dumppath, true)
 		check()
-		dbpath = args[0]
-	} else {
-		if len(args) != 2 {
-			fmt.Fprintf(os.Stderr, "usage: %s wikidump model.db\n", os.Args[0])
-			os.Exit(1)
-		}
-		inputpath, dbpath = args[0], args[1]
+	} else if *dumppath == "" {
+		log.Fatal("no --download and no dumppath specified (try --help)")
 	}
 
-	f, err := open(inputpath)
+	f, err := open(*dumppath)
 	check()
 	defer f.Close()
 
-	log.Printf("Creating database at %s", dbpath)
-	db, err := storage.MakeDB(dbpath, true,
-		&storage.Settings{inputpath, *maxNGram})
+	log.Printf("Creating database at %s", *dbpath)
+	db, err := storage.MakeDB(*dbpath, true,
+		&storage.Settings{*dumppath, uint(*maxNGram)})
 	check()
 
 	// The numbers here are completely arbitrary.
@@ -164,7 +158,7 @@ func main() {
 	close(done)
 
 	log.Printf("Processing %d redirects", len(redirmap))
-	storage.ProcessRedirects(db, redirmap)
+	storage.ProcessRedirects(db, redirmap, true)
 
 	err = storage.StoreCM(db, counters[0])
 	check()
