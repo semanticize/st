@@ -3,8 +3,8 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"flag"
 	"github.com/semanticize/st/storage"
+	"gopkg.in/alecthomas/kingpin.v1"
 	"log"
 	"os"
 	"regexp"
@@ -26,13 +26,15 @@ func splitPara(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	return
 }
 
-var dohttp = flag.String("http", "",
-	"Serve HTTP requests, e.g., -http=localhost:8080")
+var (
+	dbpath = kingpin.Arg("model", "path to model file").Required().String()
+	dohttp = kingpin.Flag("http", "HTTP server address").Default("").String()
+)
 
 func main() {
-	log.SetPrefix("semanticizest ")
+	kingpin.Parse()
 
-	flag.Parse()
+	log.SetPrefix("semanticizest ")
 
 	var err error
 	check := func() {
@@ -41,7 +43,7 @@ func main() {
 		}
 	}
 
-	db, settings, err := storage.LoadModel(os.Args[1])
+	db, settings, err := storage.LoadModel(*dbpath)
 	check()
 	ngramcount, err := storage.LoadCM(db)
 	check()
