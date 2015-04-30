@@ -4,28 +4,25 @@ import (
 	"encoding/json"
 	"github.com/semanticize/st/storage"
 	"html/template"
-	//"io"
 	"io/ioutil"
 	"net/http"
 )
 
-type endpoint struct {
-	path, descr string
-}
-
-var endpoints = []endpoint{
-	{"/all", "All candidates (GET)"},
-}
-
-var infoTemplate = template.Must(template.New("info").Parse(
-`<html>
+var infoTemplate = template.Must(template.New("info").Parse(`<html>
 <head><title>Semanticizest</title></head>
   <body>
     <h1>Semanticizest</h1>
   	<p>
       Serving <code>{{.Dumpname}}</code>
       with maximum n-gram length {{.MaxNGram}}.
-	</p>
+    </p>
+    <p>Endpoints take data via POST requests and produce JSON:
+      <ul>
+        <li><code>/all</code> gives all candidate entities
+        </li>
+      </ul>
+    </p>
+    <p>&copy; 2015 Netherlands eScience Center/University of Amsterdam.</p>
   </body>
 </html>`))
 
