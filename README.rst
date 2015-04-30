@@ -34,4 +34,12 @@ Fetch and compile::
     go install github.com/semanticize/st/dumpparser
     go install github.com/semanticize/st/semanticizest
 
-You now have a working parser at ``${GOPATH}/bin/dumpparser``.
+You now have a working parser at ``${GOPATH}/bin/dumpparser``. Issue::
+
+    ${GOPATH}/bin/dumpparser --help
+
+to figure out how to generate a semanticizer model, then use this model from
+the REST API::
+
+    ${GOPATH}/bin/semanticizest --http=:5002 your_model
+    curl http://localhost:5002/all -d 'Does the entity linking work?'
