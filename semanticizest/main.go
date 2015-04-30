@@ -67,6 +67,6 @@ func main() {
 		err = scanner.Err()
 		check()
 	} else {
-		log.Fatal(restServer(*dohttp, settings))
+		log.Fatal(restServer(*dohttp, &sem, settings))
 	}
 }
