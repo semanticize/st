@@ -4,10 +4,16 @@
 .. _Travis: https://travis-ci.org/semanticize/st
 
 
-Wikipedia dump parser for semanticizest
-=======================================
+Semanticizer, standalone
+========================
 
-This program parses Wikipedia database dumps for consumption by semanticizest.
+Semanticizest is a package for doing entity linking, also known as
+semantic linking or semanticizing: you feed it text, and it outputs links
+to pertinent Wikipedia concepts. You can use these links as a "semantic
+representation" of the text for NLP or machine learning, or just to provide
+some links to background info on the Wikipedia.
+
+This is the Go version of semanticizest.
 
 
 Installing
