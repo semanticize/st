@@ -14,11 +14,20 @@ type semanticizer struct {
 }
 
 type candidate struct {
-	Target     string  `json:"target"`
+	Target string `json:"target"`
+
+	// Raw n-gram count estimate.
+	NGramCount float64 `json:"ngramcount"`
+
+	// Total number of links to Target in Wikipedia.
+	LinkCount float64 `json:"linkcount"`
+
 	Commonness float64 `json:"commonness"`
 	Senseprob  float64 `json:"senseprob"`
+
 	// Offset of anchor in input string.
 	Offset int `json:"offset"`
+
 	// Length of anchor in input string.
 	Length int `json:"length"`
 }
@@ -32,12 +41,13 @@ func (sem semanticizer) candidates(h uint32, offset, end int) (cands []candidate
 		return
 	}
 
-	var count, total float64
+	var count, totalLinkCount float64
 	var target string
 	for rows.Next() {
 		rows.Scan(&target, &count)
-		total += count
-		// Initially use the Commonness field to store the count.
+		totalLinkCount += count
+		// Initially use the Commonness field to store the number of links
+		// to the target with the given hash.
 		cands = append(cands, candidate{
 			Target:     target,
 			Commonness: count,
@@ -54,8 +64,9 @@ func (sem semanticizer) candidates(h uint32, offset, end int) (cands []candidate
 
 	for i := range cands {
 		c := &cands[i]
-		c.Senseprob = c.Commonness / float64(sem.ngramcount.Get(h))
-		c.Commonness /= total
+		c.NGramCount = float64(sem.ngramcount.Get(h))
+		c.Senseprob = c.Commonness / c.NGramCount
+		c.Commonness /= totalLinkCount
 	}
 	return
 }
