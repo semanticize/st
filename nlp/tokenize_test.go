@@ -31,12 +31,17 @@ func TestTokenize(t *testing.T) {
 			t.Errorf("number of positions %d doesn't match number of tokens %d",
 				len(pos), len(tokens2))
 		}
-		for i := range want {
-			if tokens1[i] != want[i] {
-				t.Errorf("Tokenize error: %q != %q", tokens1[i], want[i])
+		for i, tok := range want {
+			if tokens1[i] != tok {
+				t.Errorf("Tokenize error: %q != %q", tokens1[i], tok)
 			}
-			if tokens2[i] != want[i] {
-				t.Errorf("Tokenize error: %q != %q", tokens2[i], want[i])
+			if tokens2[i] != tok {
+				t.Errorf("Tokenize error: %q != %q", tokens2[i], tok)
+			}
+			atpos := input[pos[i][0]:pos[i][1]]
+			if tok != "<NUM>" && tok != atpos {
+				t.Errorf("text at %d:%d is %q, not %q",
+					pos[i][0], pos[i][1], atpos, tok)
 			}
 		}
 	}

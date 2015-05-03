@@ -28,7 +28,8 @@ func Tokenize(s string) (tokens []string) {
 // Token positions are returned as a slice of two-element slices
 // []int{start, end}, where end is exclusive.
 //
-// Because tokens are normalized, s[pos[2*i:2*i+1]] need not match tokens[i].
+// Because tokens are normalized, s[pos[i][0]:pos[i][1]] need not match
+// tokens[i].
 func TokenizePos(s string) (tokens []string, pos [][]int) {
 	pos = tokenRE.FindAllStringIndex(s, -1)
 	tokens = make([]string, 0, len(pos))
