@@ -7,7 +7,7 @@ import (
 )
 
 func TestCandidateJSON(t *testing.T) {
-	in := candidate{"Wikipedia", 1, 0.0115}
+	in := candidate{"Wikipedia", 1, 0.0115, 0, 9}
 	enc, _ := json.Marshal(in)
 
 	var got candidate
@@ -17,7 +17,9 @@ func TestCandidateJSON(t *testing.T) {
 		t.Errorf("marshalled %v, got %v", in, got)
 	}
 
-	enc = []byte(`{"target":"Wikipedia","commonness":1,"senseprob":0.0115}`)
+	enc = []byte(
+		`{"offset": 0,"target":"Wikipedia",
+		  "commonness":1, "length": 9,"senseprob":0.0115}`)
 	err := json.Unmarshal(enc, &got)
 	if err != nil {
 		t.Error(err)
