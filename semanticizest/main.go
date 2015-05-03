@@ -1,3 +1,9 @@
+// Semanticizer, STandalone: command-line program and REST API server.
+//
+// Takes a semanticizer model and some text (from stdin or an HTTP connection),
+// produces entity links in a simple JSON format.
+//
+// Run with --help to see command-line usage.
 package main
 
 import (

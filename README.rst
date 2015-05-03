@@ -49,3 +49,8 @@ the REST API::
 
     ${GOPATH}/bin/semanticizest --http=:5002 your_model
     curl http://localhost:5002/all -d 'Does the entity linking work?'
+
+You can also use semanticizest as a command-line tool by omitting ``--http``.
+In that case, it will read paragraphs (double newline-separated) from standard
+input and emit a JSON representation of the candidate entities in each
+paragraph.

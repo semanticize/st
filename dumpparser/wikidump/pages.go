@@ -5,10 +5,12 @@ import (
 	"io"
 )
 
+// A Wikipedia page.
 type Page struct {
 	Title, Text string
 }
 
+// A Wikipedia redirect to Target.
 type Redirect struct {
 	Title, Target string
 }

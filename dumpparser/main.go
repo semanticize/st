@@ -1,3 +1,9 @@
+// Semanticizer, STandalone: parser for Wikipedia database dumps.
+//
+// Takes a Wikipedia database dump (or downloads one automatically) and
+// produces a model for use by the semanticizest program/web server.
+//
+// Run with --help for command-line usage.
 package main
 
 import (

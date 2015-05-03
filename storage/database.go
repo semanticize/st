@@ -1,4 +1,4 @@
-// Database stuff.
+// Storage for semanticizer models.
 package storage
 
 import (

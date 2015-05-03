@@ -61,6 +61,7 @@ func Cleanup(s string) string {
 	return norm.NFC.String(html.UnescapeString(output.String()))
 }
 
+// A link to the article Target with anchor text Anchor.
 type Link struct {
 	Anchor, Target string
 }
