@@ -27,9 +27,10 @@ func ngrams(tokens []string, minN, maxN int) [][]string {
 	return out
 }
 
+var tokens = strings.Split("and or not xor lsh rsh shift foo bar baz", " ")
+
 // Test that our n-gram hasher matches the naïve implementation.
 func TestNGrams(t *testing.T) {
-	tokens := strings.Split("and or not xor lsh rsh shift foo bar baz", " ")
 	for minN := 1; minN < 4; minN++ {
 		for maxN := minN; maxN < 6; maxN++ {
 
@@ -45,6 +46,17 @@ func TestNGrams(t *testing.T) {
 							hashes[i], hashNGram(gram), minN, maxN)
 					}
 				}
+			}
+		}
+	}
+}
+
+func TestNGramsPos(t *testing.T) {
+	for maxN := 1; maxN < 8; maxN++ {
+		for _, hpos := range NGramsPos(tokens, maxN) {
+			h := hashNGram(tokens[hpos.Start:hpos.End])
+			if hpos.Hash != h {
+				t.Errorf("expected %d, got %d", h, hpos.Hash)
 			}
 		}
 	}
@@ -94,9 +106,9 @@ func BenchmarkNGrams(b *testing.B) {
 				// Uncomment to benchmark the naïve way of doing this
 				// (~2× slower).
 				/*
-				for _, gram := range ngrams(benchdata, minN, maxN) {
-					hashNGram(gram)
-				}
+					for _, gram := range ngrams(benchdata, minN, maxN) {
+						hashNGram(gram)
+					}
 				*/
 			}
 		}
