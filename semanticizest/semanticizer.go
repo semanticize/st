@@ -5,6 +5,7 @@ import (
 	"github.com/semanticize/st/hash"
 	"github.com/semanticize/st/hash/countmin"
 	"github.com/semanticize/st/nlp"
+	"math"
 )
 
 type semanticizer struct {
@@ -82,6 +83,68 @@ func (sem semanticizer) allCandidates(s string) (cands []candidate, err error) {
 			break
 		}
 		cands = append(cands, add...)
+	}
+	return
+}
+
+// Dynamic programming table: row-matrix matrix with backpointers.
+type dpTable struct {
+	a     []entry
+	ncols int
+}
+
+type entry struct {
+	v    float64
+	prev int
+}
+
+func newTable(n, m int) dpTable {
+	return dpTable{make([]entry, n*m), m}
+}
+
+func (m *dpTable) at(i, j int) *entry {
+	return &m.a[i*m.ncols+j]
+}
+
+func (m *dpTable) nrows() int {
+	return len(m.a) / m.ncols
+}
+
+func (m *dpTable) row(i int) []entry {
+	return m.a[i*m.ncols : (i+1)*m.ncols]
+}
+
+// Computes the best path through the DP table, which must have been
+// pre-populated with values.
+func (m *dpTable) viterbi() (path []int) {
+	for i := 0; i < m.nrows()-1; i++ {
+		for k := 0; k < m.ncols; k++ {
+			var argmax int
+			max := -math.Inf(-1)
+			for j, e := range m.row(i) {
+				if e.v > max {
+					argmax = j
+					max = e.v
+				}
+			}
+			e := m.at(i+1, k)
+			e.prev = argmax
+			e.v = max
+		}
+	}
+
+	path = make([]int, m.nrows())
+	var argmax int
+	for j := 0; j < m.ncols; j++ {
+		var max float64
+		if v := m.at(m.nrows()-1, j).v; v > max {
+			argmax = j
+			max = v
+		}
+	}
+	path[len(path)-1] = argmax
+	for i := len(path) - 2; i >= 0; i-- {
+		path[i] = m.at(i+1, path[i+1]).prev
 	}
 	return
 }
