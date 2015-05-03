@@ -20,13 +20,23 @@ func TestTokenize(t *testing.T) {
 		{"That's about US$1,080,000", "That's", "about", "US$", "<NUM>"},
 	} {
 		input, want := c[0], c[1:]
-		got := Tokenize(input)
-		if len(got) != len(want) {
-			t.Errorf("len(tokenize(%q)) != len(%q)", input, want)
+		tokens1 := Tokenize(input)
+		tokens2, pos := TokenizePos(input)
+
+		if len(tokens1) != len(want) || len(tokens2) != len(want) {
+			t.Errorf("length mismatch: wanted %d, got %d and %d",
+				len(want), len(tokens1), len(tokens2))
 		}
-		for i := range got {
-			if got[i] != want[i] {
-				t.Errorf("%q != %q", got[i], want[i])
+		if len(pos) != len(tokens2) {
+			t.Errorf("number of positions %d doesn't match number of tokens %d",
+				len(pos), len(tokens2))
+		}
+		for i := range want {
+			if tokens1[i] != want[i] {
+				t.Errorf("Tokenize error: %q != %q", tokens1[i], want[i])
+			}
+			if tokens2[i] != want[i] {
+				t.Errorf("Tokenize error: %q != %q", tokens2[i], want[i])
 			}
 		}
 	}
