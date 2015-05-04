@@ -158,7 +158,7 @@ type linkCount struct {
 	count float64
 }
 
-func ProcessRedirects(db *sql.DB, redirs map[string]string, verbose bool) error {
+func StoreRedirects(db *sql.DB, redirs map[string]string, verbose bool) error {
 	counts := make([]linkCount, 0)
 
 	titleId := MustPrepare(db,

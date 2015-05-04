@@ -60,7 +60,7 @@ func TestRedirects(t *testing.T) {
 	redirects := make(map[string]string)
 	redirects["Architekt"] = "Architect"
 
-	err = ProcessRedirects(db, redirects, false)
+	err = StoreRedirects(db, redirects, false)
 	check()
 	err = Finalize(db)
 	check()

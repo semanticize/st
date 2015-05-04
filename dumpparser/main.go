@@ -164,7 +164,7 @@ func main() {
 	close(done)
 
 	log.Printf("Processing %d redirects", len(redirmap))
-	storage.ProcessRedirects(db, redirmap, true)
+	storage.StoreRedirects(db, redirmap, true)
 
 	err = storage.StoreCM(db, counters[0])
 	check()
