@@ -72,8 +72,16 @@ func (sem semanticizer) candidates(h uint32, offset, end int) (cands []candidate
 	return
 }
 
+// Get all candidate entity mentions in the string s.
 func (sem semanticizer) allCandidates(s string) (cands []candidate, err error) {
 	tokens, tokpos := nlp.TokenizePos(s)
+	return sem.allFromTokens(tokens, tokpos)
+}
+
+// Returns candidates in sorted order.
+func (sem semanticizer) allFromTokens(tokens []string,
+	tokpos [][]int) (cands []candidate, err error) {
+
 	for _, hpos := range hash.NGramsPos(tokens, int(sem.maxNGram)) {
 		start, end := hpos.Start, hpos.End
 		start, end = tokpos[start][0], tokpos[end][1]
@@ -87,7 +95,165 @@ func (sem semanticizer) allCandidates(s string) (cands []candidate, err error) {
 	return
 }
 
-// Dynamic programming table: row-matrix matrix with backpointers.
+// Reports entity mentions in s according to a best path (Viterbi) algorithm.
+//
+// This gets rid of overlapping candidates.
+func (sem semanticizer) bestPath(s string) ([]candidate, error) {
+	tokens, tokpos := nlp.TokenizePos(s)
+	all, err := sem.allFromTokens(tokens, tokpos)
+	if err != nil {
+		return nil, err
+	}
+	return bestPath(all), nil
+}
+
+func bestPath(cands []candidate) []candidate {
+	// TODO sink state
+	h := hmm{cands, make(map[int]int), make(map[int]map[int]float64)}
+	var endall int
+	for i := range cands {
+		start := cands[i].Offset
+		end := start + cands[i].Length
+		if end > endall {
+			endall = end
+		}
+		h.nStart[start]++
+		for j := start; j < end; j++ {
+			if h.obsProb[j] == nil {
+				h.obsProb[j] = make(map[int]float64)
+			}
+			h.obsProb[j][i]++
+		}
+	}
+	// Normalize observation probabilities.
+	for _, probs := range h.obsProb {
+		var sum float64
+		for _, count := range probs {
+			sum += count
+		}
+		sum = math.Log(sum)
+		for c, count := range probs {
+			probs[c] = math.Log(count) - sum
+		}
+	}
+
+	path := h.viterbi(endall)
+	keep := make(map[*candidate]bool)
+	for _, i := range path {
+		if i != h.sinkState() {
+			keep[&cands[i]] = true
+		}
+	}
+	cands = make([]candidate, 0)
+	for k := range keep {
+		cands = append(cands, *k)
+	}
+
+	return cands
+}
+
+type hmm struct {
+	cands []candidate
+
+	// Maps position to number of candidates that start there.
+	nStart map[int] int
+
+	// Maps (position, candidate index) to log-probability
+	obsProb map[int]map[int] float64
+}
+
+func (h hmm) sinkState() int {
+	return len(h.cands)
+}
+
+const eps = math.SmallestNonzeroFloat64
+
+// Log-probability of transition from state i to j at position p.
+func (h hmm) transProb(i, j, pos int) (logP float64) {
+	start, end := -1, -1
+	sink := h.sinkState()
+	if i < sink {
+		start = h.cands[i].Offset
+		end = start + h.cands[i].Length
+	}
+
+	// Probability of an entity to start at pos.
+	// TODO use Commonness here.
+	startProb := func() float64 {
+		if count := h.nStart[pos]; count != 0 {
+			return -math.Log(float64(count))
+		}
+		return math.Inf(-1)
+	}
+
+	logP = eps
+	switch {
+	case i == sink && j == sink:
+		// Only stay in the sink state if we can't enter a mention.
+		if h.nStart[pos] == 0 {
+			logP = 0
+		}
+	case i == sink:
+		logP = startProb()
+	case j == sink:
+		// Only enter sink state when we're at the end of entity i.
+		if pos == end {
+			logP = startProb()
+		}
+	default:
+		if pos == end {
+			logP = startProb()
+		} else if i == j {
+			logP = 0
+		}
+	}
+
+	return
+}
+
+func (h hmm) viterbi(obsLength int) (path []int) {
+	t := newTable(obsLength+1, h.sinkState()+1)
+
+	// Straight from Jurafsky and Martin, p. 181.
+	for j := 0; j < t.ncols-1; j++ {
+		t.at(0, j).v = eps
+	}
+	sink := h.sinkState()
+	t.at(0, sink).v = 0
+
+	var argmax int
+	for pos := 0; pos < obsLength; pos++ {
+		for k := 0; k < t.ncols; k++ {
+			argmax = -1
+			max := math.Inf(-1)
+			obsProb, ok := h.obsProb[pos][k]
+			if !ok && k != sink {
+				obsProb = math.Inf(-1)
+			}
+			for j, e := range t.row(pos) {
+				if v := e.v + obsProb + h.transProb(j, k, pos); v > max {
+					argmax = j
+					max = v
+				}
+			}
+			e := t.at(pos+1, k)
+			e.prev = argmax
+			e.v = max
+		}
+	}
+
+	path = make([]int, obsLength)
+	path[obsLength-1] = argmax
+	for i := len(path) - 2; i >= 0; i-- {
+		path[i] = t.at(i+1, path[i+1]).prev
+		if path[i] == -1 {
+			panic("-1 in path")
+		}
+	}
+	return
+}
+
+// Dynamic programming table: row-major matrix with backpointers.
 type dpTable struct {
 	a     []entry
 	ncols int
@@ -112,39 +278,4 @@ func (m *dpTable) nrows() int {
 
 func (m *dpTable) row(i int) []entry {
 	return m.a[i*m.ncols : (i+1)*m.ncols]
-}
-
-// Computes the best path through the DP table, which must have been
-// pre-populated with values.
-func (m *dpTable) viterbi() (path []int) {
-	for i := 0; i < m.nrows()-1; i++ {
-		for k := 0; k < m.ncols; k++ {
-			var argmax int
-			max := -math.Inf(-1)
-			for j, e := range m.row(i) {
-				if e.v > max {
-					argmax = j
-					max = e.v
-				}
-			}
-			e := m.at(i+1, k)
-			e.prev = argmax
-			e.v = max
-		}
-	}
-
-	path = make([]int, m.nrows())
-	var argmax int
-	for j := 0; j < m.ncols; j++ {
-		var max float64
-		if v := m.at(m.nrows()-1, j).v; v > max {
-			argmax = j
-			max = v
-		}
-	}
-	path[len(path)-1] = argmax
-	for i := len(path) - 2; i >= 0; i-- {
-		path[i] = m.at(i+1, path[i+1]).prev
-	}
-	return
 }
