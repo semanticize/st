@@ -14,7 +14,7 @@ import (
 	"github.com/semanticize/st/hash/countmin"
 	"github.com/semanticize/st/nlp"
 	"github.com/semanticize/st/storage"
-	"github.com/semanticize/st/dumpparser/wikidump"
+	"github.com/semanticize/st/wikidump"
 	"gopkg.in/alecthomas/kingpin.v1"
 	"io"
 	"log"
@@ -197,6 +197,12 @@ func storeLinks(db *sql.DB, links <-chan map[wikidump.Link]int,
 		return
 	}
 
+	exec := func(stmt *sql.Stmt, args ...interface{}) {
+		if err == nil {
+			_, err = stmt.Exec(args...)
+		}
+	}
+
 	for linkFreq := range links {
 		for link, freq := range linkFreq {
 			tokens := nlp.Tokenize(link.Anchor)
@@ -207,18 +213,12 @@ func storeLinks(db *sql.DB, links <-chan map[wikidump.Link]int,
 				count = 1 / float64(len(hashes))
 			}
 			for _, h := range hashes {
-				_, err = insTitle.Exec(link.Target)
-				if err != nil {
-					return
-				}
-				_, err = insLink.Exec(h, link.Target)
-				if err != nil {
-					return
-				}
-				_, err = update.Exec(count, h, link.Target)
-				if err != nil {
-					return
-				}
+				exec(insTitle, link.Target)
+				exec(insLink, h, link.Target)
+				exec(update, count, h, link.Target)
+			}
+			if err != nil {
+				return
 			}
 		}
 	}

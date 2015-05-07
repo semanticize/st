@@ -4,6 +4,7 @@
 *.so
 dumpparser
 semanticizest
+semanticizest-dumpparser
 
 # Folders
 _obj

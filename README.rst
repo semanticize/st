@@ -37,12 +37,12 @@ Set up a Go workspace, if you haven't already. For example::
 Fetch and compile::
 
     go get github.com/semanticize/st
-    go install github.com/semanticize/st/dumpparser
-    go install github.com/semanticize/st/semanticizest
+    go install github.com/semanticize/st/...
 
-You now have a working parser at ``${GOPATH}/bin/dumpparser``. Issue::
+You now have a working parser at ``${GOPATH}/bin/semanticizest-dumpparser``.
+Issue::
 
-    ${GOPATH}/bin/dumpparser --help
+    ${GOPATH}/bin/semanticizest-dumpparser --help
 
 to figure out how to generate a semanticizer model, then use this model from
 the REST API::
