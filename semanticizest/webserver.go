@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/semanticize/st/storage"
 	"html/template"
 	"io/ioutil"
@@ -18,8 +19,10 @@ var infoTemplate = template.Must(template.New("info").Parse(`<html>
     </p>
     <p>Endpoints take data via POST requests and produce JSON:
       <ul>
-        <li><code>/all</code> gives all candidate entities
-        </li>
+        <li><code>/all</code> gives all candidate entities</li>
+        <li>
+          <code>/bestpath</code> gives the entities according to a
+          Viterbi algorithm</code>
       </ul>
     </p>
     <p>&copy; 2015 Netherlands eScience Center/University of Amsterdam.</p>
@@ -31,19 +34,41 @@ func info(w http.ResponseWriter, settings *storage.Settings) {
 	infoTemplate.Execute(w, settings)
 }
 
-type restHandler struct {
+type allHandler struct {
 	*semanticizer
 }
 
-func (h restHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (h allHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	serveEntities(w, req, h.allCandidates)
+}
+
+type bestPathHandler struct {
+	*semanticizer
+}
+
+func (h bestPathHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	serveEntities(w, req, h.bestPath)
+}
+
+func serveEntities(w http.ResponseWriter, req *http.Request,
+	method func(string) ([]candidate, error)) {
+
 	text, err := ioutil.ReadAll(req.Body)
+	if len(text) == 0 {
+		err = errors.New("received no data")
+	}
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	cands, err := method(string(text))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-
-	cands, err := h.semanticizer.allCandidates(string(text))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if cands == nil {
+		// Report "[]" to caller, not "null".
+		cands = make([]candidate, 0)
 	}
 
 	json.NewEncoder(w).Encode(cands)
@@ -53,6 +78,7 @@ func restServer(addr string, sem *semanticizer, s *storage.Settings) error {
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		info(w, s)
 	})
-	http.Handle("/all", restHandler{sem})
+	http.Handle("/all", allHandler{sem})
+	http.Handle("/bestpath", bestPathHandler{sem})
 	return http.ListenAndServe(addr, nil)
 }

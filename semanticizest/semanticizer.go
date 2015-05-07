@@ -100,6 +100,9 @@ func (sem semanticizer) allFromTokens(tokens []string,
 // This gets rid of overlapping candidates.
 func (sem semanticizer) bestPath(s string) ([]candidate, error) {
 	tokens, tokpos := nlp.TokenizePos(s)
+	if len(tokens) == 0 {
+		return nil, nil
+	}
 	all, err := sem.allFromTokens(tokens, tokpos)
 	if err != nil {
 		return nil, err
@@ -156,10 +159,10 @@ type hmm struct {
 	cands []candidate
 
 	// Maps position to number of candidates that start there.
-	nStart map[int] int
+	nStart map[int]int
 
 	// Maps (position, candidate index) to log-probability
-	obsProb map[int]map[int] float64
+	obsProb map[int]map[int]float64
 }
 
 func (h hmm) sinkState() int {

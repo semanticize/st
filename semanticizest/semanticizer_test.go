@@ -9,11 +9,16 @@ import (
 	"testing"
 )
 
-func TestAllCandidates(t *testing.T) {
+var sem = makeSemanticizer()
+
+func TestBestPath(t *testing.T) {
+	sem.bestPath("   ") // should not crash
+}
+
+func makeSemanticizer() semanticizer {
 	cm, _ := countmin.New(10, 4)
 	db, _ := storage.MakeDB(":memory:", true, &storage.Settings{MaxNGram: 2})
 	sem := semanticizer{db, cm, 2}
-	_ = sem
 
 	for _, h := range hash.NGrams([]string{"Hello", "world"}, 2, 2) {
 		_, err := db.Exec(`insert into linkstats values (?, 0, 1)`, h)
@@ -24,7 +29,10 @@ func TestAllCandidates(t *testing.T) {
 			panic(err)
 		}
 	}
+	return sem
+}
 
+func TestCandidates(t *testing.T) {
 	all, err := sem.allCandidates("Hello world")
 	if err != nil {
 		t.Error(err)
@@ -36,24 +44,7 @@ func TestAllCandidates(t *testing.T) {
 	}
 }
 
-func TestBestPath(t *testing.T) {
-	cands := []candidate{
-		{Target: "foo", Offset: 4, Length: 6, Senseprob: .8},
-		{Target: "bar", Offset: 3, Length: 7, Senseprob: .9},
-		{Target: "baz", Offset: 1, Length: 2, Senseprob: .1},
-	}
-	best := bestPath(cands)
-	if len(best) != 2 {
-		t.Errorf("too many entities in path: %d (wanted 2)", len(best))
-	}
-	for _, e := range best {
-		if e.Target != "foo" && e.Target != "baz" {
-			t.Errorf("unexpected entity %q in best path", e.Target)
-		}
-	}
-}
-
-func TestCandidateJSON(t *testing.T) {
+func TestJSON(t *testing.T) {
 	in := candidate{"Wikipedia", 4, 10, .9, 0.0115, 0, 9}
 	enc, _ := json.Marshal(in)
 
@@ -72,5 +63,22 @@ func TestCandidateJSON(t *testing.T) {
 		t.Error(err)
 	} else if !reflect.DeepEqual(got, in) {
 		t.Errorf("could not unmarshal %q, got %v", enc, got)
+	}
+}
+
+func TestViterbi(t *testing.T) {
+	cands := []candidate{
+		{Target: "foo", Offset: 4, Length: 6, Senseprob: .8},
+		{Target: "bar", Offset: 3, Length: 7, Senseprob: .9},
+		{Target: "baz", Offset: 1, Length: 2, Senseprob: .1},
+	}
+	best := bestPath(cands)
+	if len(best) != 2 {
+		t.Errorf("too many entities in path: %d (wanted 2)", len(best))
+	}
+	for _, e := range best {
+		if e.Target != "foo" && e.Target != "baz" {
+			t.Errorf("unexpected entity %q in best path", e.Target)
+		}
 	}
 }

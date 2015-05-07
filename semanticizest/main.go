@@ -49,10 +49,12 @@ func main() {
 		}
 	}
 
+	log.Printf("loading database from %s", *dbpath)
 	db, settings, err := storage.LoadModel(*dbpath)
 	check()
 	ngramcount, err := storage.LoadCM(db)
 	check()
+	log.Print("database loaded")
 
 	sem := semanticizer{db, ngramcount, settings.MaxNGram}
 
