@@ -30,7 +30,6 @@ var infoTemplate = template.Must(template.New("info").Parse(`<html>
 </html>`))
 
 func info(w http.ResponseWriter, settings *storage.Settings) {
-	//io.WriteString(w, settings.Dumpname)
 	infoTemplate.Execute(w, settings)
 }
 
