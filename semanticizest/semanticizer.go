@@ -83,7 +83,7 @@ func (sem semanticizer) allFromTokens(tokens []string,
 	tokpos [][]int) (cands []candidate, err error) {
 
 	for _, hpos := range hash.NGramsPos(tokens, int(sem.maxNGram)) {
-		start, end := hpos.Start, hpos.End
+		start, end := hpos.Start, hpos.End-1
 		start, end = tokpos[start][0], tokpos[end][1]
 
 		add, err := sem.candidates(hpos.Hash, start, end)
