@@ -1,4 +1,4 @@
-package main
+package linking
 
 import (
 	"encoding/json"
@@ -12,13 +12,13 @@ import (
 var sem = makeSemanticizer()
 
 func TestBestPath(t *testing.T) {
-	sem.bestPath("   ") // should not crash
+	sem.BestPath("   ") // should not crash
 }
 
-func makeSemanticizer() semanticizer {
+func makeSemanticizer() Semanticizer {
 	cm, _ := countmin.New(10, 4)
 	db, _ := storage.MakeDB(":memory:", true, &storage.Settings{MaxNGram: 2})
-	sem := semanticizer{db, cm, 2}
+	sem := Semanticizer{db, cm, 2}
 
 	for _, h := range hash.NGrams([]string{"Hello", "world"}, 2, 2) {
 		_, err := db.Exec(`insert into linkstats values (?, 0, 1)`, h)
@@ -33,22 +33,22 @@ func makeSemanticizer() semanticizer {
 }
 
 func TestCandidates(t *testing.T) {
-	all, err := sem.allCandidates("Hello world")
+	all, err := sem.All("Hello world")
 	if err != nil {
 		t.Error(err)
 	}
 	if len(all) != 1 {
-		t.Errorf("expected one candidate, got %v", all)
+		t.Errorf("expected one entity mention, got %v", all)
 	} else if tgt := all[0].Target; tgt != "dmr" {
 		t.Errorf(`expected target "dmr", got %q`, tgt)
 	}
 }
 
 func TestJSON(t *testing.T) {
-	in := candidate{"Wikipedia", 4, 10, .9, 0.0115, 0, 9}
+	in := Entity{"Wikipedia", 4, 10, .9, 0.0115, 0, 9}
 	enc, _ := json.Marshal(in)
 
-	var got candidate
+	var got Entity
 	json.Unmarshal(enc, &got)
 
 	if !reflect.DeepEqual(in, got) {
@@ -67,7 +67,7 @@ func TestJSON(t *testing.T) {
 }
 
 func TestViterbi(t *testing.T) {
-	cands := []candidate{
+	cands := []Entity{
 		{Target: "foo", Offset: 4, Length: 6, Senseprob: .8},
 		{Target: "bar", Offset: 3, Length: 7, Senseprob: .9},
 		{Target: "baz", Offset: 1, Length: 2, Senseprob: .1},

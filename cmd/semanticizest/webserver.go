@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"github.com/semanticize/st/linking"
 	"github.com/semanticize/st/storage"
 	"html/template"
 	"io/ioutil"
@@ -34,23 +35,23 @@ func info(w http.ResponseWriter, settings *storage.Settings) {
 }
 
 type allHandler struct {
-	*semanticizer
+	*linking.Semanticizer
 }
 
 func (h allHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	serveEntities(w, req, h.allCandidates)
+	serveEntities(w, req, h.All)
 }
 
 type bestPathHandler struct {
-	*semanticizer
+	*linking.Semanticizer
 }
 
 func (h bestPathHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	serveEntities(w, req, h.bestPath)
+	serveEntities(w, req, h.BestPath)
 }
 
 func serveEntities(w http.ResponseWriter, req *http.Request,
-	method func(string) ([]candidate, error)) {
+	method func(string) ([]linking.Entity, error)) {
 
 	text, err := ioutil.ReadAll(req.Body)
 	if len(text) == 0 {
@@ -67,13 +68,13 @@ func serveEntities(w http.ResponseWriter, req *http.Request,
 	}
 	if cands == nil {
 		// Report "[]" to caller, not "null".
-		cands = make([]candidate, 0)
+		cands = make([]linking.Entity, 0)
 	}
 
 	json.NewEncoder(w).Encode(cands)
 }
 
-func restServer(addr string, sem *semanticizer, s *storage.Settings) error {
+func restServer(addr string, sem *linking.Semanticizer, s *storage.Settings) error {
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		info(w, s)
 	})

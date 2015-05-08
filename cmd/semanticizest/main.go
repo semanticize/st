@@ -9,7 +9,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"github.com/semanticize/st/storage"
+	"github.com/semanticize/st/linking"
 	"gopkg.in/alecthomas/kingpin.v1"
 	"log"
 	"os"
@@ -50,13 +50,9 @@ func main() {
 	}
 
 	log.Printf("loading database from %s", *dbpath)
-	db, settings, err := storage.LoadModel(*dbpath)
-	check()
-	ngramcount, err := storage.LoadCM(db)
+	sem, settings, err := linking.Load(*dbpath)
 	check()
 	log.Print("database loaded")
-
-	sem := semanticizer{db, ngramcount, settings.MaxNGram}
 
 	if *dohttp == "" {
 		scanner := bufio.NewScanner(os.Stdin)
@@ -65,8 +61,8 @@ func main() {
 		out := json.NewEncoder(os.Stdout)
 
 		for scanner.Scan() {
-			var candidates []candidate
-			candidates, err = sem.allCandidates(scanner.Text())
+			var candidates []linking.Entity
+			candidates, err = sem.All(scanner.Text())
 			check()
 
 			err = out.Encode(candidates)
@@ -75,6 +71,6 @@ func main() {
 		err = scanner.Err()
 		check()
 	} else {
-		log.Fatal(restServer(*dohttp, &sem, settings))
+		log.Fatal(restServer(*dohttp, sem, settings))
 	}
 }

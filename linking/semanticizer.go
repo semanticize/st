@@ -1,20 +1,50 @@
-package main
+// Entity linking package.
+package linking
 
 import (
 	"database/sql"
 	"github.com/semanticize/st/hash"
 	"github.com/semanticize/st/hash/countmin"
 	"github.com/semanticize/st/nlp"
+	"github.com/semanticize/st/storage"
 	"math"
 )
 
-type semanticizer struct {
+type Semanticizer struct {
 	db         *sql.DB
 	ngramcount *countmin.Sketch
 	maxNGram   uint
 }
 
-type candidate struct {
+// Load a semanticizer (entity linker) from modelpath.
+//
+// Also returns a settings object that represents the dumpparser settings used
+// to generate the model.
+func Load(modelpath string) (sem *Semanticizer,
+	settings *storage.Settings, err error) {
+
+	var db *sql.DB
+	defer func() {
+		if db != nil && err != nil {
+			db.Close()
+		}
+	}()
+
+	db, settings, err = storage.LoadModel(modelpath)
+	if err != nil {
+		return
+	}
+	ngramcount, err := storage.LoadCM(db)
+	if err != nil {
+		return
+	}
+	sem = &Semanticizer{db, ngramcount, settings.MaxNGram}
+	return
+}
+
+// Represents a mention of an entity.
+type Entity struct {
+	// Title of target Wikipedia article.
 	Target string `json:"target"`
 
 	// Raw n-gram count estimate.
@@ -34,7 +64,7 @@ type candidate struct {
 }
 
 // Get candidates for hash value h from the database.
-func (sem semanticizer) candidates(h uint32, offset, end int) (cands []candidate, err error) {
+func (sem Semanticizer) candidates(h uint32, offset, end int) (cands []Entity, err error) {
 	q := `select (select title from titles where id = targetid), count
 	      from linkstats where ngramhash = ?`
 	rows, err := sem.db.Query(q, h)
@@ -49,7 +79,7 @@ func (sem semanticizer) candidates(h uint32, offset, end int) (cands []candidate
 		totalLinkCount += count
 		// Initially use the Commonness field to store the number of links
 		// to the target with the given hash.
-		cands = append(cands, candidate{
+		cands = append(cands, Entity{
 			Target:     target,
 			Commonness: count,
 			Senseprob:  0,
@@ -73,14 +103,14 @@ func (sem semanticizer) candidates(h uint32, offset, end int) (cands []candidate
 }
 
 // Get all candidate entity mentions in the string s.
-func (sem semanticizer) allCandidates(s string) (cands []candidate, err error) {
+func (sem Semanticizer) All(s string) (cands []Entity, err error) {
 	tokens, tokpos := nlp.TokenizePos(s)
 	return sem.allFromTokens(tokens, tokpos)
 }
 
 // Returns candidates in sorted order.
-func (sem semanticizer) allFromTokens(tokens []string,
-	tokpos [][]int) (cands []candidate, err error) {
+func (sem Semanticizer) allFromTokens(tokens []string,
+	tokpos [][]int) (cands []Entity, err error) {
 
 	for _, hpos := range hash.NGramsPos(tokens, int(sem.maxNGram)) {
 		start, end := hpos.Start, hpos.End-1
@@ -98,7 +128,7 @@ func (sem semanticizer) allFromTokens(tokens []string,
 // Reports entity mentions in s according to a best path (Viterbi) algorithm.
 //
 // This gets rid of overlapping candidates.
-func (sem semanticizer) bestPath(s string) ([]candidate, error) {
+func (sem Semanticizer) BestPath(s string) ([]Entity, error) {
 	tokens, tokpos := nlp.TokenizePos(s)
 	if len(tokens) == 0 {
 		return nil, nil
@@ -110,7 +140,7 @@ func (sem semanticizer) bestPath(s string) ([]candidate, error) {
 	return bestPath(all), nil
 }
 
-func bestPath(cands []candidate) []candidate {
+func bestPath(cands []Entity) []Entity {
 	// TODO sink state
 	h := hmm{cands, make(map[int]int), make(map[int]map[int]float64)}
 	var endall int
@@ -141,13 +171,13 @@ func bestPath(cands []candidate) []candidate {
 	}
 
 	path := h.viterbi(endall)
-	keep := make(map[*candidate]bool)
+	keep := make(map[*Entity]bool)
 	for _, i := range path {
 		if i != h.sinkState() {
 			keep[&cands[i]] = true
 		}
 	}
-	cands = make([]candidate, 0)
+	cands = make([]Entity, 0)
 	for k := range keep {
 		cands = append(cands, *k)
 	}
@@ -156,7 +186,7 @@ func bestPath(cands []candidate) []candidate {
 }
 
 type hmm struct {
-	cands []candidate
+	cands []Entity
 
 	// Maps position to number of candidates that start there.
 	nStart map[int]int
