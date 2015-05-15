@@ -180,12 +180,18 @@ func StoreRedirects(db *sql.DB, redirs map[string]string, verbose bool) error {
 	var bar *pb.ProgressBar
 	if verbose {
 		bar = pb.StartNew(len(redirs))
+		defer bar.Finish()
 	}
 
 	for from, to := range redirs {
 		var fromId int
 		err := titleId.QueryRow(from).Scan(&fromId)
-		if err != nil {
+		if err == sql.ErrNoRows { // No links to this redirect.
+			if verbose {
+				bar.Increment()
+			}
+			continue
+		} else if err != nil {
 			return err
 		}
 
@@ -232,9 +238,6 @@ func StoreRedirects(db *sql.DB, redirs map[string]string, verbose bool) error {
 		if verbose {
 			bar.Increment()
 		}
-	}
-	if verbose {
-		bar.Finish()
 	}
 	return nil
 }

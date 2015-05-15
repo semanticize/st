@@ -156,7 +156,7 @@ func main() {
 
 	wg.Wait()
 
-	log.Printf("Processing %d redirects", len(redirmap))
+	log.Printf("Processing redirects")
 	storage.StoreRedirects(db, redirmap, true)
 
 	err = storage.StoreCM(db, counterTotal)
