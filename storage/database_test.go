@@ -66,6 +66,9 @@ func TestRedirects(t *testing.T) {
 	check()
 
 	rows, err := db.Query(`select * from linkstats`)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if !rows.Next() {
 		t.Fatal("no rows in database")
 	}

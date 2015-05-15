@@ -248,7 +248,8 @@ func StoreRedirects(db *sql.DB, redirs map[string]string, verbose bool) error {
 			bar.Increment()
 		}
 	}
-	return nil
+	err = tx.Commit()
+	return err
 }
 
 // Load count-min sketch from table ngramfreq.
