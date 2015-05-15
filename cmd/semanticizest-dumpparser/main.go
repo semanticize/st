@@ -150,7 +150,6 @@ func main() {
 
 	// Collect links and store them in the database.
 	wg.Add(1)
-	done := make(chan struct{})
 	go func() {
 		if slerr := storeLinks(db, links, maxN); slerr != nil {
 			panic(slerr)
@@ -161,7 +160,6 @@ func main() {
 	go wikidump.GetPages(f, articles, redirects)
 
 	wg.Wait()
-	close(done)
 
 	log.Printf("Processing %d redirects", len(redirmap))
 	storage.StoreRedirects(db, redirmap, true)
