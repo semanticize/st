@@ -188,17 +188,21 @@ func processLink(link *wikidump.Link, freq, maxN int) *processedLink {
 
 // Collect links and store them in the database.
 func storeLinks(db *sql.DB, links <-chan *processedLink) (err error) {
-	insTitle, err := db.Prepare(`insert or ignore into titles values (NULL, ?)`)
+	tx, err := db.Begin()
 	if err != nil {
 		return
 	}
-	insLink, err := db.Prepare(
+	insTitle, err := tx.Prepare(`insert or ignore into titles values (NULL, ?)`)
+	if err != nil {
+		return
+	}
+	insLink, err := tx.Prepare(
 		`insert or ignore into linkstats values
 		 (?, (select id from titles where title = ?), 0)`)
 	if err != nil {
 		return
 	}
-	update, err := db.Prepare(
+	update, err := tx.Prepare(
 		`update linkstats set count = count + ?
 		 where ngramhash = ?
 		 and targetid = (select id from titles where title =?)`)
@@ -223,6 +227,7 @@ func storeLinks(db *sql.DB, links <-chan *processedLink) (err error) {
 			break
 		}
 	}
+	err = tx.Commit()
 	return
 }
 

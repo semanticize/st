@@ -144,15 +144,6 @@ func Finalize(db *sql.DB) (err error) {
 	return
 }
 
-// Prepares statement; panics on error.
-func MustPrepare(db *sql.DB, statement string) *sql.Stmt {
-	stmt, err := db.Prepare(statement)
-	if err != nil {
-		panic(err)
-	}
-	return stmt
-}
-
 type linkCount struct {
 	hash  int64
 	count float64
@@ -161,21 +152,39 @@ type linkCount struct {
 func StoreRedirects(db *sql.DB, redirs map[string]string, verbose bool) error {
 	counts := make([]linkCount, 0)
 
-	titleId := MustPrepare(db,
-		`select id from titles where title = ?`)
-	old := MustPrepare(db,
-		`select ngramhash, count from linkstats where targetid = ?`)
-	del := MustPrepare(db, `delete from linkstats where targetid = ?`)
-	delTitle := MustPrepare(db, `delete from titles where id = ?`)
-	insTitle := MustPrepare(db,
-		`insert or ignore into titles values (NULL, ?)`)
-	ins := MustPrepare(db,
-		`insert or ignore into linkstats values
-		 (?, (select id from titles where title = ?), 0)`)
-	update := MustPrepare(db,
-		`update linkstats set count = count + ?
-		 where targetid = (select id from titles where title = ?)
-		       and ngramhash = ?`)
+	var titleId, old, del, delTitle, insTitle, ins, update *sql.Stmt
+	tx, err := db.Begin()
+	if err == nil {
+		titleId, err = tx.Prepare(`select id from titles where title = ?`)
+	}
+	if err == nil {
+		old, err = tx.Prepare(
+			`select ngramhash, count from linkstats where targetid = ?`)
+	}
+	if err == nil {
+		del, err = tx.Prepare(`delete from linkstats where targetid = ?`)
+	}
+	if err == nil {
+		delTitle, err = tx.Prepare(`delete from titles where id = ?`)
+	}
+	if err == nil {
+		insTitle, err = tx.Prepare(
+			`insert or ignore into titles values (NULL, ?)`)
+	}
+	if err == nil {
+		ins, err = tx.Prepare(
+			`insert or ignore into linkstats values
+			 (?, (select id from titles where title = ?), 0)`)
+	}
+	if err == nil {
+		update, err = tx.Prepare(
+			`update linkstats set count = count + ?
+			 where targetid = (select id from titles where title = ?)
+			       and ngramhash = ?`)
+	}
+	if err != nil {
+		return err
+	}
 
 	var bar *pb.ProgressBar
 	if verbose {
@@ -272,7 +281,11 @@ func LoadCM(db *sql.DB) (sketch *countmin.Sketch, err error) {
 
 // Store count-min sketch into table ngramfreq.
 func StoreCM(db *sql.DB, sketch *countmin.Sketch) (err error) {
-	insCM, err := db.Prepare(`insert into ngramfreq values (?, ?, ?)`)
+	tx, err := db.Begin()
+	if err != nil {
+		return
+	}
+	insCM, err := tx.Prepare(`insert into ngramfreq values (?, ?, ?)`)
 	if err != nil {
 		return
 	}
@@ -285,5 +298,6 @@ func StoreCM(db *sql.DB, sketch *countmin.Sketch) (err error) {
 			}
 		}
 	}
+	err = tx.Commit()
 	return
 }
