@@ -52,7 +52,7 @@ func open(path string) (r io.ReadCloser, err error) {
 }
 
 var (
-	dbpath = kingpin.Arg("model", "path to model").Required().String()
+	dbpath   = kingpin.Arg("model", "path to model").Required().String()
 	dumppath = kingpin.Arg("dump", "path to Wikipedia dump").String()
 	download = kingpin.Flag("download",
 		"download Wikipedia dump (e.g., enwiki)").String()
@@ -95,10 +95,51 @@ func main() {
 	// The numbers here are completely arbitrary.
 	nworkers := runtime.GOMAXPROCS(0)
 	articles := make(chan *wikidump.Page, 10*nworkers)
-	links := make(chan map[wikidump.Link]int, 10*nworkers)
+	linkch := make(chan *processedLink, 10*nworkers)
 	redirects := make(chan *wikidump.Redirect, 100)
 
+	go wikidump.GetPages(f, articles, redirects)
+
+	// Clean up and tokenize articles, extract links, count n-grams.
+	maxN := int(*maxNGram)
+	counters := make(chan *countmin.Sketch, nworkers)
+
+	// If this countmin.New succeeds, then so will the rest, so we don't need
+	// to check their return values.
+	counterTotal, err := countmin.New(int(*nrows), int(*ncols))
+	check()
+
+	log.Printf("processing dump with %d workers", nworkers)
+	for i := 0; i < nworkers; i++ {
+		go func() {
+			ngramcount, _ := countmin.New(int(*nrows), int(*ncols))
+			for a := range articles {
+				text := wikidump.Cleanup(a.Text)
+				links := wikidump.ExtractLinks(text)
+				for link, freq := range links {
+					linkch <- processLink(&link, freq, maxN)
+				}
+
+				tokens := nlp.Tokenize(text)
+				for _, h := range hash.NGrams(tokens, 1, maxN) {
+					ngramcount.Add1(h)
+				}
+			}
+			counters <- ngramcount
+		}()
+	}
+
 	var wg sync.WaitGroup
+
+	wg.Add(1)
+	go func() {
+		for i := 1; i < nworkers; i++ {
+			counterTotal.Sum(<-counters)
+		}
+		close(counters) // Force panic for programmer error.
+		close(linkch)   // We know the workers are done now.
+		wg.Done()
+	}()
 
 	// Collect redirects.
 	wg.Add(1)
@@ -110,61 +151,15 @@ func main() {
 		wg.Done()
 	}()
 
-	// Clean up and tokenize articles, extract links, count n-grams.
-	maxN := int(*maxNGram)
-	counters := make([]*countmin.Sketch, nworkers)
-
-	var worker sync.WaitGroup
-	worker.Add(nworkers)
-	log.Printf("%d workers", nworkers)
-	for i := 0; i < nworkers; i++ {
-		counters[i], err = countmin.New(int(*nrows), int(*ncols))
-		check()
-
-		go func(ngramcount *countmin.Sketch) {
-			for a := range articles {
-				text := wikidump.Cleanup(a.Text)
-				links <- wikidump.ExtractLinks(text)
-
-				tokens := nlp.Tokenize(text)
-				for _, h := range hash.NGrams(tokens, 1, maxN) {
-					ngramcount.Add1(h)
-				}
-			}
-			worker.Done()
-		}(counters[i])
-	}
-
-	wg.Add(1)
-	go func() {
-		worker.Wait()
-		close(links)
-
-		for i := 1; i < nworkers; i++ {
-			counters[0].Sum(counters[i])
-		}
-		counters = counters[:1]
-
-		wg.Done()
-	}()
-
-	// Collect links and store them in the database.
-	wg.Add(1)
-	go func() {
-		if slerr := storeLinks(db, links, maxN); slerr != nil {
-			panic(slerr)
-		}
-		wg.Done()
-	}()
-
-	go wikidump.GetPages(f, articles, redirects)
+	err = storeLinks(db, linkch)
+	check()
 
 	wg.Wait()
 
 	log.Printf("Processing %d redirects", len(redirmap))
 	storage.StoreRedirects(db, redirmap, true)
 
-	err = storage.StoreCM(db, counters[0])
+	err = storage.StoreCM(db, counterTotal)
 	check()
 
 	log.Println("Finalizing database")
@@ -174,9 +169,25 @@ func main() {
 	check()
 }
 
-func storeLinks(db *sql.DB, links <-chan map[wikidump.Link]int,
-	maxN int) (err error) {
+type processedLink struct {
+	target       string
+	anchorHashes []uint32
+	freq         float64
+}
 
+func processLink(link *wikidump.Link, freq, maxN int) *processedLink {
+	tokens := nlp.Tokenize(link.Anchor)
+	n := min(maxN, len(tokens))
+	hashes := hash.NGrams(tokens, n, n)
+	count := float64(freq)
+	if len(hashes) > 1 {
+		count = 1 / float64(len(hashes))
+	}
+	return &processedLink{link.Target, hashes, count}
+}
+
+// Collect links and store them in the database.
+func storeLinks(db *sql.DB, links <-chan *processedLink) (err error) {
 	insTitle, err := db.Prepare(`insert or ignore into titles values (NULL, ?)`)
 	if err != nil {
 		return
@@ -201,23 +212,15 @@ func storeLinks(db *sql.DB, links <-chan map[wikidump.Link]int,
 		}
 	}
 
-	for linkFreq := range links {
-		for link, freq := range linkFreq {
-			tokens := nlp.Tokenize(link.Anchor)
-			n := min(maxN, len(tokens))
-			hashes := hash.NGrams(tokens, n, n)
-			count := float64(freq)
-			if len(hashes) > 1 {
-				count = 1 / float64(len(hashes))
-			}
-			for _, h := range hashes {
-				exec(insTitle, link.Target)
-				exec(insLink, h, link.Target)
-				exec(update, count, h, link.Target)
-			}
-			if err != nil {
-				return
-			}
+	for link := range links {
+		count := link.freq
+		for _, h := range link.anchorHashes {
+			exec(insTitle, link.target)
+			exec(insLink, h, link.target)
+			exec(update, count, h, link.target)
+		}
+		if err != nil {
+			break
 		}
 	}
 	return

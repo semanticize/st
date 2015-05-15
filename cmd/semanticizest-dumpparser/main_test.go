@@ -21,7 +21,17 @@ func TestStoreLinks(t *testing.T) {
 		close(links)
 	}()
 
-	if err := storeLinks(db, links, 3); err != nil {
+	processed := make(chan *processedLink)
+	go func() {
+		for linkFreq := range links {
+			for link, freq := range linkFreq {
+				processed <- processLink(&link, freq, 3)
+			}
+		}
+		close(processed)
+	}()
+
+	if err := storeLinks(db, processed); err != nil {
 		t.Error(err)
 	}
 
