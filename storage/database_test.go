@@ -59,6 +59,7 @@ func TestRedirects(t *testing.T) {
 
 	redirects := make(map[string]string)
 	redirects["Architekt"] = "Architect"
+	redirects["Non existent"] = "Non-existent"
 
 	err = StoreRedirects(db, redirects, false)
 	check()
@@ -99,9 +100,14 @@ func TestRedirects(t *testing.T) {
 	if title != "Architect" {
 		t.Fatalf("wrong title: %q", title)
 	}
-	err = db.QueryRow(`select id from titles where title = "Architekt"`).Scan(&toId)
-	if err != sql.ErrNoRows {
-		t.Fatalf("expected ErrNoRows, got %q", err)
+	for _, title := range []string{
+		"Architekt", "Non existent", "Non-existent",
+	} {
+		err = db.QueryRow(`select id from titles where title = ?`,
+			title).Scan(&toId)
+		if err != sql.ErrNoRows {
+			t.Fatalf("expected ErrNoRows, got %q", err)
+		}
 	}
 }
 
@@ -118,7 +124,7 @@ func TestCM(t *testing.T) {
 	check()
 
 	for _, i := range []uint32{1, 6, 13, 7, 8, 20, 44} {
-		cm.Add(i, i + 5)
+		cm.Add(i, i+5)
 	}
 
 	err = StoreCM(db, cm)
