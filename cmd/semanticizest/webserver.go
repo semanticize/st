@@ -35,17 +35,13 @@ func info(w http.ResponseWriter, settings *storage.Settings) {
 	infoTemplate.Execute(w, settings)
 }
 
-type allHandler struct {
-	*linking.Semanticizer
-}
+type allHandler struct{ *linking.Semanticizer }
 
 func (h allHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	serveEntities(w, req, h.All)
 }
 
-type bestPathHandler struct {
-	*linking.Semanticizer
-}
+type bestPathHandler struct{ *linking.Semanticizer }
 
 func (h bestPathHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	serveEntities(w, req, h.BestPath)
