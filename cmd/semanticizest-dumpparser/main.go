@@ -101,11 +101,7 @@ func main() {
 	go wikidump.GetPages(f, articles, redirects)
 
 	// Clean up and tokenize articles, extract links, count n-grams.
-	maxN := int(*maxNGram)
 	counters := make(chan *countmin.Sketch, nworkers)
-
-	// If this countmin.New succeeds, then so will the rest, so we don't need
-	// to check their return values.
 	counterTotal, err := countmin.New(int(*nrows), int(*ncols))
 	check()
 
@@ -113,21 +109,7 @@ func main() {
 	var narticles uint32
 	for i := 0; i < nworkers; i++ {
 		go func() {
-			ngramcount, _ := countmin.New(int(*nrows), int(*ncols))
-			for a := range articles {
-				atomic.AddUint32(&narticles, 1)
-				text := wikidump.Cleanup(a.Text)
-				links := wikidump.ExtractLinks(text)
-				for link, freq := range links {
-					linkch <- processLink(&link, freq, maxN)
-				}
-
-				tokens := nlp.Tokenize(text)
-				for _, h := range hash.NGrams(tokens, 1, maxN) {
-					ngramcount.Add1(h)
-				}
-			}
-			counters <- ngramcount
+			counters <- processPages(articles, linkch, &narticles)
 		}()
 	}
 
@@ -171,6 +153,33 @@ func main() {
 	check()
 	err = db.Close()
 	check()
+}
+
+func processPages(articles <-chan *wikidump.Page,
+	linkch chan<- *processedLink, narticles *uint32) *countmin.Sketch {
+
+	ngramcount, err := countmin.New(int(*nrows), int(*ncols))
+	if err != nil {
+		// Shouldn't happen; we already constructed a count-min sketch
+		// with the exact same size in main.
+		panic(err)
+	}
+
+	maxN := int(*maxNGram)
+	for a := range articles {
+		text := wikidump.Cleanup(a.Text)
+		links := wikidump.ExtractLinks(text)
+		for link, freq := range links {
+			linkch <- processLink(&link, freq, maxN)
+		}
+
+		tokens := nlp.Tokenize(text)
+		for _, h := range hash.NGrams(tokens, 1, maxN) {
+			ngramcount.Add1(h)
+		}
+		atomic.AddUint32(narticles, 1)
+	}
+	return ngramcount
 }
 
 // Regularly report the number of pages processed so far.
