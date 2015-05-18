@@ -36,8 +36,7 @@ Set up a Go workspace, if you haven't already. For example::
 
 Fetch and compile::
 
-    go get github.com/semanticize/st/...
-    go install github.com/semanticize/st/...
+    go get -u github.com/semanticize/st/...
 
 You now have a working parser at ``${GOPATH}/bin/semanticizest-dumpparser``.
 Issue::
