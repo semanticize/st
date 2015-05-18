@@ -190,10 +190,12 @@ func pageProgress(narticles *uint32, wg *sync.WaitGroup) {
 		done <- struct{}{}
 	}()
 
-	timeout := time.Tick(15*time.Second)
+	timeout := time.Tick(15 * time.Second)
 	for {
 		select {
 		case <-done:
+			log.Printf("processed all %d articles",
+				atomic.LoadUint32(narticles))
 			return
 		case <-timeout:
 			log.Printf("processed %d pages", atomic.LoadUint32(narticles))
