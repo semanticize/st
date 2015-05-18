@@ -29,9 +29,7 @@ import (
 
 func init() {
 	if os.Getenv("GOMAXPROCS") == "" {
-		// Four is about the number of cores that we can put to useful work
-		// when the disk is fast.
-		runtime.GOMAXPROCS(min(runtime.NumCPU(), 4))
+		runtime.GOMAXPROCS(runtime.NumCPU())
 	}
 }
 
