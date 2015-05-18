@@ -44,6 +44,24 @@ func TestCandidates(t *testing.T) {
 	}
 }
 
+func TestExactMatch(t *testing.T) {
+	all, err := sem.ExactMatch("Hello world")
+	if err != nil {
+		t.Error(err)
+	}
+	if len(all) != 1 {
+		t.Errorf("expected one entity mention, got %v", all)
+	}
+
+	all, err = sem.ExactMatch("Hello world program")
+	if err != nil {
+		t.Error(err)
+	}
+	if len(all) != 0 {
+		t.Errorf("expected no entity mentions, got %v", all)
+	}
+}
+
 func TestJSON(t *testing.T) {
 	in := Entity{"Wikipedia", 4, 10, .9, 0.0115, 0, 9}
 	enc, _ := json.Marshal(in)

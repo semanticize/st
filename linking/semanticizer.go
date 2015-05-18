@@ -63,7 +63,8 @@ type Entity struct {
 	Length int `json:"length"`
 }
 
-// Get candidates for hash value h from the database.
+// Get candidates for hash value h from the database. offset and end index
+// into the original string and are stored on the return values.
 func (sem Semanticizer) candidates(h uint32, offset, end int) (cands []Entity, err error) {
 	q := `select (select title from titles where id = targetid), count
 	      from linkstats where ngramhash = ?`
@@ -106,6 +107,15 @@ func (sem Semanticizer) candidates(h uint32, offset, end int) (cands []Entity, e
 func (sem Semanticizer) All(s string) (cands []Entity, err error) {
 	tokens, tokpos := nlp.TokenizePos(s)
 	return sem.allFromTokens(tokens, tokpos)
+}
+
+// Get all candidate entity mentions for the string s.
+//
+// A candidate entity's anchor text must be exactly s.
+func (sem Semanticizer) ExactMatch(s string) (cands []Entity, err error) {
+	tokens := nlp.Tokenize(s)
+	h := hash.NGrams(tokens, len(tokens), len(tokens))[0]
+	return sem.candidates(h, 0, len(tokens))
 }
 
 // Returns candidates in sorted order.
