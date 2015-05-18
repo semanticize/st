@@ -20,10 +20,17 @@ var infoTemplate = template.Must(template.New("info").Parse(`<html>
     </p>
     <p>Endpoints take data via POST requests and produce JSON:
       <ul>
-        <li><code>/all</code> gives all candidate entities</li>
+        <li>
+          <code>/all</code>
+          gives all candidate entities occurring anywhere in a string
+        </li>
         <li>
           <code>/bestpath</code> gives the entities according to a
           Viterbi algorithm</code>
+        </li>
+		<li>
+          <code>/exactmatch</code>
+          gives all candidate entities for a string (but not its substrings)
         </li>
       </ul>
     </p>
@@ -45,6 +52,12 @@ type bestPathHandler struct{ *linking.Semanticizer }
 
 func (h bestPathHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	serveEntities(w, req, h.BestPath)
+}
+
+type stringHandler struct{ *linking.Semanticizer }
+
+func (h stringHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	serveEntities(w, req, h.ExactMatch)
 }
 
 func serveEntities(w http.ResponseWriter, req *http.Request,
@@ -77,5 +90,6 @@ func restServer(addr string, sem *linking.Semanticizer, s *storage.Settings) err
 	})
 	http.Handle("/all", allHandler{sem})
 	http.Handle("/bestpath", bestPathHandler{sem})
+	http.Handle("/exactmatch", stringHandler{sem})
 	return http.ListenAndServe(addr, nil)
 }
