@@ -3,6 +3,7 @@ package storage
 import (
 	"database/sql"
 	"github.com/semanticize/st/hash/countmin"
+	"github.com/semanticize/st/wikidump"
 	"reflect"
 	"testing"
 )
@@ -57,11 +58,12 @@ func TestRedirects(t *testing.T) {
 		(42, (select id from titles where title = "Architekt"), 10)`)
 	check()
 
-	redirects := make(map[string]string)
-	redirects["Architekt"] = "Architect"
-	redirects["Non existent"] = "Non-existent"
+	redirects := []wikidump.Redirect{
+		{Title: "Architekt", Target: "Architect"},
+		{Title: "Non existent", Target: "Non-existent"},
+	}
 
-	err = StoreRedirects(db, redirects, false)
+	err = StoreRedirects(db, redirects, nil)
 	check()
 	err = Finalize(db)
 	check()

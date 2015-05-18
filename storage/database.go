@@ -7,6 +7,7 @@ import (
 	"github.com/cheggaaa/pb"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/semanticize/st/hash/countmin"
+	"github.com/semanticize/st/wikidump"
 	"log"
 	"os"
 	"strconv"
@@ -149,7 +150,9 @@ type linkCount struct {
 	count float64
 }
 
-func StoreRedirects(db *sql.DB, redirs map[string]string, verbose bool) error {
+func StoreRedirects(db *sql.DB, redirs []wikidump.Redirect,
+	bar *pb.ProgressBar) error {
+
 	counts := make([]linkCount, 0)
 
 	var titleId, old, del, delTitle, insTitle, ins, update *sql.Stmt
@@ -186,19 +189,13 @@ func StoreRedirects(db *sql.DB, redirs map[string]string, verbose bool) error {
 		return err
 	}
 
-	var bar *pb.ProgressBar
-	if verbose {
-		bar = pb.StartNew(len(redirs))
-		defer bar.Finish()
-	}
-
-	for from, to := range redirs {
-		if verbose {
+	for _, r := range redirs {
+		if bar != nil {
 			bar.Increment()
 		}
 
 		var fromId int
-		err := titleId.QueryRow(from).Scan(&fromId)
+		err := titleId.QueryRow(r.Title).Scan(&fromId)
 		if err == sql.ErrNoRows { // No links to this redirect.
 			continue
 		} else if err != nil {
@@ -233,13 +230,13 @@ func StoreRedirects(db *sql.DB, redirs map[string]string, verbose bool) error {
 
 		for _, c := range counts {
 			if err == nil {
-				_, err = insTitle.Exec(to)
+				_, err = insTitle.Exec(r.Target)
 			}
 			if err == nil {
-				_, err = ins.Exec(c.hash, to)
+				_, err = ins.Exec(c.hash, r.Target)
 			}
 			if err == nil {
-				_, err = update.Exec(c.count, to, c.hash)
+				_, err = update.Exec(c.count, r.Target, c.hash)
 			}
 		}
 		if err != nil {

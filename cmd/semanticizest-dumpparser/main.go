@@ -10,6 +10,7 @@ import (
 	"bufio"
 	"compress/bzip2"
 	"database/sql"
+	"github.com/cheggaaa/pb"
 	"github.com/semanticize/st/hash"
 	"github.com/semanticize/st/hash/countmin"
 	"github.com/semanticize/st/nlp"
@@ -96,9 +97,9 @@ func main() {
 	nworkers := runtime.GOMAXPROCS(0)
 	articles := make(chan *wikidump.Page, 10*nworkers)
 	linkch := make(chan *processedLink, 10*nworkers)
-	redirects := make(chan *wikidump.Redirect, 100)
+	redirch := make(chan *wikidump.Redirect, 10*nworkers)
 
-	go wikidump.GetPages(f, articles, redirects)
+	go wikidump.GetPages(f, articles, redirch)
 
 	// Clean up and tokenize articles, extract links, count n-grams.
 	counters := make(chan *countmin.Sketch, nworkers)
@@ -125,15 +126,20 @@ func main() {
 		wg.Done()
 	}()
 
-	// Collect redirects.
-	wg.Add(1)
-	redirmap := make(map[string]string)
-	go func() {
-		for r := range redirects {
-			redirmap[r.Title] = r.Target
-		}
-		wg.Done()
-	}()
+	// Collect redirects. We store these in nworkers slices to avoid having
+	// to copy them into a single structure.
+	// The allRedirects channel MUST be buffered.
+	wg.Add(nworkers)
+	allRedirects := make(chan []wikidump.Redirect, nworkers)
+	var nredirs uint32
+	for i := 0; i < nworkers; i++ {
+		go func() {
+			slice := collectRedirects(redirch)
+			atomic.AddUint32(&nredirs, uint32(len(slice)))
+			allRedirects <- slice
+			wg.Done()
+		}()
+	}
 
 	go pageProgress(&narticles, &wg)
 
@@ -141,9 +147,15 @@ func main() {
 	check()
 
 	wg.Wait()
+	close(allRedirects)
 
 	log.Printf("Processing redirects")
-	storage.StoreRedirects(db, redirmap, true)
+	bar := pb.StartNew(int(nredirs))
+	for slice := range allRedirects {
+		err = storage.StoreRedirects(db, slice, bar)
+		check()
+	}
+	bar.Finish()
 
 	err = storage.StoreCM(db, counterTotal)
 	check()
@@ -153,6 +165,21 @@ func main() {
 	check()
 	err = db.Close()
 	check()
+}
+
+// Collect redirects from redirch into a slice.
+//
+// We have to collect these in memory because we process them only after all
+// link statistics have been dumped into the database.
+func collectRedirects(redirch <-chan *wikidump.Redirect) []wikidump.Redirect {
+
+	redirects := make([]wikidump.Redirect, 0, 1024) // The 1024 is arbitrary.
+	for r := range redirch {
+		// XXX *r copies the struct.
+		// Maybe copying the pointer is cheaper; should profile.
+		redirects = append(redirects, *r)
+	}
+	return redirects
 }
 
 func processPages(articles <-chan *wikidump.Page,
