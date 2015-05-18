@@ -23,6 +23,8 @@ import (
 	"runtime"
 	"strconv"
 	"sync"
+	"sync/atomic"
+	"time"
 )
 
 func init() {
@@ -110,10 +112,12 @@ func main() {
 	check()
 
 	log.Printf("processing dump with %d workers", nworkers)
+	var narticles uint32
 	for i := 0; i < nworkers; i++ {
 		go func() {
 			ngramcount, _ := countmin.New(int(*nrows), int(*ncols))
 			for a := range articles {
+				atomic.AddUint32(&narticles, 1)
 				text := wikidump.Cleanup(a.Text)
 				links := wikidump.ExtractLinks(text)
 				for link, freq := range links {
@@ -151,6 +155,8 @@ func main() {
 		wg.Done()
 	}()
 
+	go pageProgress(&narticles, &wg)
+
 	err = storeLinks(db, linkch)
 	check()
 
@@ -167,6 +173,25 @@ func main() {
 	check()
 	err = db.Close()
 	check()
+}
+
+// Regularly report the number of pages processed so far.
+func pageProgress(narticles *uint32, wg *sync.WaitGroup) {
+	done := make(chan struct{})
+	go func() {
+		wg.Wait()
+		done <- struct{}{}
+	}()
+
+	timeout := time.Tick(15*time.Second)
+	for {
+		select {
+		case <-done:
+			return
+		case <-timeout:
+			log.Printf("processed %d pages", atomic.LoadUint32(narticles))
+		}
+	}
 }
 
 type processedLink struct {
