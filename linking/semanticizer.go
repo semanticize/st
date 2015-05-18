@@ -42,27 +42,6 @@ func Load(modelpath string) (sem *Semanticizer,
 	return
 }
 
-// Represents a mention of an entity.
-type Entity struct {
-	// Title of target Wikipedia article.
-	Target string `json:"target"`
-
-	// Raw n-gram count estimate.
-	NGramCount float64 `json:"ngramcount"`
-
-	// Total number of links to Target in Wikipedia.
-	LinkCount float64 `json:"linkcount"`
-
-	Commonness float64 `json:"commonness"`
-	Senseprob  float64 `json:"senseprob"`
-
-	// Offset of anchor in input string.
-	Offset int `json:"offset"`
-
-	// Length of anchor in input string.
-	Length int `json:"length"`
-}
-
 // Get candidates for hash value h from the database. offset and end index
 // into the original string and are stored on the return values.
 func (sem Semanticizer) candidates(h uint32, offset, end int) (cands []Entity, err error) {

@@ -84,6 +84,24 @@ func TestJSON(t *testing.T) {
 	}
 }
 
+func BenchmarkJSON(b *testing.B) {
+	// XXX We need more examples.
+	entities := []*Entity{
+		{Target: "Wikipedia", NGramCount: 4, LinkCount: 10, Commonness: .9,
+			Senseprob: 0.0115, Offset: 0, Length: 9},
+		{Target: "Supercalifragilisticexpialidocious",
+			Offset: 4, Length: 6, Senseprob: .8},
+		{Target: "Barack_Obama", Offset: 3, Length: 7, Senseprob: .9},
+		{Target: "List_of_stupid_examples_for_unit_tests",
+			Offset: 1, Length: 2, Senseprob: .1, NGramCount: 100},
+	}
+	for i := 0; i < b.N; i++ {
+		for _, e := range entities {
+			json.Marshal(e)
+		}
+	}
+}
+
 func TestViterbi(t *testing.T) {
 	cands := []Entity{
 		{Target: "foo", Offset: 4, Length: 6, Senseprob: .8},
