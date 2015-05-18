@@ -24,6 +24,7 @@ var infoTemplate = template.Must(template.New("info").Parse(`<html>
         <li>
           <code>/bestpath</code> gives the entities according to a
           Viterbi algorithm</code>
+        </li>
       </ul>
     </p>
     <p>&copy; 2015 Netherlands eScience Center/University of Amsterdam.</p>
