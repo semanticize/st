@@ -130,7 +130,7 @@ func main() {
 	// to copy them into a single structure.
 	// The allRedirects channel MUST be buffered.
 	wg.Add(nworkers)
-	allRedirects := make(chan []wikidump.Redirect, nworkers)
+	allRedirects := make(chan []*wikidump.Redirect, nworkers)
 	var nredirs uint32
 	for i := 0; i < nworkers; i++ {
 		go func() {
@@ -157,6 +157,7 @@ func main() {
 	}
 	bar.Finish()
 
+	log.Printf("Storing count-min sketch of n-gram frequencies")
 	err = storage.StoreCM(db, counterTotal)
 	check()
 
@@ -171,13 +172,12 @@ func main() {
 //
 // We have to collect these in memory because we process them only after all
 // link statistics have been dumped into the database.
-func collectRedirects(redirch <-chan *wikidump.Redirect) []wikidump.Redirect {
-
-	redirects := make([]wikidump.Redirect, 0, 1024) // The 1024 is arbitrary.
+func collectRedirects(redirch <-chan *wikidump.Redirect) []*wikidump.Redirect {
+	redirects := make([]*wikidump.Redirect, 0, 1024) // The 1024 is arbitrary.
 	for r := range redirch {
 		// XXX *r copies the struct.
 		// Maybe copying the pointer is cheaper; should profile.
-		redirects = append(redirects, *r)
+		redirects = append(redirects, r)
 	}
 	return redirects
 }
@@ -209,7 +209,7 @@ func processPages(articles <-chan *wikidump.Page,
 	return ngramcount
 }
 
-// Regularly report the number of pages processed so far.
+// Regularly report the number of articles processed so far.
 func pageProgress(narticles *uint32, wg *sync.WaitGroup) {
 	done := make(chan struct{})
 	go func() {
@@ -225,7 +225,7 @@ func pageProgress(narticles *uint32, wg *sync.WaitGroup) {
 				atomic.LoadUint32(narticles))
 			return
 		case <-timeout:
-			log.Printf("processed %d pages", atomic.LoadUint32(narticles))
+			log.Printf("processed %d articles", atomic.LoadUint32(narticles))
 		}
 	}
 }
