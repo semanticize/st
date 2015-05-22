@@ -139,10 +139,10 @@ func DownloadParts(wikiNameVersion string) (filenames []string, err error) {
 		if err != nil {
 			continue
 		}
-		defer out.Close()
 
 		log.Printf("downloading %s", u)
 		out = newPbWriter(out, resp.ContentLength)
+		defer out.Close()
 		_, err = io.Copy(out, resp.Body)
 
 		filenames = append(filenames, localName)
