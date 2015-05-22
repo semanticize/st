@@ -99,14 +99,14 @@ func main() {
 	var inputWg sync.WaitGroup
 	for _, path := range *dumppaths {
 		inputWg.Add(1)
-		go func() {
+		go func(path string) {
 			var f io.ReadCloser
 			f, err = open(path)
 			check()
 			defer f.Close()
 			wikidump.GetPages(f, articles, redirch)
 			inputWg.Done()
-		}()
+		}(path)
 	}
 	go func() {
 		inputWg.Wait()
