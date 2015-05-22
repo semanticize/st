@@ -48,20 +48,33 @@ var (
 )
 
 func TestDownload(t *testing.T) {
+	oldpwd, err := os.Open(".")
+	if err != nil {
+		t.Fatal(err)
+	}
 	d, err := ioutil.TempDir("", "dumpparser-test")
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
 	}
+	if err = os.Chdir(d); err != nil {
+		t.Fatal(err)
+	}
+	defer oldpwd.Chdir()
 
 	path := filepath.Join(d, "sco.bz2")
-	path, err = download("scowiki", path, false, &mockClient)
+	path, err = download("scowiki", false, &mockClient)
 	if err != nil {
 		t.Error(err)
 	} else {
-		if base := filepath.Base(path); base != "sco.bz2" {
+		expect := "scowiki-latest-pages-articles.xml.bz2"
+		if base := filepath.Base(path); base != expect {
 			t.Errorf("unexpected filename: %s", base)
 		}
-		if dir := filepath.Dir(path); dir != d {
+		fullpath, err := filepath.Abs(path)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if dir := filepath.Dir(fullpath); dir != d {
 			t.Errorf("downloaded to wrong directory %q (wanted %q)", dir, d)
 		}
 	}
@@ -127,10 +140,31 @@ func TestParseDumpIndex(t *testing.T) {
 		"/enwiki/20150304/enwiki-20150304-pages-articles25.xml-p023725001p026624997.bz2",
 		"/enwiki/20150304/enwiki-20150304-pages-articles26.xml-p026625004p029624976.bz2",
 		"/enwiki/20150304/enwiki-20150304-pages-articles27.xml-p029625017p045581259.bz2",
-
 	}
 
 	paths, err := parseDumpIndex(doc)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(paths, expected) {
+		t.Errorf("expected %v, got %v", expected, paths)
+	}
+
+	expected = []string{
+		"/nlwiki/20150518/nlwiki-20150518-pages-articles1.xml.bz2",
+		"/nlwiki/20150518/nlwiki-20150518-pages-articles2.xml.bz2",
+		"/nlwiki/20150518/nlwiki-20150518-pages-articles3.xml.bz2",
+		"/nlwiki/20150518/nlwiki-20150518-pages-articles4.xml.bz2",
+	}
+
+	f, err = os.Open("nlwiki-20150518.html")
+	check()
+	defer f.Close()
+
+	doc, err = goquery.NewDocumentFromReader(f)
+	check()
+
+	paths, err = parseDumpIndex(doc)
 	if err != nil {
 		t.Fatal(err)
 	}

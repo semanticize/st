@@ -82,7 +82,7 @@ func main() {
 		check()
 	}
 	if len(*dumppaths) == 0 {
-		log.Fatal("no --download and no dumppath specified (try --help)")
+		log.Fatal("no files found by --download and no dumppath specified (try --help)")
 	}
 
 	log.Printf("Creating database at %s", *dbpath)

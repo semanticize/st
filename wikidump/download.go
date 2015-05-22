@@ -47,11 +47,11 @@ func (w *pbWriter) Write(p []byte) (n int, err error) {
 // path from the URL and returns that.
 //
 // Logs its progress on the standard log if logProgress is true.
-func Download(wikiname, path string, logProgress bool) (string, error) {
-	return download(wikiname, path, logProgress, http.DefaultClient)
+func Download(wikiname string, logProgress bool) (string, error) {
+	return download(wikiname, logProgress, http.DefaultClient)
 }
 
-func download(wikiname, filepath string, logProgress bool,
+func download(wikiname string, logProgress bool,
 	client *http.Client) (string, error) {
 
 	var err error
@@ -77,9 +77,7 @@ func download(wikiname, filepath string, logProgress bool,
 	if err != nil {
 		return "", err
 	}
-	if filepath == "" {
-		filepath = path.Base(u.Path)
-	}
+	filepath := path.Base(u.Path)
 
 	var out io.WriteCloser
 	out, err = os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0666)
@@ -97,7 +95,7 @@ func download(wikiname, filepath string, logProgress bool,
 	return filepath, nil
 }
 
-var partPattern = regexp.MustCompile(`pages-articles\d+\.xml-p.*\.bz2`)
+var partPattern = regexp.MustCompile(`pages-articles\d+\.xml.*\.bz2`)
 
 // Download a dump in parts.
 //

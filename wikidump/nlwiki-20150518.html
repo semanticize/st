@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>nlwiki dump progress on 20150518</title>
+        <style type="text/css">
+                html, body {
+                        background-color: #eee;
+                        color: black;
+                }
+                .siteinfo {
+                        text-align: center;
+                }
+                li {
+                        background-color: #f4f4f4;
+                        list-style-type: none;
+                }
+                li li {
+                        background-color: white;
+                }
+                li ul {
+                        margin-top: 4px;
+                        margin-bottom: 8px;
+                }
+                .detail {
+                        font-weight: normal;
+                        font-style: italic;
+                }
+                .updates {
+                        font: monospace;
+                        font-size: smaller;
+                }
+                .status {
+                        font-weight: bold;
+                }
+                .status, .checksum {
+                        padding-left: 1em;
+                        padding-right: 1em;
+                }
+                .in-progress {
+                        font-weight: bold;
+                }
+                .failed {
+                        color: Maroon;
+                        font-weight: bold;
+                }
+                .notice {
+                        color: Maroon;
+                        font-weight: normal;
+                }
+                .waiting {
+                        color: Silver; /* Gray ? */
+                }
+                .progress {
+                        font-family: monospace;
+                        font-size: 80%;
+                        margin-left: .5in;
+                }
+        </style>
+</head>
+
+<body>
+        <h1>nlwiki dump progress on 20150518</h1>
+
+        <p class="siteinfo">
+                This is the Wikimedia dump service.
+                Please read the <a href='../../legal.html'>copyrights</a> information.
+                See <a href="http://meta.wikimedia.org/wiki/Data_dumps">Meta:Data dumps</a>
+                for documentation on the provided data formats.
+        </p>
+
+        <p class="notice"></p>
+
+        <p>See <a href="../../backup-index.html">all databases list</a>.</p>
+
+        <p class="previous">
+                <a href="../20150429/">Last dumped on 2015-04-29</a>
+        </p>
+
+        <p class="status">
+                <span class='done'>Dump complete</span>
+        </p>
+
+        <p class="checksum">
+                Verify downloaded files against the <a href="/nlwiki/20150518/nlwiki-20150518-md5sums.txt">MD5 checksums</a>
+                to check for corrupted files.
+        </p>
+
+        <ul>
+                <li class='done'><span class='updates'>2015-05-20 12:29:12</span> <span class='status'>done</span> <span class='title'>Articles, templates, media/file descriptions, and primary meta-pages, in multiple bz2 streams, 100 pages per stream</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-articles-multistream.xml.bz2">nlwiki-20150518-pages-articles-multistream.xml.bz2</a> 1.1 GB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-articles-multistream-index.txt.bz2">nlwiki-20150518-pages-articles-multistream-index.txt.bz2</a> 22.5 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-20 12:05:11</span> <span class='status'>done</span> <span class='title'>All pages with complete edit history (.7z)</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-meta-history1.xml.7z">nlwiki-20150518-pages-meta-history1.xml.7z</a> 992.3 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-meta-history2.xml.7z">nlwiki-20150518-pages-meta-history2.xml.7z</a> 983.3 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-meta-history3.xml.7z">nlwiki-20150518-pages-meta-history3.xml.7z</a> 1.0 GB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-meta-history4.xml.7z">nlwiki-20150518-pages-meta-history4.xml.7z</a> 1.4 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-20 02:52:48</span> <span class='status'>done</span> <span class='title'>All pages with complete page edit history (.bz2)</span><div class='progress'>2015-05-20 02:52:46: nlwiki (ID 928) 130393 pages (1.9|52153.8/sec all|curr), 9856954 revs (143.7|381.6/sec all|curr), 96.6%|96.6% prefetched (all|curr), ETA 2015-05-22 21:15:00 [max 44180898]</div>
+<ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-meta-history1.xml.bz2">nlwiki-20150518-pages-meta-history1.xml.bz2</a> 5.2 GB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-meta-history2.xml.bz2">nlwiki-20150518-pages-meta-history2.xml.bz2</a> 7.6 GB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-meta-history3.xml.bz2">nlwiki-20150518-pages-meta-history3.xml.bz2</a> 3.9 GB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-meta-history4.xml.bz2">nlwiki-20150518-pages-meta-history4.xml.bz2</a> 5.7 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-19 07:49:05</span> <span class='status'>done</span> <span class='title'>Log events to all pages and users.</span><ul><li class='detail'>This contains the log of actions performed on pages and users.</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-logging.xml.gz">nlwiki-20150518-pages-logging.xml.gz</a> 699.7 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-19 06:23:38</span> <span class='status'>done</span> <span class='title'>Recombine all pages, current versions only.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-meta-current.xml.bz2">nlwiki-20150518-pages-meta-current.xml.bz2</a> 1.3 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-19 05:52:45</span> <span class='status'>done</span> <span class='title'>All pages, current versions only.</span><div class='progress'>2015-05-19 05:52:44: nlwiki (ID 17682) 2378151 pages (419.3|4429741.5/sec all|curr), 2378151 revs (419.3|281.3/sec all|curr), 98.9%|98.9% prefetched (all|curr), ETA 2015-05-20 09:34:21 [max 44180268]</div>
+<ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-meta-current1.xml.bz2">nlwiki-20150518-pages-meta-current1.xml.bz2</a> 160.1 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-meta-current2.xml.bz2">nlwiki-20150518-pages-meta-current2.xml.bz2</a> 196.2 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-meta-current3.xml.bz2">nlwiki-20150518-pages-meta-current3.xml.bz2</a> 329.7 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-meta-current4.xml.bz2">nlwiki-20150518-pages-meta-current4.xml.bz2</a> 654.9 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-19 04:18:05</span> <span class='status'>done</span> <span class='title'><big><b>Recombine articles, templates, media/file descriptions, and primary meta-pages.</b></big></span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-articles.xml.bz2">nlwiki-20150518-pages-articles.xml.bz2</a> 1.0 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-19 03:55:43</span> <span class='status'>done</span> <span class='title'><big><b>Articles, templates, media/file descriptions, and primary meta-pages.</b></big></span><div class='progress'>2015-05-19 03:55:41: nlwiki (ID 32379) 1807710 pages (473.8|774854.5/sec all|curr), 1807710 revs (473.8|304.3/sec all|curr), 98.8%|98.8% prefetched (all|curr), ETA 2015-05-20 04:46:09 [max 44180217]</div>
+<ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-articles1.xml.bz2">nlwiki-20150518-pages-articles1.xml.bz2</a> 130.0 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-articles2.xml.bz2">nlwiki-20150518-pages-articles2.xml.bz2</a> 153.4 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-articles3.xml.bz2">nlwiki-20150518-pages-articles3.xml.bz2</a> 247.4 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pages-articles4.xml.bz2">nlwiki-20150518-pages-articles4.xml.bz2</a> 496.9 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-19 02:51:03</span> <span class='status'>done</span> <span class='title'>Recombine first-pass for page XML data dumps</span><ul><li class='detail'>These files contain no page text, only revision metadata.</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-meta-history.xml.gz">nlwiki-20150518-stub-meta-history.xml.gz</a> 2.8 GB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-meta-current.xml.gz">nlwiki-20150518-stub-meta-current.xml.gz</a> 266.6 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-articles.xml.gz">nlwiki-20150518-stub-articles.xml.gz</a> 198.4 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-19 02:40:10</span> <span class='status'>done</span> <span class='title'>First-pass for page XML data dumps</span><div class='progress'>2015-05-19 02:36:27: nlwiki (ID 1576) 2378151 pages (318.3|1926149.5/sec all|curr), 12081453 revs (1617.1|1176.8/sec all|curr), ETA 2015-05-19 08:07:17 [max 44180099]</div>
+<ul><li class='detail'>These files contain no page text, only revision metadata.</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-meta-history1.xml.gz">nlwiki-20150518-stub-meta-history1.xml.gz</a> 687.8 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-meta-history2.xml.gz">nlwiki-20150518-stub-meta-history2.xml.gz</a> 669.4 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-meta-history3.xml.gz">nlwiki-20150518-stub-meta-history3.xml.gz</a> 691.5 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-meta-history4.xml.gz">nlwiki-20150518-stub-meta-history4.xml.gz</a> 770.5 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-meta-current1.xml.gz">nlwiki-20150518-stub-meta-current1.xml.gz</a> 12.4 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-meta-current2.xml.gz">nlwiki-20150518-stub-meta-current2.xml.gz</a> 28.1 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-meta-current3.xml.gz">nlwiki-20150518-stub-meta-current3.xml.gz</a> 56.5 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-meta-current4.xml.gz">nlwiki-20150518-stub-meta-current4.xml.gz</a> 169.6 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-articles1.xml.gz">nlwiki-20150518-stub-articles1.xml.gz</a> 10.2 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-articles2.xml.gz">nlwiki-20150518-stub-articles2.xml.gz</a> 22.4 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-articles3.xml.gz">nlwiki-20150518-stub-articles3.xml.gz</a> 39.9 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-stub-articles4.xml.gz">nlwiki-20150518-stub-articles4.xml.gz</a> 125.9 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-19 00:31:49</span> <span class='status'>done</span> <span class='title'>Recombine extracted page abstracts for Yahoo</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-abstract.xml">nlwiki-20150518-abstract.xml</a> 1.5 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-19 00:30:50</span> <span class='status'>done</span> <span class='title'>Extracted page abstracts for Yahoo</span><div class='progress'>2015-05-19 00:30:48: nlwiki (ID 7760) 897843 pages (126.9|125668.1/sec all|curr), 897843 revs (126.9|118.0/sec all|curr), ETA 2015-05-19 08:02:55 [max 4340815]</div>
+<ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-abstract1.xml">nlwiki-20150518-abstract1.xml</a> 258.7 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-abstract2.xml">nlwiki-20150518-abstract2.xml</a> 217.4 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-abstract3.xml">nlwiki-20150518-abstract3.xml</a> 453.2 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-abstract4.xml">nlwiki-20150518-abstract4.xml</a> 602.1 MB</li>
+<li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-abstract5.xml">nlwiki-20150518-abstract5.xml</a> 36.8 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:32:52</span> <span class='status'>done</span> <span class='title'>List of all page titles</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-all-titles.gz">nlwiki-20150518-all-titles.gz</a> 18.0 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:32:38</span> <span class='status'>done</span> <span class='title'>List of page titles in main namespace</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-all-titles-in-ns0.gz">nlwiki-20150518-all-titles-in-ns0.gz</a> 13.5 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:32:11</span> <span class='status'>done</span> <span class='title'>Interwiki link tracking records</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-iwlinks.sql.gz">nlwiki-20150518-iwlinks.sql.gz</a> 14.1 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:31:56</span> <span class='status'>done</span> <span class='title'>Redirect list</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-redirect.sql.gz">nlwiki-20150518-redirect.sql.gz</a> 7.2 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:31:53</span> <span class='status'>done</span> <span class='title'>Nonexistent pages that have been protected.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-protected_titles.sql.gz">nlwiki-20150518-protected_titles.sql.gz</a> 4 KB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:31:50</span> <span class='status'>done</span> <span class='title'>Name/value pairs for pages.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-page_props.sql.gz">nlwiki-20150518-page_props.sql.gz</a> 36.3 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:31:37</span> <span class='status'>done</span> <span class='title'>Newer per-page restrictions table.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-page_restrictions.sql.gz">nlwiki-20150518-page_restrictions.sql.gz</a> 50 KB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:31:35</span> <span class='status'>done</span> <span class='title'>Base per-page data (id, title, old restrictions, etc).</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-page.sql.gz">nlwiki-20150518-page.sql.gz</a> 105.6 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:31:06</span> <span class='status'>done</span> <span class='title'>Category information.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-category.sql.gz">nlwiki-20150518-category.sql.gz</a> 1.7 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:31:04</span> <span class='status'>done</span> <span class='title'>User group assignments.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-user_groups.sql.gz">nlwiki-20150518-user_groups.sql.gz</a> 3 KB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:31:02</span> <span class='status'>done</span> <span class='title'>Set of defined interwiki prefixes and links for this wiki.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-interwiki.sql.gz">nlwiki-20150518-interwiki.sql.gz</a> 725 bytes</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:31:00</span> <span class='status'>done</span> <span class='title'>Wiki interlanguage link records.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-langlinks.sql.gz">nlwiki-20150518-langlinks.sql.gz</a> 137.2 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:29:20</span> <span class='status'>done</span> <span class='title'>Wiki external URL link records.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-externallinks.sql.gz">nlwiki-20150518-externallinks.sql.gz</a> 122.7 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:28:44</span> <span class='status'>done</span> <span class='title'>Wiki template inclusion link records.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-templatelinks.sql.gz">nlwiki-20150518-templatelinks.sql.gz</a> 69.7 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:26:16</span> <span class='status'>done</span> <span class='title'>Wiki media/files usage records.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-imagelinks.sql.gz">nlwiki-20150518-imagelinks.sql.gz</a> 47.9 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:24:50</span> <span class='status'>done</span> <span class='title'>Wiki category membership link records.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-categorylinks.sql.gz">nlwiki-20150518-categorylinks.sql.gz</a> 105.4 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:22:41</span> <span class='status'>done</span> <span class='title'>Wiki page-to-page link records.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-pagelinks.sql.gz">nlwiki-20150518-pagelinks.sql.gz</a> 329.6 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:08:33</span> <span class='status'>done</span> <span class='title'>Metadata on current versions of uploaded media/files.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-image.sql.gz">nlwiki-20150518-image.sql.gz</a> 2 KB</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:08:31</span> <span class='status'>done</span> <span class='title'>A few statistics such as the page count.</span><ul><li class='file'><a href="/nlwiki/20150518/nlwiki-20150518-site_stats.sql.gz">nlwiki-20150518-site_stats.sql.gz</a> 809 bytes</li></ul></li>
+<li class='done'><span class='updates'>2015-05-18 22:08:29</span> <span class='status'>done</span> <span class='title'>Metadata on prior versions of uploaded images. (private)</span></li>
+<li class='done'><span class='updates'>2015-05-18 22:08:27</span> <span class='status'>done</span> <span class='title'>Data for various events (deletions, uploads, etc). (private)</span></li>
+<li class='done'><span class='updates'>2015-05-18 22:06:24</span> <span class='status'>done</span> <span class='title'>Deleted page and revision data. (private)</span></li>
+<li class='done'><span class='updates'>2015-05-18 22:05:50</span> <span class='status'>done</span> <span class='title'>Data for blocks of IP addresses, ranges, and users. (private)</span></li>
+<li class='done'><span class='updates'>2015-05-18 22:05:48</span> <span class='status'>done</span> <span class='title'>Users' watchlist settings. (private)</span></li>
+<li class='done'><span class='updates'>2015-05-18 22:05:00</span> <span class='status'>done</span> <span class='title'>User account data. (private)</span></li>
+        </ul>
+
+</body>
+</html>
