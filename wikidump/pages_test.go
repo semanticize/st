@@ -20,7 +20,11 @@ func TestGetPages(t *testing.T) {
 		panic(err)
 	}
 	pages, redirs := make(chan *Page), make(chan *Redirect)
-	go GetPages(input, pages, redirs)
+	go func() {
+		defer close(pages)
+		defer close(redirs)
+		GetPages(input, pages, redirs)
+	}()
 
 	var nredirs, npages int
 	var wg sync.WaitGroup

@@ -160,7 +160,11 @@ func getPages() []string {
 		panic(err)
 	}
 	pc, rc := make(chan *Page), make(chan *Redirect)
-	go GetPages(f, pc, rc)
+	go func() {
+		defer close(pc)
+		defer close(rc)
+		GetPages(f, pc, rc)
+	}()
 	go func() {
 		for _ = range rc {
 		}
