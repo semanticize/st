@@ -100,7 +100,7 @@ func main() {
 	for _, path := range *dumppaths {
 		inputWg.Add(1)
 		go func() {
-			var f *os.File
+			var f io.ReadCloser
 			f, err = open(path)
 			check()
 			defer f.Close()
