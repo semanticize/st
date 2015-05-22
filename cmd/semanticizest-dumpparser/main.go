@@ -81,19 +81,9 @@ func main() {
 		*dumppaths, err = wikidump.DownloadParts(*download)
 		check()
 	}
-
-	/* TODO restore some of this
-	if *download != "" {
-		*dumppath, err = wikidump.Download(*download, *dumppath, true)
-		check()
-	} else if *dumppath == "" {
+	if len(*dumppaths) == 0 {
 		log.Fatal("no --download and no dumppath specified (try --help)")
 	}
-
-	f, err := open(*dumppath)
-	check()
-	defer f.Close()
-	*/
 
 	log.Printf("Creating database at %s", *dbpath)
 	db, err := storage.MakeDB(*dbpath, true,
