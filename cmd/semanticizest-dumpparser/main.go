@@ -54,7 +54,6 @@ func open(path string) (r io.ReadCloser, err error) {
 
 var (
 	dbpath    = kingpin.Arg("model", "path to model").Required().String()
-	dumppaths = kingpin.Arg("dump", "path to Wikipedia dump").Strings()
 	download  = kingpin.Flag("download",
 		"download Wikipedia dump (e.g., enwiki/latest)").String()
 	nrows = kingpin.Flag("nrows",
@@ -63,6 +62,7 @@ var (
 		"number of columns in count-min sketch").Default("65536").Int()
 	maxNGram = kingpin.Flag("ngram",
 		"max. length of n-grams").Default(strconv.Itoa(storage.DefaultMaxNGram)).Int()
+	dumppaths = kingpin.Arg("dump", "path to Wikipedia dump").Strings()
 )
 
 func main() {
@@ -107,17 +107,15 @@ func main() {
 	redirch := make(chan *wikidump.Redirect, 10*nworkers)
 
 	var inputWg sync.WaitGroup
-	for i := 0; i < nworkers; i++ {
+	for _, path := range *dumppaths {
 		inputWg.Add(1)
 		go func() {
-			for _, path := range *dumppaths {
-				f, err := open(path)
-				if err != nil {
-					panic(err)
-				}
-				defer f.Close()
-				wikidump.GetPages(f, articles, redirch)
-			}
+			var f *os.File
+			f, err = open(path)
+			check()
+			defer f.Close()
+			wikidump.GetPages(f, articles, redirch)
+			inputWg.Done()
 		}()
 	}
 	go func() {
