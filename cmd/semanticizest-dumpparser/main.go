@@ -53,10 +53,10 @@ func open(path string) (r io.ReadCloser, err error) {
 }
 
 var (
-	dbpath   = kingpin.Arg("model", "path to model").Required().String()
-	dumppath = kingpin.Arg("dump", "path to Wikipedia dump").String()
-	download = kingpin.Flag("download",
-		"download Wikipedia dump (e.g., enwiki)").String()
+	dbpath    = kingpin.Arg("model", "path to model").Required().String()
+	dumppaths = kingpin.Arg("dump", "path to Wikipedia dump").Strings()
+	download  = kingpin.Flag("download",
+		"download Wikipedia dump (e.g., enwiki/latest)").String()
 	nrows = kingpin.Flag("nrows",
 		"number of rows in count-min sketch").Default("16").Int()
 	ncols = kingpin.Flag("ncols",
@@ -78,6 +78,12 @@ func main() {
 	}
 
 	if *download != "" {
+		*dumppaths, err = wikidump.DownloadParts(*download)
+		check()
+	}
+
+	/* TODO restore some of this
+	if *download != "" {
 		*dumppath, err = wikidump.Download(*download, *dumppath, true)
 		check()
 	} else if *dumppath == "" {
@@ -87,10 +93,11 @@ func main() {
 	f, err := open(*dumppath)
 	check()
 	defer f.Close()
+	*/
 
 	log.Printf("Creating database at %s", *dbpath)
 	db, err := storage.MakeDB(*dbpath, true,
-		&storage.Settings{*dumppath, uint(*maxNGram)})
+		&storage.Settings{"", uint(*maxNGram)})
 	check()
 
 	// The numbers here are completely arbitrary.
@@ -99,7 +106,25 @@ func main() {
 	linkch := make(chan *processedLink, 10*nworkers)
 	redirch := make(chan *wikidump.Redirect, 10*nworkers)
 
-	go wikidump.GetPages(f, articles, redirch)
+	var inputWg sync.WaitGroup
+	for i := 0; i < nworkers; i++ {
+		inputWg.Add(1)
+		go func() {
+			for _, path := range *dumppaths {
+				f, err := open(path)
+				if err != nil {
+					panic(err)
+				}
+				defer f.Close()
+				wikidump.GetPages(f, articles, redirch)
+			}
+		}()
+	}
+	go func() {
+		inputWg.Wait()
+		close(articles)
+		close(redirch)
+	}()
 
 	// Clean up and tokenize articles, extract links, count n-grams.
 	counters := make(chan *countmin.Sketch, nworkers)

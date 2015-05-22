@@ -1,14 +1,17 @@
 package wikidump
 
 import (
+	"errors"
 	"fmt"
 	"github.com/cheggaaa/pb"
+	"github.com/PuerkitoBio/goquery"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"path"
+	"regexp"
 )
 
 func nullLogger(string, ...interface{}) {
@@ -92,4 +95,78 @@ func download(wikiname, filepath string, logProgress bool,
 	_, err = io.Copy(out, resp.Body)
 	logprint("download of %s done", urlstr)
 	return filepath, nil
+}
+
+var partPattern = regexp.MustCompile(`pages-articles\d+\.xml-p.*\.bz2`)
+
+// Download a dump in parts.
+//
+// wikiNameVersion should be, e.g., "enwiki/20150304".
+//
+// Use "latest" for version to get the latest dump.
+func DownloadParts(wikiNameVersion string) (filenames []string, err error) {
+	index := fmt.Sprintf("https://dumps.wikimedia.org/%s/", wikiNameVersion)
+	doc, err := goquery.NewDocument(index)
+	if err != nil {
+		return
+	}
+
+	remotePaths := make([]string, 0)
+
+	// Try to find the not yet recombined dump parts, so we can process these
+	// in parallel.
+	pattern := `a[href *= "pages-articles"]`
+	doc.Find(pattern).Each(func(i int, s *goquery.Selection) {
+		for _, node := range s.Nodes {
+			for _, attr := range node.Attr {
+				if partPattern.MatchString(attr.Val) {
+					if attr.Val[0] != '/' {
+						// Laziness on my part.
+						err = errors.New("cannot handle relative URL")
+						return
+					}
+					remotePaths = append(remotePaths, attr.Val)
+				}
+			}
+		}
+	})
+
+	// We don't try to download in parallel so as not to make WikiMedia upset.
+	for _, p := range remotePaths {
+		u := (&url.URL{
+			Scheme: "https",
+			Host: "dumps.wikimedia.org",
+			Path: p,
+		}).String()
+
+		localName := path.Base(p)
+
+		resp, err := http.Get(u)
+		if err != nil {
+			continue
+		}
+		defer resp.Body.Close()
+		if resp.StatusCode != http.StatusOK {
+			err = fmt.Errorf("HTTP error %d for %s", resp.StatusCode, u)
+			continue
+		}
+
+		var out io.WriteCloser
+		out, err = os.OpenFile(localName, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0666)
+		if err != nil {
+			continue
+		}
+		defer out.Close()
+
+		//logprint("downloading from %s to %s", urlstr, filepath)
+		//if logProgress && resp.ContentLength >= 0 {
+			//out = newPbWriter(out, resp.ContentLength)
+		//}
+		_, err = io.Copy(out, resp.Body)
+		//logprint("download of %s done", urlstr)
+		log.Printf("download of %s done", u)
+
+		filenames = append(filenames, localName)
+	}
+	return
 }

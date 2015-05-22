@@ -78,12 +78,12 @@ func getText(d *xml.Decoder) string {
 // Get pages and redirects from wikidump r. Only retrieves the pages in the
 // main namespace.
 //
+// Doesn't close either of the channels passed to it to support dumps
+// consisting of multiple parts.
+//
 // XXX needs cleaner error handling. Currently panics.
 func GetPages(r io.Reader, pages chan<- *Page, redirs chan<- *Redirect) {
 	d := xml.NewDecoder(r)
-
-	defer close(pages)
-	defer close(redirs)
 
 	for {
 		t, err := d.Token()
