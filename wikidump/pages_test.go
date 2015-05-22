@@ -39,7 +39,7 @@ func TestGetPages(t *testing.T) {
 	}()
 	wg.Wait()
 
-	assertIntEq(t, npages, 19)
+	assertIntEq(t, npages, 22)
 	assertIntEq(t, nredirs, 1)
 }
 

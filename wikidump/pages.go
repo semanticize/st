@@ -67,11 +67,16 @@ func parsePage(d *xml.Decoder, pages chan<- *Page, redirs chan<- *Redirect) {
 // Parse text out of an element. Assumes element has the form
 // <foo>some text</foo> and the start tag has already been consumed.
 // Consumes the whole element.
-func getText(d *xml.Decoder) string {
+func getText(d *xml.Decoder) (text string) {
 	tok, _ := d.Token()
-	text := string(tok.(xml.CharData))
-	tok, _ = d.Token()
-	_ = tok.(xml.EndElement)
+	switch tok := tok.(type) {
+	case xml.CharData:
+		text = string(tok)
+		nexttok, _ := d.Token()
+		_ = nexttok.(xml.EndElement)
+	case xml.EndElement:
+		text = ""
+	}
 	return text
 }
 
