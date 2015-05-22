@@ -64,7 +64,11 @@ func BenchmarkGetPages(b *testing.B) {
 		pages, redirs := make(chan *Page), make(chan *Redirect)
 
 		b.StartTimer()
-		go GetPages(r, pages, redirs)
+		go func() {
+			defer close(pages)
+			defer close(redirs)
+			GetPages(r, pages, redirs)
+		}()
 		go func() {
 			for _ = range pages {
 			}
