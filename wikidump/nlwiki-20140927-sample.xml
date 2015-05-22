@@ -5899,4 +5899,18 @@ Binnen het vakgebied van de aardwetenschappen vallen ook enkele van de mondiale 
       <format>text/x-wiki</format>
     </revision>
   </page>
+  <page>
+    <title>Empty text 1</title>
+    <ns>0</ns>
+    <text/>
+  </page>
+  <page>
+    <title>Empty text 2</title>
+    <ns>0</ns>
+    <text></text>
+  </page>
+  <page>
+    <title>No text at all</title>
+    <ns>0</ns>
+  </page>
 </mediawiki>
