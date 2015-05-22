@@ -111,25 +111,10 @@ func DownloadParts(wikiNameVersion string) (filenames []string, err error) {
 		return
 	}
 
-	remotePaths := make([]string, 0)
-
-	// Try to find the not yet recombined dump parts, so we can process these
-	// in parallel.
-	pattern := `a[href *= "pages-articles"]`
-	doc.Find(pattern).Each(func(i int, s *goquery.Selection) {
-		for _, node := range s.Nodes {
-			for _, attr := range node.Attr {
-				if partPattern.MatchString(attr.Val) {
-					if attr.Val[0] != '/' {
-						// Laziness on my part.
-						err = errors.New("cannot handle relative URL")
-						return
-					}
-					remotePaths = append(remotePaths, attr.Val)
-				}
-			}
-		}
-	})
+	remotePaths, err := parseDumpIndex(doc)
+	if err != nil {
+		return
+	}
 
 	// We don't try to download in parallel so as not to make WikiMedia upset.
 	for _, p := range remotePaths {
@@ -168,5 +153,26 @@ func DownloadParts(wikiNameVersion string) (filenames []string, err error) {
 
 		filenames = append(filenames, localName)
 	}
+	return
+}
+
+const partlink = `a[href *= "pages-articles"]`
+
+// Find not yet recombined dump parts, so we can process these in parallel.
+func parseDumpIndex(doc *goquery.Document) (remotePaths []string, err error) {
+	doc.Find(partlink).Each(func(i int, s *goquery.Selection) {
+		for _, node := range s.Nodes {
+			for _, attr := range node.Attr {
+				if partPattern.MatchString(attr.Val) {
+					if attr.Val[0] != '/' {
+						// Laziness on my part.
+						err = errors.New("cannot handle relative URL")
+						return
+					}
+					remotePaths = append(remotePaths, attr.Val)
+				}
+			}
+		}
+	})
 	return
 }

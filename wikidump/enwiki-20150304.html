@@ -1,0 +1,659 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>enwiki dump progress on 20150304</title>
+        <style type="text/css">
+                html, body {
+                        background-color: #eee;
+                        color: black;
+                }
+                .siteinfo {
+                        text-align: center;
+                }
+                li {
+                        background-color: #f4f4f4;
+                        list-style-type: none;
+                }
+                li li {
+                        background-color: white;
+                }
+                li ul {
+                        margin-top: 4px;
+                        margin-bottom: 8px;
+                }
+                .detail {
+                        font-weight: normal;
+                        font-style: italic;
+                }
+                .updates {
+                        font: monospace;
+                        font-size: smaller;
+                }
+                .status {
+                        font-weight: bold;
+                }
+                .status, .checksum {
+                        padding-left: 1em;
+                        padding-right: 1em;
+                }
+                .in-progress {
+                        font-weight: bold;
+                }
+                .failed {
+                        color: Maroon;
+                        font-weight: bold;
+                }
+                .notice {
+                        color: Maroon;
+                        font-weight: normal;
+                }
+                .waiting {
+                        color: Silver; /* Gray ? */
+                }
+                .progress {
+                        font-family: monospace;
+                        font-size: 80%;
+                        margin-left: .5in;
+                }
+        </style>
+</head>
+
+<body>
+        <h1>enwiki dump progress on 20150304</h1>
+
+        <p class="siteinfo">
+                This is the Wikimedia dump service.
+                Please read the <a href='../../legal.html'>copyrights</a> information.
+                See <a href="http://meta.wikimedia.org/wiki/Data_dumps">Meta:Data dumps</a>
+                for documentation on the provided data formats.
+        </p>
+
+        <p class="notice"></p>
+
+        <p>See <a href="../../backup-index.html">all databases list</a>.</p>
+
+        <p class="previous">
+                <a href="../20150205/">Last dumped on 2015-02-05</a>
+        </p>
+
+        <p class="status">
+                <span class='done'>Dump complete</span>
+        </p>
+
+        <p class="checksum">
+                Verify downloaded files against the <a href="/enwiki/20150304/enwiki-20150304-md5sums.txt">MD5 checksums</a>
+                to check for corrupted files.
+        </p>
+
+        <ul>
+                <li class='done'><span class='updates'>2015-03-20 00:00:34</span> <span class='status'>done</span> <span class='title'>Articles, templates, media/file descriptions, and primary meta-pages, in multiple bz2 streams, 100 pages per stream</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles-multistream.xml.bz2">enwiki-20150304-pages-articles-multistream.xml.bz2</a> 11.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles-multistream-index.txt.bz2">enwiki-20150304-pages-articles-multistream-index.txt.bz2</a> 160.0 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-19 20:33:59</span> <span class='status'>done</span> <span class='title'>All pages with complete edit history (.7z)</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history1.xml-p000000010p000002944.7z">enwiki-20150304-pages-meta-history1.xml-p000000010p000002944.7z</a> 205.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history1.xml-p000002945p000005211.7z">enwiki-20150304-pages-meta-history1.xml-p000002945p000005211.7z</a> 195.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history1.xml-p000005213p000007604.7z">enwiki-20150304-pages-meta-history1.xml-p000005213p000007604.7z</a> 205.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history1.xml-p000007605p000009966.7z">enwiki-20150304-pages-meta-history1.xml-p000007605p000009966.7z</a> 206.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history1.xml-p000009967p000010000.7z">enwiki-20150304-pages-meta-history1.xml-p000009967p000010000.7z</a> 2.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000010001p000012550.7z">enwiki-20150304-pages-meta-history2.xml-p000010001p000012550.7z</a> 204.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000012551p000014695.7z">enwiki-20150304-pages-meta-history2.xml-p000012551p000014695.7z</a> 199.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000014696p000016243.7z">enwiki-20150304-pages-meta-history2.xml-p000014696p000016243.7z</a> 153.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000016245p000018081.7z">enwiki-20150304-pages-meta-history2.xml-p000016245p000018081.7z</a> 144.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000018082p000019668.7z">enwiki-20150304-pages-meta-history2.xml-p000018082p000019668.7z</a> 141.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000019669p000021448.7z">enwiki-20150304-pages-meta-history2.xml-p000019669p000021448.7z</a> 152.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000021449p000023267.7z">enwiki-20150304-pages-meta-history2.xml-p000021449p000023267.7z</a> 154.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000023269p000025000.7z">enwiki-20150304-pages-meta-history2.xml-p000023269p000025000.7z</a> 143.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000025001p000026994.7z">enwiki-20150304-pages-meta-history3.xml-p000025001p000026994.7z</a> 186.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000026995p000029812.7z">enwiki-20150304-pages-meta-history3.xml-p000026995p000029812.7z</a> 216.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000029813p000031924.7z">enwiki-20150304-pages-meta-history3.xml-p000029813p000031924.7z</a> 189.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000031925p000034407.7z">enwiki-20150304-pages-meta-history3.xml-p000031925p000034407.7z</a> 190.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000034408p000039059.7z">enwiki-20150304-pages-meta-history3.xml-p000034408p000039059.7z</a> 243.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000039060p000043274.7z">enwiki-20150304-pages-meta-history3.xml-p000039060p000043274.7z</a> 234.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000043275p000048999.7z">enwiki-20150304-pages-meta-history3.xml-p000043275p000048999.7z</a> 303.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000049000p000055000.7z">enwiki-20150304-pages-meta-history3.xml-p000049000p000055000.7z</a> 301.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history4.xml-p000055002p000060341.7z">enwiki-20150304-pages-meta-history4.xml-p000055002p000060341.7z</a> 244.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history4.xml-p000060342p000066571.7z">enwiki-20150304-pages-meta-history4.xml-p000060342p000066571.7z</a> 255.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history4.xml-p000066572p000073575.7z">enwiki-20150304-pages-meta-history4.xml-p000066572p000073575.7z</a> 246.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history4.xml-p000073576p000082061.7z">enwiki-20150304-pages-meta-history4.xml-p000073576p000082061.7z</a> 251.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history4.xml-p000082062p000094419.7z">enwiki-20150304-pages-meta-history4.xml-p000082062p000094419.7z</a> 298.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history4.xml-p000094420p000104998.7z">enwiki-20150304-pages-meta-history4.xml-p000094420p000104998.7z</a> 220.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history5.xml-p000105001p000133173.7z">enwiki-20150304-pages-meta-history5.xml-p000105001p000133173.7z</a> 432.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history5.xml-p000133174p000148642.7z">enwiki-20150304-pages-meta-history5.xml-p000133174p000148642.7z</a> 331.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history5.xml-p000148643p000159422.7z">enwiki-20150304-pages-meta-history5.xml-p000148643p000159422.7z</a> 312.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history5.xml-p000159424p000168851.7z">enwiki-20150304-pages-meta-history5.xml-p000159424p000168851.7z</a> 303.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history5.xml-p000168855p000181579.7z">enwiki-20150304-pages-meta-history5.xml-p000168855p000181579.7z</a> 345.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history5.xml-p000181580p000184999.7z">enwiki-20150304-pages-meta-history5.xml-p000181580p000184999.7z</a> 77.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000185003p000197517.7z">enwiki-20150304-pages-meta-history6.xml-p000185003p000197517.7z</a> 281.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000197518p000213380.7z">enwiki-20150304-pages-meta-history6.xml-p000197518p000213380.7z</a> 313.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000213381p000231835.7z">enwiki-20150304-pages-meta-history6.xml-p000213381p000231835.7z</a> 335.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000231836p000248571.7z">enwiki-20150304-pages-meta-history6.xml-p000231836p000248571.7z</a> 320.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000248572p000269714.7z">enwiki-20150304-pages-meta-history6.xml-p000248572p000269714.7z</a> 339.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000269715p000296498.7z">enwiki-20150304-pages-meta-history6.xml-p000269715p000296498.7z</a> 378.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000296499p000305000.7z">enwiki-20150304-pages-meta-history6.xml-p000296499p000305000.7z</a> 166.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000305002p000325726.7z">enwiki-20150304-pages-meta-history7.xml-p000305002p000325726.7z</a> 348.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000325727p000349423.7z">enwiki-20150304-pages-meta-history7.xml-p000325727p000349423.7z</a> 346.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000349425p000371516.7z">enwiki-20150304-pages-meta-history7.xml-p000349425p000371516.7z</a> 350.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000371517p000399787.7z">enwiki-20150304-pages-meta-history7.xml-p000371517p000399787.7z</a> 381.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000399789p000424778.7z">enwiki-20150304-pages-meta-history7.xml-p000399789p000424778.7z</a> 370.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000424779p000453379.7z">enwiki-20150304-pages-meta-history7.xml-p000424779p000453379.7z</a> 403.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000453380p000464997.7z">enwiki-20150304-pages-meta-history7.xml-p000453380p000464997.7z</a> 147.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history8.xml-p000465001p000498829.7z">enwiki-20150304-pages-meta-history8.xml-p000465001p000498829.7z</a> 396.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history8.xml-p000498831p000538876.7z">enwiki-20150304-pages-meta-history8.xml-p000498831p000538876.7z</a> 400.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history8.xml-p000538877p000565701.7z">enwiki-20150304-pages-meta-history8.xml-p000538877p000565701.7z</a> 296.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history8.xml-p000565702p000604249.7z">enwiki-20150304-pages-meta-history8.xml-p000565702p000604249.7z</a> 384.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history8.xml-p000604250p000639449.7z">enwiki-20150304-pages-meta-history8.xml-p000604250p000639449.7z</a> 380.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history8.xml-p000639450p000665000.7z">enwiki-20150304-pages-meta-history8.xml-p000639450p000665000.7z</a> 225.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history9.xml-p000665001p000713949.7z">enwiki-20150304-pages-meta-history9.xml-p000665001p000713949.7z</a> 402.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history9.xml-p000713950p000766583.7z">enwiki-20150304-pages-meta-history9.xml-p000713950p000766583.7z</a> 412.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history9.xml-p000766584p000847677.7z">enwiki-20150304-pages-meta-history9.xml-p000766584p000847677.7z</a> 422.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history9.xml-p000847678p000897145.7z">enwiki-20150304-pages-meta-history9.xml-p000847678p000897145.7z</a> 415.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history9.xml-p000897146p000925000.7z">enwiki-20150304-pages-meta-history9.xml-p000897146p000925000.7z</a> 219.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history10.xml-p000925001p000972034.7z">enwiki-20150304-pages-meta-history10.xml-p000925001p000972034.7z</a> 380.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history10.xml-p000972035p001015853.7z">enwiki-20150304-pages-meta-history10.xml-p000972035p001015853.7z</a> 354.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history10.xml-p001015854p001080236.7z">enwiki-20150304-pages-meta-history10.xml-p001015854p001080236.7z</a> 446.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history10.xml-p001080237p001143918.7z">enwiki-20150304-pages-meta-history10.xml-p001080237p001143918.7z</a> 424.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history10.xml-p001143921p001227675.7z">enwiki-20150304-pages-meta-history10.xml-p001143921p001227675.7z</a> 537.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history10.xml-p001227676p001325000.7z">enwiki-20150304-pages-meta-history10.xml-p001227676p001325000.7z</a> 547.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history11.xml-p001325001p001429257.7z">enwiki-20150304-pages-meta-history11.xml-p001325001p001429257.7z</a> 519.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history11.xml-p001429258p001501937.7z">enwiki-20150304-pages-meta-history11.xml-p001429258p001501937.7z</a> 401.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history11.xml-p001501939p001593534.7z">enwiki-20150304-pages-meta-history11.xml-p001501939p001593534.7z</a> 466.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history11.xml-p001593536p001680476.7z">enwiki-20150304-pages-meta-history11.xml-p001593536p001680476.7z</a> 465.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history11.xml-p001680477p001787113.7z">enwiki-20150304-pages-meta-history11.xml-p001680477p001787113.7z</a> 518.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history11.xml-p001787115p001825000.7z">enwiki-20150304-pages-meta-history11.xml-p001787115p001825000.7z</a> 186.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p001825001p001933792.7z">enwiki-20150304-pages-meta-history12.xml-p001825001p001933792.7z</a> 526.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p001933793p002034197.7z">enwiki-20150304-pages-meta-history12.xml-p001933793p002034197.7z</a> 544.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p002034198p002150841.7z">enwiki-20150304-pages-meta-history12.xml-p002034198p002150841.7z</a> 496.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p002150844p002221374.7z">enwiki-20150304-pages-meta-history12.xml-p002150844p002221374.7z</a> 384.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p002221375p002275308.7z">enwiki-20150304-pages-meta-history12.xml-p002221375p002275308.7z</a> 258.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p002275310p002337812.7z">enwiki-20150304-pages-meta-history12.xml-p002275310p002337812.7z</a> 283.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p002337813p002405569.7z">enwiki-20150304-pages-meta-history12.xml-p002337813p002405569.7z</a> 300.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p002405570p002425000.7z">enwiki-20150304-pages-meta-history12.xml-p002405570p002425000.7z</a> 84.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history13.xml-p002425001p002535875.7z">enwiki-20150304-pages-meta-history13.xml-p002425001p002535875.7z</a> 523.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history13.xml-p002535877p002583560.7z">enwiki-20150304-pages-meta-history13.xml-p002535877p002583560.7z</a> 247.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history13.xml-p002583562p002715005.7z">enwiki-20150304-pages-meta-history13.xml-p002583562p002715005.7z</a> 493.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history13.xml-p002715006p002883214.7z">enwiki-20150304-pages-meta-history13.xml-p002715006p002883214.7z</a> 547.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history13.xml-p002883215p003062508.7z">enwiki-20150304-pages-meta-history13.xml-p002883215p003062508.7z</a> 595.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history13.xml-p003062509p003124998.7z">enwiki-20150304-pages-meta-history13.xml-p003062509p003124998.7z</a> 212.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history14.xml-p003125001p003271152.7z">enwiki-20150304-pages-meta-history14.xml-p003125001p003271152.7z</a> 521.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history14.xml-p003271154p003437780.7z">enwiki-20150304-pages-meta-history14.xml-p003271154p003437780.7z</a> 511.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history14.xml-p003437784p003586391.7z">enwiki-20150304-pages-meta-history14.xml-p003437784p003586391.7z</a> 505.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history14.xml-p003586394p003738839.7z">enwiki-20150304-pages-meta-history14.xml-p003586394p003738839.7z</a> 521.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history14.xml-p003738846p003920005.7z">enwiki-20150304-pages-meta-history14.xml-p003738846p003920005.7z</a> 519.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history14.xml-p003920007p003924999.7z">enwiki-20150304-pages-meta-history14.xml-p003920007p003924999.7z</a> 13.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history15.xml-p003925001p004151104.7z">enwiki-20150304-pages-meta-history15.xml-p003925001p004151104.7z</a> 591.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history15.xml-p004151106p004352662.7z">enwiki-20150304-pages-meta-history15.xml-p004151106p004352662.7z</a> 535.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history15.xml-p004352663p004577681.7z">enwiki-20150304-pages-meta-history15.xml-p004352663p004577681.7z</a> 585.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history15.xml-p004577682p004786982.7z">enwiki-20150304-pages-meta-history15.xml-p004577682p004786982.7z</a> 533.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history15.xml-p004786987p004825000.7z">enwiki-20150304-pages-meta-history15.xml-p004786987p004825000.7z</a> 72.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history16.xml-p004825002p005042862.7z">enwiki-20150304-pages-meta-history16.xml-p004825002p005042862.7z</a> 531.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history16.xml-p005042864p005137507.7z">enwiki-20150304-pages-meta-history16.xml-p005042864p005137507.7z</a> 431.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history16.xml-p005137508p005267928.7z">enwiki-20150304-pages-meta-history16.xml-p005137508p005267928.7z</a> 358.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history16.xml-p005267930p005555233.7z">enwiki-20150304-pages-meta-history16.xml-p005267930p005555233.7z</a> 641.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history16.xml-p005555235p005843419.7z">enwiki-20150304-pages-meta-history16.xml-p005555235p005843419.7z</a> 707.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history16.xml-p005843420p006025000.7z">enwiki-20150304-pages-meta-history16.xml-p005843420p006025000.7z</a> 482.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history17.xml-p006025001p006213708.7z">enwiki-20150304-pages-meta-history17.xml-p006025001p006213708.7z</a> 460.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history17.xml-p006213709p006521585.7z">enwiki-20150304-pages-meta-history17.xml-p006213709p006521585.7z</a> 774.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history17.xml-p006521586p006770561.7z">enwiki-20150304-pages-meta-history17.xml-p006521586p006770561.7z</a> 596.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history17.xml-p006770564p007036444.7z">enwiki-20150304-pages-meta-history17.xml-p006770564p007036444.7z</a> 528.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history17.xml-p007036445p007398994.7z">enwiki-20150304-pages-meta-history17.xml-p007036445p007398994.7z</a> 663.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history17.xml-p007398995p007524997.7z">enwiki-20150304-pages-meta-history17.xml-p007398995p007524997.7z</a> 235.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history18.xml-p007525002p007818917.7z">enwiki-20150304-pages-meta-history18.xml-p007525002p007818917.7z</a> 564.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history18.xml-p007818921p008156602.7z">enwiki-20150304-pages-meta-history18.xml-p007818921p008156602.7z</a> 586.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history18.xml-p008156603p008485514.7z">enwiki-20150304-pages-meta-history18.xml-p008156603p008485514.7z</a> 599.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history18.xml-p008485515p008781942.7z">enwiki-20150304-pages-meta-history18.xml-p008485515p008781942.7z</a> 566.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history18.xml-p008781944p009103744.7z">enwiki-20150304-pages-meta-history18.xml-p008781944p009103744.7z</a> 605.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history18.xml-p009103745p009225000.7z">enwiki-20150304-pages-meta-history18.xml-p009103745p009225000.7z</a> 198.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p009225001p009577502.7z">enwiki-20150304-pages-meta-history19.xml-p009225001p009577502.7z</a> 561.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p009577503p009941921.7z">enwiki-20150304-pages-meta-history19.xml-p009577503p009941921.7z</a> 590.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p009941923p010270460.7z">enwiki-20150304-pages-meta-history19.xml-p009941923p010270460.7z</a> 682.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p010270461p010494883.7z">enwiki-20150304-pages-meta-history19.xml-p010270461p010494883.7z</a> 490.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p010494884p010701535.7z">enwiki-20150304-pages-meta-history19.xml-p010494884p010701535.7z</a> 379.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p010701536p010833754.7z">enwiki-20150304-pages-meta-history19.xml-p010701536p010833754.7z</a> 290.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p010833756p011022716.7z">enwiki-20150304-pages-meta-history19.xml-p010833756p011022716.7z</a> 416.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p011022719p011125000.7z">enwiki-20150304-pages-meta-history19.xml-p011022719p011125000.7z</a> 150.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p011125001p011424955.7z">enwiki-20150304-pages-meta-history20.xml-p011125001p011424955.7z</a> 495.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p011424972p011872185.7z">enwiki-20150304-pages-meta-history20.xml-p011424972p011872185.7z</a> 655.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p011872186p012220015.7z">enwiki-20150304-pages-meta-history20.xml-p011872186p012220015.7z</a> 591.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p012220016p012651862.7z">enwiki-20150304-pages-meta-history20.xml-p012220016p012651862.7z</a> 657.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p012651863p013018710.7z">enwiki-20150304-pages-meta-history20.xml-p012651863p013018710.7z</a> 554.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p013018711p013306749.7z">enwiki-20150304-pages-meta-history20.xml-p013018711p013306749.7z</a> 433.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p013306751p013324998.7z">enwiki-20150304-pages-meta-history20.xml-p013306751p013324998.7z</a> 46.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history21.xml-p013325001p013736167.7z">enwiki-20150304-pages-meta-history21.xml-p013325001p013736167.7z</a> 627.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history21.xml-p013736168p014245878.7z">enwiki-20150304-pages-meta-history21.xml-p013736168p014245878.7z</a> 671.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history21.xml-p014245881p014709149.7z">enwiki-20150304-pages-meta-history21.xml-p014245881p014709149.7z</a> 602.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history21.xml-p014709150p015162051.7z">enwiki-20150304-pages-meta-history21.xml-p014709150p015162051.7z</a> 588.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history21.xml-p015162053p015604201.7z">enwiki-20150304-pages-meta-history21.xml-p015162053p015604201.7z</a> 587.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history21.xml-p015604204p015725000.7z">enwiki-20150304-pages-meta-history21.xml-p015604204p015725000.7z</a> 153.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history22.xml-p015725003p016264565.7z">enwiki-20150304-pages-meta-history22.xml-p015725003p016264565.7z</a> 631.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history22.xml-p016264566p016900849.7z">enwiki-20150304-pages-meta-history22.xml-p016264566p016900849.7z</a> 775.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history22.xml-p016900850p017249888.7z">enwiki-20150304-pages-meta-history22.xml-p016900850p017249888.7z</a> 434.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history22.xml-p017249889p017773658.7z">enwiki-20150304-pages-meta-history22.xml-p017249889p017773658.7z</a> 628.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history22.xml-p017773659p018225000.7z">enwiki-20150304-pages-meta-history22.xml-p017773659p018225000.7z</a> 528.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p018225001p018610532.7z">enwiki-20150304-pages-meta-history23.xml-p018225001p018610532.7z</a> 534.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p018610533p018938721.7z">enwiki-20150304-pages-meta-history23.xml-p018610533p018938721.7z</a> 516.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p018938722p019218324.7z">enwiki-20150304-pages-meta-history23.xml-p018938722p019218324.7z</a> 440.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p019218325p019596858.7z">enwiki-20150304-pages-meta-history23.xml-p019218325p019596858.7z</a> 507.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p019596859p020022918.7z">enwiki-20150304-pages-meta-history23.xml-p019596859p020022918.7z</a> 528.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p020022919p020661898.7z">enwiki-20150304-pages-meta-history23.xml-p020022919p020661898.7z</a> 709.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p020661899p020925000.7z">enwiki-20150304-pages-meta-history23.xml-p020661899p020925000.7z</a> 378.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history24.xml-p020925002p021377080.7z">enwiki-20150304-pages-meta-history24.xml-p020925002p021377080.7z</a> 600.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history24.xml-p021377081p021877639.7z">enwiki-20150304-pages-meta-history24.xml-p021377081p021877639.7z</a> 623.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history24.xml-p021877640p022443561.7z">enwiki-20150304-pages-meta-history24.xml-p021877640p022443561.7z</a> 655.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history24.xml-p022443563p022962874.7z">enwiki-20150304-pages-meta-history24.xml-p022443563p022962874.7z</a> 641.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history24.xml-p022962875p023390636.7z">enwiki-20150304-pages-meta-history24.xml-p022962875p023390636.7z</a> 515.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history24.xml-p023390637p023725000.7z">enwiki-20150304-pages-meta-history24.xml-p023390637p023725000.7z</a> 464.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history25.xml-p023725001p024249673.7z">enwiki-20150304-pages-meta-history25.xml-p023725001p024249673.7z</a> 651.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history25.xml-p024249674p024832604.7z">enwiki-20150304-pages-meta-history25.xml-p024249674p024832604.7z</a> 724.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history25.xml-p024832605p025392020.7z">enwiki-20150304-pages-meta-history25.xml-p024832605p025392020.7z</a> 662.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history25.xml-p025392021p025873730.7z">enwiki-20150304-pages-meta-history25.xml-p025392021p025873730.7z</a> 611.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history25.xml-p025873731p026459475.7z">enwiki-20150304-pages-meta-history25.xml-p025873731p026459475.7z</a> 634.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history25.xml-p026459476p026624999.7z">enwiki-20150304-pages-meta-history25.xml-p026459476p026624999.7z</a> 171.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history26.xml-p026625002p027307434.7z">enwiki-20150304-pages-meta-history26.xml-p026625002p027307434.7z</a> 650.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history26.xml-p027307435p027734518.7z">enwiki-20150304-pages-meta-history26.xml-p027307435p027734518.7z</a> 440.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history26.xml-p027734520p028418285.7z">enwiki-20150304-pages-meta-history26.xml-p027734520p028418285.7z</a> 702.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history26.xml-p028418286p029273649.7z">enwiki-20150304-pages-meta-history26.xml-p028418286p029273649.7z</a> 703.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history26.xml-p029273650p029625000.7z">enwiki-20150304-pages-meta-history26.xml-p029273650p029625000.7z</a> 295.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p029625001p030427414.7z">enwiki-20150304-pages-meta-history27.xml-p029625001p030427414.7z</a> 605.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p030427416p030979351.7z">enwiki-20150304-pages-meta-history27.xml-p030427416p030979351.7z</a> 571.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p030979352p031622229.7z">enwiki-20150304-pages-meta-history27.xml-p030979352p031622229.7z</a> 653.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p031622230p031990697.7z">enwiki-20150304-pages-meta-history27.xml-p031622230p031990697.7z</a> 592.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p031990698p032302789.7z">enwiki-20150304-pages-meta-history27.xml-p031990698p032302789.7z</a> 313.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p032302790p033202327.7z">enwiki-20150304-pages-meta-history27.xml-p032302790p033202327.7z</a> 790.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p033202328p034177058.7z">enwiki-20150304-pages-meta-history27.xml-p033202328p034177058.7z</a> 857.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p034177059p035191378.7z">enwiki-20150304-pages-meta-history27.xml-p034177059p035191378.7z</a> 880.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p035191379p036322831.7z">enwiki-20150304-pages-meta-history27.xml-p035191379p036322831.7z</a> 918.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p036322832p037387587.7z">enwiki-20150304-pages-meta-history27.xml-p036322832p037387587.7z</a> 876.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p037387588p038575476.7z">enwiki-20150304-pages-meta-history27.xml-p037387588p038575476.7z</a> 1.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p038575477p039658843.7z">enwiki-20150304-pages-meta-history27.xml-p038575477p039658843.7z</a> 875.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p039658844p041042751.7z">enwiki-20150304-pages-meta-history27.xml-p039658844p041042751.7z</a> 998.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p041042752p042478305.7z">enwiki-20150304-pages-meta-history27.xml-p041042752p042478305.7z</a> 1.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p042478306p044038947.7z">enwiki-20150304-pages-meta-history27.xml-p042478306p044038947.7z</a> 1014.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p044038948p045581262.7z">enwiki-20150304-pages-meta-history27.xml-p044038948p045581262.7z</a> 747.4 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-15 21:11:26</span> <span class='status'>done</span> <span class='title'>All pages with complete page edit history (.bz2)</span><div class='progress'>getting/checking text 1923186 failed (Received text is unplausible for id 1923186) (Will retry 4 more times)
+getting/checking text 1923187 failed (Received text is unplausible for id 1923187) (Will retry 4 more times)
+getting/checking text 1926080 failed (Received text is unplausible for id 1926080) (Will retry 4 more times)
+getting/checking text 2010164 failed (Received text is unplausible for id 2010164) (Will retry 4 more times)
+getting/checking text 5099904 failed (Received text is unplausible for id 5099904) (Will retry 4 more times)</div>
+<ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history1.xml-p000000010p000002944.bz2">enwiki-20150304-pages-meta-history1.xml-p000000010p000002944.bz2</a> 3.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history1.xml-p000002945p000005211.bz2">enwiki-20150304-pages-meta-history1.xml-p000002945p000005211.bz2</a> 4.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history1.xml-p000005213p000007604.bz2">enwiki-20150304-pages-meta-history1.xml-p000005213p000007604.bz2</a> 4.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history1.xml-p000007605p000009966.bz2">enwiki-20150304-pages-meta-history1.xml-p000007605p000009966.bz2</a> 3.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history1.xml-p000009967p000010000.bz2">enwiki-20150304-pages-meta-history1.xml-p000009967p000010000.bz2</a> 57.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000010001p000012550.bz2">enwiki-20150304-pages-meta-history2.xml-p000010001p000012550.bz2</a> 4.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000012551p000014695.bz2">enwiki-20150304-pages-meta-history2.xml-p000012551p000014695.bz2</a> 4.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000014696p000016243.bz2">enwiki-20150304-pages-meta-history2.xml-p000014696p000016243.bz2</a> 3.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000016245p000018081.bz2">enwiki-20150304-pages-meta-history2.xml-p000016245p000018081.bz2</a> 2.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000018082p000019668.bz2">enwiki-20150304-pages-meta-history2.xml-p000018082p000019668.bz2</a> 2.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000019669p000021448.bz2">enwiki-20150304-pages-meta-history2.xml-p000019669p000021448.bz2</a> 2.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000021449p000023267.bz2">enwiki-20150304-pages-meta-history2.xml-p000021449p000023267.bz2</a> 3.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history2.xml-p000023269p000025000.bz2">enwiki-20150304-pages-meta-history2.xml-p000023269p000025000.bz2</a> 2.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000025001p000026994.bz2">enwiki-20150304-pages-meta-history3.xml-p000025001p000026994.bz2</a> 4.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000026995p000029812.bz2">enwiki-20150304-pages-meta-history3.xml-p000026995p000029812.bz2</a> 3.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000029813p000031924.bz2">enwiki-20150304-pages-meta-history3.xml-p000029813p000031924.bz2</a> 3.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000031925p000034407.bz2">enwiki-20150304-pages-meta-history3.xml-p000031925p000034407.bz2</a> 4.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000034408p000039059.bz2">enwiki-20150304-pages-meta-history3.xml-p000034408p000039059.bz2</a> 3.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000039060p000043274.bz2">enwiki-20150304-pages-meta-history3.xml-p000039060p000043274.bz2</a> 6.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000043275p000048999.bz2">enwiki-20150304-pages-meta-history3.xml-p000043275p000048999.bz2</a> 4.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history3.xml-p000049000p000055000.bz2">enwiki-20150304-pages-meta-history3.xml-p000049000p000055000.bz2</a> 4.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history4.xml-p000055002p000060341.bz2">enwiki-20150304-pages-meta-history4.xml-p000055002p000060341.bz2</a> 3.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history4.xml-p000060342p000066571.bz2">enwiki-20150304-pages-meta-history4.xml-p000060342p000066571.bz2</a> 3.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history4.xml-p000066572p000073575.bz2">enwiki-20150304-pages-meta-history4.xml-p000066572p000073575.bz2</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history4.xml-p000073576p000082061.bz2">enwiki-20150304-pages-meta-history4.xml-p000073576p000082061.bz2</a> 4.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history4.xml-p000082062p000094419.bz2">enwiki-20150304-pages-meta-history4.xml-p000082062p000094419.bz2</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history4.xml-p000094420p000104998.bz2">enwiki-20150304-pages-meta-history4.xml-p000094420p000104998.bz2</a> 2.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history5.xml-p000105001p000133173.bz2">enwiki-20150304-pages-meta-history5.xml-p000105001p000133173.bz2</a> 3.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history5.xml-p000133174p000148642.bz2">enwiki-20150304-pages-meta-history5.xml-p000133174p000148642.bz2</a> 3.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history5.xml-p000148643p000159422.bz2">enwiki-20150304-pages-meta-history5.xml-p000148643p000159422.bz2</a> 3.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history5.xml-p000159424p000168851.bz2">enwiki-20150304-pages-meta-history5.xml-p000159424p000168851.bz2</a> 3.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history5.xml-p000168855p000181579.bz2">enwiki-20150304-pages-meta-history5.xml-p000168855p000181579.bz2</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history5.xml-p000181580p000184999.bz2">enwiki-20150304-pages-meta-history5.xml-p000181580p000184999.bz2</a> 831.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000185003p000197517.bz2">enwiki-20150304-pages-meta-history6.xml-p000185003p000197517.bz2</a> 4.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000197518p000213380.bz2">enwiki-20150304-pages-meta-history6.xml-p000197518p000213380.bz2</a> 3.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000213381p000231835.bz2">enwiki-20150304-pages-meta-history6.xml-p000213381p000231835.bz2</a> 2.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000231836p000248571.bz2">enwiki-20150304-pages-meta-history6.xml-p000231836p000248571.bz2</a> 2.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000248572p000269714.bz2">enwiki-20150304-pages-meta-history6.xml-p000248572p000269714.bz2</a> 2.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000269715p000296498.bz2">enwiki-20150304-pages-meta-history6.xml-p000269715p000296498.bz2</a> 3.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history6.xml-p000296499p000305000.bz2">enwiki-20150304-pages-meta-history6.xml-p000296499p000305000.bz2</a> 2.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000305002p000325726.bz2">enwiki-20150304-pages-meta-history7.xml-p000305002p000325726.bz2</a> 3.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000325727p000349423.bz2">enwiki-20150304-pages-meta-history7.xml-p000325727p000349423.bz2</a> 2.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000349425p000371516.bz2">enwiki-20150304-pages-meta-history7.xml-p000349425p000371516.bz2</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000371517p000399787.bz2">enwiki-20150304-pages-meta-history7.xml-p000371517p000399787.bz2</a> 3.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000399789p000424778.bz2">enwiki-20150304-pages-meta-history7.xml-p000399789p000424778.bz2</a> 3.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000424779p000453379.bz2">enwiki-20150304-pages-meta-history7.xml-p000424779p000453379.bz2</a> 4.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history7.xml-p000453380p000464997.bz2">enwiki-20150304-pages-meta-history7.xml-p000453380p000464997.bz2</a> 1.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history8.xml-p000465001p000498829.bz2">enwiki-20150304-pages-meta-history8.xml-p000465001p000498829.bz2</a> 2.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history8.xml-p000498831p000538876.bz2">enwiki-20150304-pages-meta-history8.xml-p000498831p000538876.bz2</a> 2.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history8.xml-p000538877p000565701.bz2">enwiki-20150304-pages-meta-history8.xml-p000538877p000565701.bz2</a> 4.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history8.xml-p000565702p000604249.bz2">enwiki-20150304-pages-meta-history8.xml-p000565702p000604249.bz2</a> 3.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history8.xml-p000604250p000639449.bz2">enwiki-20150304-pages-meta-history8.xml-p000604250p000639449.bz2</a> 3.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history8.xml-p000639450p000665000.bz2">enwiki-20150304-pages-meta-history8.xml-p000639450p000665000.bz2</a> 1.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history9.xml-p000665001p000713949.bz2">enwiki-20150304-pages-meta-history9.xml-p000665001p000713949.bz2</a> 2.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history9.xml-p000713950p000766583.bz2">enwiki-20150304-pages-meta-history9.xml-p000713950p000766583.bz2</a> 3.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history9.xml-p000766584p000847677.bz2">enwiki-20150304-pages-meta-history9.xml-p000766584p000847677.bz2</a> 3.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history9.xml-p000847678p000897145.bz2">enwiki-20150304-pages-meta-history9.xml-p000847678p000897145.bz2</a> 3.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history9.xml-p000897146p000925000.bz2">enwiki-20150304-pages-meta-history9.xml-p000897146p000925000.bz2</a> 1.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history10.xml-p000925001p000972034.bz2">enwiki-20150304-pages-meta-history10.xml-p000925001p000972034.bz2</a> 7.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history10.xml-p000972035p001015853.bz2">enwiki-20150304-pages-meta-history10.xml-p000972035p001015853.bz2</a> 4.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history10.xml-p001015854p001080236.bz2">enwiki-20150304-pages-meta-history10.xml-p001015854p001080236.bz2</a> 2.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history10.xml-p001080237p001143918.bz2">enwiki-20150304-pages-meta-history10.xml-p001080237p001143918.bz2</a> 3.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history10.xml-p001143921p001227675.bz2">enwiki-20150304-pages-meta-history10.xml-p001143921p001227675.bz2</a> 2.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history10.xml-p001227676p001325000.bz2">enwiki-20150304-pages-meta-history10.xml-p001227676p001325000.bz2</a> 3.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history11.xml-p001325001p001429257.bz2">enwiki-20150304-pages-meta-history11.xml-p001325001p001429257.bz2</a> 2.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history11.xml-p001429258p001501937.bz2">enwiki-20150304-pages-meta-history11.xml-p001429258p001501937.bz2</a> 3.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history11.xml-p001501939p001593534.bz2">enwiki-20150304-pages-meta-history11.xml-p001501939p001593534.bz2</a> 3.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history11.xml-p001593536p001680476.bz2">enwiki-20150304-pages-meta-history11.xml-p001593536p001680476.bz2</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history11.xml-p001680477p001787113.bz2">enwiki-20150304-pages-meta-history11.xml-p001680477p001787113.bz2</a> 2.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history11.xml-p001787115p001825000.bz2">enwiki-20150304-pages-meta-history11.xml-p001787115p001825000.bz2</a> 1.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p001825001p001933792.bz2">enwiki-20150304-pages-meta-history12.xml-p001825001p001933792.bz2</a> 2.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p001933793p002034197.bz2">enwiki-20150304-pages-meta-history12.xml-p001933793p002034197.bz2</a> 2.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p002034198p002150841.bz2">enwiki-20150304-pages-meta-history12.xml-p002034198p002150841.bz2</a> 2.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p002150844p002221374.bz2">enwiki-20150304-pages-meta-history12.xml-p002150844p002221374.bz2</a> 1.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p002221375p002275308.bz2">enwiki-20150304-pages-meta-history12.xml-p002221375p002275308.bz2</a> 1.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p002275310p002337812.bz2">enwiki-20150304-pages-meta-history12.xml-p002275310p002337812.bz2</a> 1.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p002337813p002405569.bz2">enwiki-20150304-pages-meta-history12.xml-p002337813p002405569.bz2</a> 2.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history12.xml-p002405570p002425000.bz2">enwiki-20150304-pages-meta-history12.xml-p002405570p002425000.bz2</a> 420.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history13.xml-p002425001p002535875.bz2">enwiki-20150304-pages-meta-history13.xml-p002425001p002535875.bz2</a> 6.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history13.xml-p002535877p002583560.bz2">enwiki-20150304-pages-meta-history13.xml-p002535877p002583560.bz2</a> 7.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history13.xml-p002583562p002715005.bz2">enwiki-20150304-pages-meta-history13.xml-p002583562p002715005.bz2</a> 3.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history13.xml-p002715006p002883214.bz2">enwiki-20150304-pages-meta-history13.xml-p002715006p002883214.bz2</a> 3.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history13.xml-p002883215p003062508.bz2">enwiki-20150304-pages-meta-history13.xml-p002883215p003062508.bz2</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history13.xml-p003062509p003124998.bz2">enwiki-20150304-pages-meta-history13.xml-p003062509p003124998.bz2</a> 1.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history14.xml-p003125001p003271152.bz2">enwiki-20150304-pages-meta-history14.xml-p003125001p003271152.bz2</a> 4.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history14.xml-p003271154p003437780.bz2">enwiki-20150304-pages-meta-history14.xml-p003271154p003437780.bz2</a> 4.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history14.xml-p003437784p003586391.bz2">enwiki-20150304-pages-meta-history14.xml-p003437784p003586391.bz2</a> 3.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history14.xml-p003586394p003738839.bz2">enwiki-20150304-pages-meta-history14.xml-p003586394p003738839.bz2</a> 4.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history14.xml-p003738846p003920005.bz2">enwiki-20150304-pages-meta-history14.xml-p003738846p003920005.bz2</a> 4.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history14.xml-p003920007p003924999.bz2">enwiki-20150304-pages-meta-history14.xml-p003920007p003924999.bz2</a> 69.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history15.xml-p003925001p004151104.bz2">enwiki-20150304-pages-meta-history15.xml-p003925001p004151104.bz2</a> 3.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history15.xml-p004151106p004352662.bz2">enwiki-20150304-pages-meta-history15.xml-p004151106p004352662.bz2</a> 4.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history15.xml-p004352663p004577681.bz2">enwiki-20150304-pages-meta-history15.xml-p004352663p004577681.bz2</a> 2.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history15.xml-p004577682p004786982.bz2">enwiki-20150304-pages-meta-history15.xml-p004577682p004786982.bz2</a> 3.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history15.xml-p004786987p004825000.bz2">enwiki-20150304-pages-meta-history15.xml-p004786987p004825000.bz2</a> 390.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history16.xml-p004825002p005042862.bz2">enwiki-20150304-pages-meta-history16.xml-p004825002p005042862.bz2</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history16.xml-p005042864p005137507.bz2">enwiki-20150304-pages-meta-history16.xml-p005042864p005137507.bz2</a> 37.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history16.xml-p005137508p005267928.bz2">enwiki-20150304-pages-meta-history16.xml-p005137508p005267928.bz2</a> 6.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history16.xml-p005267930p005555233.bz2">enwiki-20150304-pages-meta-history16.xml-p005267930p005555233.bz2</a> 3.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history16.xml-p005555235p005843419.bz2">enwiki-20150304-pages-meta-history16.xml-p005555235p005843419.bz2</a> 4.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history16.xml-p005843420p006025000.bz2">enwiki-20150304-pages-meta-history16.xml-p005843420p006025000.bz2</a> 2.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history17.xml-p006025001p006213708.bz2">enwiki-20150304-pages-meta-history17.xml-p006025001p006213708.bz2</a> 4.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history17.xml-p006213709p006521585.bz2">enwiki-20150304-pages-meta-history17.xml-p006213709p006521585.bz2</a> 3.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history17.xml-p006521586p006770561.bz2">enwiki-20150304-pages-meta-history17.xml-p006521586p006770561.bz2</a> 4.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history17.xml-p006770564p007036444.bz2">enwiki-20150304-pages-meta-history17.xml-p006770564p007036444.bz2</a> 4.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history17.xml-p007036445p007398994.bz2">enwiki-20150304-pages-meta-history17.xml-p007036445p007398994.bz2</a> 2.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history17.xml-p007398995p007524997.bz2">enwiki-20150304-pages-meta-history17.xml-p007398995p007524997.bz2</a> 1.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history18.xml-p007525002p007818917.bz2">enwiki-20150304-pages-meta-history18.xml-p007525002p007818917.bz2</a> 3.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history18.xml-p007818921p008156602.bz2">enwiki-20150304-pages-meta-history18.xml-p007818921p008156602.bz2</a> 3.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history18.xml-p008156603p008485514.bz2">enwiki-20150304-pages-meta-history18.xml-p008156603p008485514.bz2</a> 3.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history18.xml-p008485515p008781942.bz2">enwiki-20150304-pages-meta-history18.xml-p008485515p008781942.bz2</a> 3.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history18.xml-p008781944p009103744.bz2">enwiki-20150304-pages-meta-history18.xml-p008781944p009103744.bz2</a> 3.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history18.xml-p009103745p009225000.bz2">enwiki-20150304-pages-meta-history18.xml-p009103745p009225000.bz2</a> 906.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p009225001p009577502.bz2">enwiki-20150304-pages-meta-history19.xml-p009225001p009577502.bz2</a> 3.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p009577503p009941921.bz2">enwiki-20150304-pages-meta-history19.xml-p009577503p009941921.bz2</a> 3.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p009941923p010270460.bz2">enwiki-20150304-pages-meta-history19.xml-p009941923p010270460.bz2</a> 2.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p010270461p010494883.bz2">enwiki-20150304-pages-meta-history19.xml-p010270461p010494883.bz2</a> 2.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p010494884p010701535.bz2">enwiki-20150304-pages-meta-history19.xml-p010494884p010701535.bz2</a> 1.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p010701536p010833754.bz2">enwiki-20150304-pages-meta-history19.xml-p010701536p010833754.bz2</a> 1.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p010833756p011022716.bz2">enwiki-20150304-pages-meta-history19.xml-p010833756p011022716.bz2</a> 1.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history19.xml-p011022719p011125000.bz2">enwiki-20150304-pages-meta-history19.xml-p011022719p011125000.bz2</a> 879.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p011125001p011424955.bz2">enwiki-20150304-pages-meta-history20.xml-p011125001p011424955.bz2</a> 5.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p011424972p011872185.bz2">enwiki-20150304-pages-meta-history20.xml-p011424972p011872185.bz2</a> 2.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p011872186p012220015.bz2">enwiki-20150304-pages-meta-history20.xml-p011872186p012220015.bz2</a> 3.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p012220016p012651862.bz2">enwiki-20150304-pages-meta-history20.xml-p012220016p012651862.bz2</a> 3.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p012651863p013018710.bz2">enwiki-20150304-pages-meta-history20.xml-p012651863p013018710.bz2</a> 3.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p013018711p013306749.bz2">enwiki-20150304-pages-meta-history20.xml-p013018711p013306749.bz2</a> 5.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history20.xml-p013306751p013324998.bz2">enwiki-20150304-pages-meta-history20.xml-p013306751p013324998.bz2</a> 342.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history21.xml-p013325001p013736167.bz2">enwiki-20150304-pages-meta-history21.xml-p013325001p013736167.bz2</a> 3.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history21.xml-p013736168p014245878.bz2">enwiki-20150304-pages-meta-history21.xml-p013736168p014245878.bz2</a> 2.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history21.xml-p014245881p014709149.bz2">enwiki-20150304-pages-meta-history21.xml-p014245881p014709149.bz2</a> 3.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history21.xml-p014709150p015162051.bz2">enwiki-20150304-pages-meta-history21.xml-p014709150p015162051.bz2</a> 3.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history21.xml-p015162053p015604201.bz2">enwiki-20150304-pages-meta-history21.xml-p015162053p015604201.bz2</a> 4.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history21.xml-p015604204p015725000.bz2">enwiki-20150304-pages-meta-history21.xml-p015604204p015725000.bz2</a> 814.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history22.xml-p015725003p016264565.bz2">enwiki-20150304-pages-meta-history22.xml-p015725003p016264565.bz2</a> 3.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history22.xml-p016264566p016900849.bz2">enwiki-20150304-pages-meta-history22.xml-p016264566p016900849.bz2</a> 3.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history22.xml-p016900850p017249888.bz2">enwiki-20150304-pages-meta-history22.xml-p016900850p017249888.bz2</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history22.xml-p017249889p017773658.bz2">enwiki-20150304-pages-meta-history22.xml-p017249889p017773658.bz2</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history22.xml-p017773659p018225000.bz2">enwiki-20150304-pages-meta-history22.xml-p017773659p018225000.bz2</a> 2.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p018225001p018610532.bz2">enwiki-20150304-pages-meta-history23.xml-p018225001p018610532.bz2</a> 3.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p018610533p018938721.bz2">enwiki-20150304-pages-meta-history23.xml-p018610533p018938721.bz2</a> 3.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p018938722p019218324.bz2">enwiki-20150304-pages-meta-history23.xml-p018938722p019218324.bz2</a> 3.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p019218325p019596858.bz2">enwiki-20150304-pages-meta-history23.xml-p019218325p019596858.bz2</a> 3.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p019596859p020022918.bz2">enwiki-20150304-pages-meta-history23.xml-p019596859p020022918.bz2</a> 3.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p020022919p020661898.bz2">enwiki-20150304-pages-meta-history23.xml-p020022919p020661898.bz2</a> 3.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history23.xml-p020661899p020925000.bz2">enwiki-20150304-pages-meta-history23.xml-p020661899p020925000.bz2</a> 2.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history24.xml-p020925002p021377080.bz2">enwiki-20150304-pages-meta-history24.xml-p020925002p021377080.bz2</a> 3.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history24.xml-p021377081p021877639.bz2">enwiki-20150304-pages-meta-history24.xml-p021377081p021877639.bz2</a> 3.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history24.xml-p021877640p022443561.bz2">enwiki-20150304-pages-meta-history24.xml-p021877640p022443561.bz2</a> 3.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history24.xml-p022443563p022962874.bz2">enwiki-20150304-pages-meta-history24.xml-p022443563p022962874.bz2</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history24.xml-p022962875p023390636.bz2">enwiki-20150304-pages-meta-history24.xml-p022962875p023390636.bz2</a> 3.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history24.xml-p023390637p023725000.bz2">enwiki-20150304-pages-meta-history24.xml-p023390637p023725000.bz2</a> 2.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history25.xml-p023725001p024249673.bz2">enwiki-20150304-pages-meta-history25.xml-p023725001p024249673.bz2</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history25.xml-p024249674p024832604.bz2">enwiki-20150304-pages-meta-history25.xml-p024249674p024832604.bz2</a> 3.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history25.xml-p024832605p025392020.bz2">enwiki-20150304-pages-meta-history25.xml-p024832605p025392020.bz2</a> 3.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history25.xml-p025392021p025873730.bz2">enwiki-20150304-pages-meta-history25.xml-p025392021p025873730.bz2</a> 2.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history25.xml-p025873731p026459475.bz2">enwiki-20150304-pages-meta-history25.xml-p025873731p026459475.bz2</a> 3.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history25.xml-p026459476p026624999.bz2">enwiki-20150304-pages-meta-history25.xml-p026459476p026624999.bz2</a> 812.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history26.xml-p026625002p027307434.bz2">enwiki-20150304-pages-meta-history26.xml-p026625002p027307434.bz2</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history26.xml-p027307435p027734518.bz2">enwiki-20150304-pages-meta-history26.xml-p027307435p027734518.bz2</a> 3.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history26.xml-p027734520p028418285.bz2">enwiki-20150304-pages-meta-history26.xml-p027734520p028418285.bz2</a> 3.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history26.xml-p028418286p029273649.bz2">enwiki-20150304-pages-meta-history26.xml-p028418286p029273649.bz2</a> 3.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history26.xml-p029273650p029625000.bz2">enwiki-20150304-pages-meta-history26.xml-p029273650p029625000.bz2</a> 1.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p029625001p030427414.bz2">enwiki-20150304-pages-meta-history27.xml-p029625001p030427414.bz2</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p030427416p030979351.bz2">enwiki-20150304-pages-meta-history27.xml-p030427416p030979351.bz2</a> 3.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p030979352p031622229.bz2">enwiki-20150304-pages-meta-history27.xml-p030979352p031622229.bz2</a> 3.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p031622230p031990697.bz2">enwiki-20150304-pages-meta-history27.xml-p031622230p031990697.bz2</a> 3.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p031990698p032302789.bz2">enwiki-20150304-pages-meta-history27.xml-p031990698p032302789.bz2</a> 2.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p032302790p033202327.bz2">enwiki-20150304-pages-meta-history27.xml-p032302790p033202327.bz2</a> 3.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p033202328p034177058.bz2">enwiki-20150304-pages-meta-history27.xml-p033202328p034177058.bz2</a> 4.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p034177059p035191378.bz2">enwiki-20150304-pages-meta-history27.xml-p034177059p035191378.bz2</a> 4.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p035191379p036322831.bz2">enwiki-20150304-pages-meta-history27.xml-p035191379p036322831.bz2</a> 4.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p036322832p037387587.bz2">enwiki-20150304-pages-meta-history27.xml-p036322832p037387587.bz2</a> 4.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p037387588p038575476.bz2">enwiki-20150304-pages-meta-history27.xml-p037387588p038575476.bz2</a> 4.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p038575477p039658843.bz2">enwiki-20150304-pages-meta-history27.xml-p038575477p039658843.bz2</a> 4.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p039658844p041042751.bz2">enwiki-20150304-pages-meta-history27.xml-p039658844p041042751.bz2</a> 5.0 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p041042752p042478305.bz2">enwiki-20150304-pages-meta-history27.xml-p041042752p042478305.bz2</a> 4.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p042478306p044038947.bz2">enwiki-20150304-pages-meta-history27.xml-p042478306p044038947.bz2</a> 5.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-history27.xml-p044038948p045581262.bz2">enwiki-20150304-pages-meta-history27.xml-p044038948p045581262.bz2</a> 2.7 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-08 02:36:53</span> <span class='status'>done</span> <span class='title'>This contains a row for each flagged revision, containing who flagged it, when it was flagged, reviewer comments, the flag values, and the quality tier those flags fall under.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-flaggedrevs.sql.gz">enwiki-20150304-flaggedrevs.sql.gz</a> 8.8 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-08 02:36:48</span> <span class='status'>done</span> <span class='title'>This contains a row for each flagged article, containing the stable revision ID, if the lastest edit was flagged, and how long edits have been pending.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-flaggedpages.sql.gz">enwiki-20150304-flaggedpages.sql.gz</a> 19 KB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-08 02:36:25</span> <span class='status'>done</span> <span class='title'>Log events to all pages and users.</span><ul><li class='detail'>This contains the log of actions performed on pages and users.</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-logging.xml.gz">enwiki-20150304-pages-logging.xml.gz</a> 2.1 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-07 22:45:18</span> <span class='status'>done</span> <span class='title'>Recombine all pages, current versions only.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current.xml.bz2">enwiki-20150304-pages-meta-current.xml.bz2</a> 21.2 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-07 15:20:58</span> <span class='status'>done</span> <span class='title'>All pages, current versions only.</span><div class='progress'>2015-03-07 15:20:54: enwiki (ID 4014) 13880003 pages (451.6|58886193.7/sec all|curr), 13880003 revs (451.6|12.7/sec all|curr), 95.8%|95.8% prefetched (all|curr), ETA 2015-03-23 22:45:42 [max 650261039]</div>
+<ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current1.xml-p000000010p000010000.bz2">enwiki-20150304-pages-meta-current1.xml-p000000010p000010000.bz2</a> 51.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current2.xml-p000010001p000025000.bz2">enwiki-20150304-pages-meta-current2.xml-p000010001p000025000.bz2</a> 82.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current3.xml-p000025001p000055000.bz2">enwiki-20150304-pages-meta-current3.xml-p000025001p000055000.bz2</a> 127.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current4.xml-p000055002p000104998.bz2">enwiki-20150304-pages-meta-current4.xml-p000055002p000104998.bz2</a> 134.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current5.xml-p000105001p000184999.bz2">enwiki-20150304-pages-meta-current5.xml-p000105001p000184999.bz2</a> 183.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current6.xml-p000185003p000305000.bz2">enwiki-20150304-pages-meta-current6.xml-p000185003p000305000.bz2</a> 231.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current7.xml-p000305002p000464997.bz2">enwiki-20150304-pages-meta-current7.xml-p000305002p000464997.bz2</a> 269.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current8.xml-p000465001p000665000.bz2">enwiki-20150304-pages-meta-current8.xml-p000465001p000665000.bz2</a> 260.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current9.xml-p000665001p000925000.bz2">enwiki-20150304-pages-meta-current9.xml-p000665001p000925000.bz2</a> 254.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current10.xml-p000925001p001325000.bz2">enwiki-20150304-pages-meta-current10.xml-p000925001p001325000.bz2</a> 386.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current11.xml-p001325001p001825000.bz2">enwiki-20150304-pages-meta-current11.xml-p001325001p001825000.bz2</a> 416.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current12.xml-p001825001p002425000.bz2">enwiki-20150304-pages-meta-current12.xml-p001825001p002425000.bz2</a> 461.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current13.xml-p002425001p003124998.bz2">enwiki-20150304-pages-meta-current13.xml-p002425001p003124998.bz2</a> 454.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current14.xml-p003125001p003924999.bz2">enwiki-20150304-pages-meta-current14.xml-p003125001p003924999.bz2</a> 496.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current15.xml-p003925001p004825000.bz2">enwiki-20150304-pages-meta-current15.xml-p003925001p004825000.bz2</a> 511.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current16.xml-p004825002p006025000.bz2">enwiki-20150304-pages-meta-current16.xml-p004825002p006025000.bz2</a> 628.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current17.xml-p006025001p007524997.bz2">enwiki-20150304-pages-meta-current17.xml-p006025001p007524997.bz2</a> 688.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current18.xml-p007525002p009225000.bz2">enwiki-20150304-pages-meta-current18.xml-p007525002p009225000.bz2</a> 749.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current19.xml-p009225001p011125000.bz2">enwiki-20150304-pages-meta-current19.xml-p009225001p011125000.bz2</a> 762.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current20.xml-p011125001p013324998.bz2">enwiki-20150304-pages-meta-current20.xml-p011125001p013324998.bz2</a> 911.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current21.xml-p013325001p015725000.bz2">enwiki-20150304-pages-meta-current21.xml-p013325001p015725000.bz2</a> 1000.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current22.xml-p015725003p018225000.bz2">enwiki-20150304-pages-meta-current22.xml-p015725003p018225000.bz2</a> 949.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current23.xml-p018225001p020925000.bz2">enwiki-20150304-pages-meta-current23.xml-p018225001p020925000.bz2</a> 1.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current24.xml-p020925002p023725000.bz2">enwiki-20150304-pages-meta-current24.xml-p020925002p023725000.bz2</a> 1.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current25.xml-p023725001p026624999.bz2">enwiki-20150304-pages-meta-current25.xml-p023725001p026624999.bz2</a> 1.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current26.xml-p026625002p029625000.bz2">enwiki-20150304-pages-meta-current26.xml-p026625002p029625000.bz2</a> 1.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-meta-current27.xml-p029625001p045581262.bz2">enwiki-20150304-pages-meta-current27.xml-p029625001p045581262.bz2</a> 6.6 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-07 06:39:00</span> <span class='status'>done</span> <span class='title'><big><b>Recombine articles, templates, media/file descriptions, and primary meta-pages.</b></big></span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles.xml.bz2">enwiki-20150304-pages-articles.xml.bz2</a> 10.9 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-07 03:29:52</span> <span class='status'>done</span> <span class='title'><big><b>Articles, templates, media/file descriptions, and primary meta-pages.</b></big></span><div class='progress'>2015-03-07 03:29:50: enwiki (ID 4309) 5372876 pages (385.6|2072996.0/sec all|curr), 5372876 revs (385.6|338.0/sec all|curr), 93.7%|93.7% prefetched (all|curr), ETA 2015-03-26 12:01:34 [max 650219307]</div>
+<ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles1.xml-p000000010p000010000.bz2">enwiki-20150304-pages-articles1.xml-p000000010p000010000.bz2</a> 44.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles2.xml-p000010002p000024999.bz2">enwiki-20150304-pages-articles2.xml-p000010002p000024999.bz2</a> 72.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles3.xml-p000025001p000055000.bz2">enwiki-20150304-pages-articles3.xml-p000025001p000055000.bz2</a> 109.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles4.xml-p000055002p000104998.bz2">enwiki-20150304-pages-articles4.xml-p000055002p000104998.bz2</a> 111.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles5.xml-p000105002p000184999.bz2">enwiki-20150304-pages-articles5.xml-p000105002p000184999.bz2</a> 153.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles6.xml-p000185003p000305000.bz2">enwiki-20150304-pages-articles6.xml-p000185003p000305000.bz2</a> 180.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles7.xml-p000305002p000464996.bz2">enwiki-20150304-pages-articles7.xml-p000305002p000464996.bz2</a> 209.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles8.xml-p000465001p000665000.bz2">enwiki-20150304-pages-articles8.xml-p000465001p000665000.bz2</a> 197.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles9.xml-p000665001p000925000.bz2">enwiki-20150304-pages-articles9.xml-p000665001p000925000.bz2</a> 191.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles10.xml-p000925001p001325000.bz2">enwiki-20150304-pages-articles10.xml-p000925001p001325000.bz2</a> 275.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles11.xml-p001325001p001825000.bz2">enwiki-20150304-pages-articles11.xml-p001325001p001825000.bz2</a> 286.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles12.xml-p001825001p002425000.bz2">enwiki-20150304-pages-articles12.xml-p001825001p002425000.bz2</a> 312.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles13.xml-p002425002p003124997.bz2">enwiki-20150304-pages-articles13.xml-p002425002p003124997.bz2</a> 294.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles14.xml-p003125001p003924999.bz2">enwiki-20150304-pages-articles14.xml-p003125001p003924999.bz2</a> 293.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles15.xml-p003925001p004824998.bz2">enwiki-20150304-pages-articles15.xml-p003925001p004824998.bz2</a> 281.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles16.xml-p004825005p006024996.bz2">enwiki-20150304-pages-articles16.xml-p004825005p006024996.bz2</a> 344.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles17.xml-p006025001p007524997.bz2">enwiki-20150304-pages-articles17.xml-p006025001p007524997.bz2</a> 350.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles18.xml-p007525004p009225000.bz2">enwiki-20150304-pages-articles18.xml-p007525004p009225000.bz2</a> 370.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles19.xml-p009225002p011124997.bz2">enwiki-20150304-pages-articles19.xml-p009225002p011124997.bz2</a> 348.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles20.xml-p011125004p013324998.bz2">enwiki-20150304-pages-articles20.xml-p011125004p013324998.bz2</a> 466.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles21.xml-p013325003p015724999.bz2">enwiki-20150304-pages-articles21.xml-p013325003p015724999.bz2</a> 481.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles22.xml-p015725013p018225000.bz2">enwiki-20150304-pages-articles22.xml-p015725013p018225000.bz2</a> 436.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles23.xml-p018225004p020925000.bz2">enwiki-20150304-pages-articles23.xml-p018225004p020925000.bz2</a> 514.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles24.xml-p020925002p023724999.bz2">enwiki-20150304-pages-articles24.xml-p020925002p023724999.bz2</a> 570.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles25.xml-p023725001p026624997.bz2">enwiki-20150304-pages-articles25.xml-p023725001p026624997.bz2</a> 601.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles26.xml-p026625004p029624976.bz2">enwiki-20150304-pages-articles26.xml-p026625004p029624976.bz2</a> 561.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-pages-articles27.xml-p029625017p045581259.bz2">enwiki-20150304-pages-articles27.xml-p029625017p045581259.bz2</a> 3.0 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-06 23:26:38</span> <span class='status'>done</span> <span class='title'>Recombine first-pass for page XML data dumps</span><ul><li class='detail'>These files contain no page text, only revision metadata.</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history.xml.gz">enwiki-20150304-stub-meta-history.xml.gz</a> 41.9 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current.xml.gz">enwiki-20150304-stub-meta-current.xml.gz</a> 3.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles.xml.gz">enwiki-20150304-stub-articles.xml.gz</a> 1.5 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-06 20:48:46</span> <span class='status'>done</span> <span class='title'>First-pass for page XML data dumps</span><div class='progress'>2015-03-06 20:07:21: enwiki (ID 32590) 13880003 pages (103.1|2580754.1/sec all|curr), 79753173 revs (592.3|590.0/sec all|curr), ETA 2015-03-17 23:32:13 [max 649955271]</div>
+<ul><li class='detail'>These files contain no page text, only revision metadata.</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history1.xml.gz">enwiki-20150304-stub-meta-history1.xml.gz</a> 493.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history2.xml.gz">enwiki-20150304-stub-meta-history2.xml.gz</a> 783.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history3.xml.gz">enwiki-20150304-stub-meta-history3.xml.gz</a> 1.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history4.xml.gz">enwiki-20150304-stub-meta-history4.xml.gz</a> 941.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history5.xml.gz">enwiki-20150304-stub-meta-history5.xml.gz</a> 1.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history6.xml.gz">enwiki-20150304-stub-meta-history6.xml.gz</a> 1.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history7.xml.gz">enwiki-20150304-stub-meta-history7.xml.gz</a> 1.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history8.xml.gz">enwiki-20150304-stub-meta-history8.xml.gz</a> 1.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history9.xml.gz">enwiki-20150304-stub-meta-history9.xml.gz</a> 1.1 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history10.xml.gz">enwiki-20150304-stub-meta-history10.xml.gz</a> 1.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history11.xml.gz">enwiki-20150304-stub-meta-history11.xml.gz</a> 1.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history12.xml.gz">enwiki-20150304-stub-meta-history12.xml.gz</a> 1.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history13.xml.gz">enwiki-20150304-stub-meta-history13.xml.gz</a> 1.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history14.xml.gz">enwiki-20150304-stub-meta-history14.xml.gz</a> 1.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history15.xml.gz">enwiki-20150304-stub-meta-history15.xml.gz</a> 1.3 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history16.xml.gz">enwiki-20150304-stub-meta-history16.xml.gz</a> 1.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history17.xml.gz">enwiki-20150304-stub-meta-history17.xml.gz</a> 1.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history18.xml.gz">enwiki-20150304-stub-meta-history18.xml.gz</a> 1.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history19.xml.gz">enwiki-20150304-stub-meta-history19.xml.gz</a> 1.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history20.xml.gz">enwiki-20150304-stub-meta-history20.xml.gz</a> 1.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history21.xml.gz">enwiki-20150304-stub-meta-history21.xml.gz</a> 1.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history22.xml.gz">enwiki-20150304-stub-meta-history22.xml.gz</a> 1.5 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history23.xml.gz">enwiki-20150304-stub-meta-history23.xml.gz</a> 1.8 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history24.xml.gz">enwiki-20150304-stub-meta-history24.xml.gz</a> 1.7 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history25.xml.gz">enwiki-20150304-stub-meta-history25.xml.gz</a> 1.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history26.xml.gz">enwiki-20150304-stub-meta-history26.xml.gz</a> 1.4 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-history27.xml.gz">enwiki-20150304-stub-meta-history27.xml.gz</a> 5.6 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current1.xml.gz">enwiki-20150304-stub-meta-current1.xml.gz</a> 800 KB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current2.xml.gz">enwiki-20150304-stub-meta-current2.xml.gz</a> 1.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current3.xml.gz">enwiki-20150304-stub-meta-current3.xml.gz</a> 2.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current4.xml.gz">enwiki-20150304-stub-meta-current4.xml.gz</a> 4.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current5.xml.gz">enwiki-20150304-stub-meta-current5.xml.gz</a> 6.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current6.xml.gz">enwiki-20150304-stub-meta-current6.xml.gz</a> 8.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current7.xml.gz">enwiki-20150304-stub-meta-current7.xml.gz</a> 11.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current8.xml.gz">enwiki-20150304-stub-meta-current8.xml.gz</a> 14.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current9.xml.gz">enwiki-20150304-stub-meta-current9.xml.gz</a> 17.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current10.xml.gz">enwiki-20150304-stub-meta-current10.xml.gz</a> 27.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current11.xml.gz">enwiki-20150304-stub-meta-current11.xml.gz</a> 31.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current12.xml.gz">enwiki-20150304-stub-meta-current12.xml.gz</a> 39.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current13.xml.gz">enwiki-20150304-stub-meta-current13.xml.gz</a> 43.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current14.xml.gz">enwiki-20150304-stub-meta-current14.xml.gz</a> 50.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current15.xml.gz">enwiki-20150304-stub-meta-current15.xml.gz</a> 57.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current16.xml.gz">enwiki-20150304-stub-meta-current16.xml.gz</a> 76.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current17.xml.gz">enwiki-20150304-stub-meta-current17.xml.gz</a> 98.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current18.xml.gz">enwiki-20150304-stub-meta-current18.xml.gz</a> 108.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current19.xml.gz">enwiki-20150304-stub-meta-current19.xml.gz</a> 124.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current20.xml.gz">enwiki-20150304-stub-meta-current20.xml.gz</a> 145.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current21.xml.gz">enwiki-20150304-stub-meta-current21.xml.gz</a> 167.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current22.xml.gz">enwiki-20150304-stub-meta-current22.xml.gz</a> 179.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current23.xml.gz">enwiki-20150304-stub-meta-current23.xml.gz</a> 201.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current24.xml.gz">enwiki-20150304-stub-meta-current24.xml.gz</a> 217.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current25.xml.gz">enwiki-20150304-stub-meta-current25.xml.gz</a> 226.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current26.xml.gz">enwiki-20150304-stub-meta-current26.xml.gz</a> 232.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-meta-current27.xml.gz">enwiki-20150304-stub-meta-current27.xml.gz</a> 1.2 GB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles1.xml.gz">enwiki-20150304-stub-articles1.xml.gz</a> 702 KB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles2.xml.gz">enwiki-20150304-stub-articles2.xml.gz</a> 1.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles3.xml.gz">enwiki-20150304-stub-articles3.xml.gz</a> 2.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles4.xml.gz">enwiki-20150304-stub-articles4.xml.gz</a> 3.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles5.xml.gz">enwiki-20150304-stub-articles5.xml.gz</a> 5.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles6.xml.gz">enwiki-20150304-stub-articles6.xml.gz</a> 7.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles7.xml.gz">enwiki-20150304-stub-articles7.xml.gz</a> 9.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles8.xml.gz">enwiki-20150304-stub-articles8.xml.gz</a> 11.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles9.xml.gz">enwiki-20150304-stub-articles9.xml.gz</a> 14.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles10.xml.gz">enwiki-20150304-stub-articles10.xml.gz</a> 21.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles11.xml.gz">enwiki-20150304-stub-articles11.xml.gz</a> 24.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles12.xml.gz">enwiki-20150304-stub-articles12.xml.gz</a> 29.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles13.xml.gz">enwiki-20150304-stub-articles13.xml.gz</a> 31.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles14.xml.gz">enwiki-20150304-stub-articles14.xml.gz</a> 32.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles15.xml.gz">enwiki-20150304-stub-articles15.xml.gz</a> 33.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles16.xml.gz">enwiki-20150304-stub-articles16.xml.gz</a> 44.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles17.xml.gz">enwiki-20150304-stub-articles17.xml.gz</a> 47.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles18.xml.gz">enwiki-20150304-stub-articles18.xml.gz</a> 51.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles19.xml.gz">enwiki-20150304-stub-articles19.xml.gz</a> 49.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles20.xml.gz">enwiki-20150304-stub-articles20.xml.gz</a> 69.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles21.xml.gz">enwiki-20150304-stub-articles21.xml.gz</a> 73.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles22.xml.gz">enwiki-20150304-stub-articles22.xml.gz</a> 76.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles23.xml.gz">enwiki-20150304-stub-articles23.xml.gz</a> 81.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles24.xml.gz">enwiki-20150304-stub-articles24.xml.gz</a> 89.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles25.xml.gz">enwiki-20150304-stub-articles25.xml.gz</a> 90.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles26.xml.gz">enwiki-20150304-stub-articles26.xml.gz</a> 93.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-stub-articles27.xml.gz">enwiki-20150304-stub-articles27.xml.gz</a> 506.0 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-05 06:42:25</span> <span class='status'>done</span> <span class='title'>Recombine extracted page abstracts for Yahoo</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract.xml">enwiki-20150304-abstract.xml</a> 4.2 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-05 06:39:57</span> <span class='status'>done</span> <span class='title'>Extracted page abstracts for Yahoo</span><div class='progress'>2015-03-05 06:39:45: enwiki (ID 35270) 1724310 pages (68.9|524568.5/sec all|curr), 1724310 revs (68.9|94.3/sec all|curr), ETA 2015-03-12 15:32:12 [max 45578721]</div>
+<ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract1.xml">enwiki-20150304-abstract1.xml</a> 710.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract2.xml">enwiki-20150304-abstract2.xml</a> 344.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract3.xml">enwiki-20150304-abstract3.xml</a> 253.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract4.xml">enwiki-20150304-abstract4.xml</a> 197.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract5.xml">enwiki-20150304-abstract5.xml</a> 165.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract6.xml">enwiki-20150304-abstract6.xml</a> 157.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract7.xml">enwiki-20150304-abstract7.xml</a> 178.6 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract8.xml">enwiki-20150304-abstract8.xml</a> 157.9 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract9.xml">enwiki-20150304-abstract9.xml</a> 134.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract10.xml">enwiki-20150304-abstract10.xml</a> 153.0 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract11.xml">enwiki-20150304-abstract11.xml</a> 146.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract12.xml">enwiki-20150304-abstract12.xml</a> 163.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract13.xml">enwiki-20150304-abstract13.xml</a> 155.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract14.xml">enwiki-20150304-abstract14.xml</a> 149.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract15.xml">enwiki-20150304-abstract15.xml</a> 135.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract16.xml">enwiki-20150304-abstract16.xml</a> 145.7 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract17.xml">enwiki-20150304-abstract17.xml</a> 144.5 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract18.xml">enwiki-20150304-abstract18.xml</a> 131.8 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract19.xml">enwiki-20150304-abstract19.xml</a> 143.3 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract20.xml">enwiki-20150304-abstract20.xml</a> 141.1 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract21.xml">enwiki-20150304-abstract21.xml</a> 143.4 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract22.xml">enwiki-20150304-abstract22.xml</a> 143.2 MB</li>
+<li class='file'><a href="/enwiki/20150304/enwiki-20150304-abstract23.xml">enwiki-20150304-abstract23.xml</a> 101.1 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:42:25</span> <span class='status'>done</span> <span class='title'>List of all page titles</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-all-titles.gz">enwiki-20150304-all-titles.gz</a> 182.0 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:37:12</span> <span class='status'>done</span> <span class='title'>List of page titles in main namespace</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-all-titles-in-ns0.gz">enwiki-20150304-all-titles-in-ns0.gz</a> 61.9 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:34:40</span> <span class='status'>done</span> <span class='title'>Interwiki link tracking records</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-iwlinks.sql.gz">enwiki-20150304-iwlinks.sql.gz</a> 97.9 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:32:44</span> <span class='status'>done</span> <span class='title'>Redirect list</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-redirect.sql.gz">enwiki-20150304-redirect.sql.gz</a> 94.1 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:32:23</span> <span class='status'>done</span> <span class='title'>Nonexistent pages that have been protected.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-protected_titles.sql.gz">enwiki-20150304-protected_titles.sql.gz</a> 972 KB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:32:20</span> <span class='status'>done</span> <span class='title'>Name/value pairs for pages.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-page_props.sql.gz">enwiki-20150304-page_props.sql.gz</a> 195.5 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:31:13</span> <span class='status'>done</span> <span class='title'>Newer per-page restrictions table.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-page_restrictions.sql.gz">enwiki-20150304-page_restrictions.sql.gz</a> 791 KB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:31:07</span> <span class='status'>done</span> <span class='title'>Base per-page data (id, title, old restrictions, etc).</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-page.sql.gz">enwiki-20150304-page.sql.gz</a> 1.1 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:27:12</span> <span class='status'>done</span> <span class='title'>Category information.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-category.sql.gz">enwiki-20150304-category.sql.gz</a> 28.3 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:27:04</span> <span class='status'>done</span> <span class='title'>User group assignments.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-user_groups.sql.gz">enwiki-20150304-user_groups.sql.gz</a> 73 KB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:27:02</span> <span class='status'>done</span> <span class='title'>Set of defined interwiki prefixes and links for this wiki.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-interwiki.sql.gz">enwiki-20150304-interwiki.sql.gz</a> 725 bytes</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:26:59</span> <span class='status'>done</span> <span class='title'>Wiki interlanguage link records.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-langlinks.sql.gz">enwiki-20150304-langlinks.sql.gz</a> 223.4 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:23:44</span> <span class='status'>done</span> <span class='title'>Wiki external URL link records.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-externallinks.sql.gz">enwiki-20150304-externallinks.sql.gz</a> 1.9 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 23:15:23</span> <span class='status'>done</span> <span class='title'>Wiki template inclusion link records.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-templatelinks.sql.gz">enwiki-20150304-templatelinks.sql.gz</a> 1.6 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 20:55:33</span> <span class='status'>done</span> <span class='title'>Wiki media/files usage records.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-imagelinks.sql.gz">enwiki-20150304-imagelinks.sql.gz</a> 314.5 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 20:39:33</span> <span class='status'>done</span> <span class='title'>Wiki category membership link records.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-categorylinks.sql.gz">enwiki-20150304-categorylinks.sql.gz</a> 1.5 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 20:00:56</span> <span class='status'>done</span> <span class='title'>Wiki page-to-page link records.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-pagelinks.sql.gz">enwiki-20150304-pagelinks.sql.gz</a> 4.2 GB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 12:58:07</span> <span class='status'>done</span> <span class='title'>Metadata on current versions of uploaded media/files.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-image.sql.gz">enwiki-20150304-image.sql.gz</a> 117.8 MB</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 12:57:43</span> <span class='status'>done</span> <span class='title'>A few statistics such as the page count.</span><ul><li class='file'><a href="/enwiki/20150304/enwiki-20150304-site_stats.sql.gz">enwiki-20150304-site_stats.sql.gz</a> 816 bytes</li></ul></li>
+<li class='done'><span class='updates'>2015-03-04 12:57:41</span> <span class='status'>done</span> <span class='title'>Metadata on prior versions of uploaded images. (private)</span></li>
+<li class='done'><span class='updates'>2015-03-04 12:57:37</span> <span class='status'>done</span> <span class='title'>Data for various events (deletions, uploads, etc). (private)</span></li>
+<li class='done'><span class='updates'>2015-03-04 12:50:57</span> <span class='status'>done</span> <span class='title'>Deleted page and revision data. (private)</span></li>
+<li class='done'><span class='updates'>2015-03-04 12:39:29</span> <span class='status'>done</span> <span class='title'>Data for blocks of IP addresses, ranges, and users. (private)</span></li>
+<li class='done'><span class='updates'>2015-03-04 12:39:19</span> <span class='status'>done</span> <span class='title'>Users' watchlist settings. (private)</span></li>
+<li class='done'><span class='updates'>2015-03-04 12:29:37</span> <span class='status'>done</span> <span class='title'>User account data. (private)</span></li>
+        </ul>
+
+</body>
+</html>
