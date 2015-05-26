@@ -42,6 +42,9 @@ func TestCandidates(t *testing.T) {
 	} else if tgt := all[0].Target; tgt != "dmr" {
 		t.Errorf(`expected target "dmr", got %q`, tgt)
 	}
+	if all[0].LinkCount == 0 {
+		t.Errorf("LinkCount is zero")
+	}
 }
 
 func TestExactMatch(t *testing.T) {

@@ -99,6 +99,7 @@ func (sem Semanticizer) candidates(h uint32, offset, end int) (cands []Entity, e
 		c.NGramCount = float64(sem.ngramcount.Get(h))
 		c.Senseprob = c.Commonness / c.NGramCount
 		c.Commonness /= totalLinkCount
+		c.LinkCount = totalLinkCount
 	}
 	return
 }
