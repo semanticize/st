@@ -18,7 +18,8 @@ func TestBestPath(t *testing.T) {
 func makeSemanticizer() Semanticizer {
 	cm, _ := countmin.New(10, 4)
 	db, _ := storage.MakeDB(":memory:", true, &storage.Settings{MaxNGram: 2})
-	sem := Semanticizer{db, cm, 2}
+	allq, _ := prepareAllQuery(db)
+	sem := Semanticizer{db: db, ngramcount: cm, maxNGram: 2, allQuery: allq}
 
 	for _, h := range hash.NGrams([]string{"Hello", "world"}, 2, 2) {
 		_, err := db.Exec(`insert into linkstats values (?, 0, 1)`, h)
@@ -44,6 +45,15 @@ func TestCandidates(t *testing.T) {
 	}
 	if all[0].LinkCount == 0 {
 		t.Errorf("LinkCount is zero")
+	}
+}
+
+func BenchmarkCandidates(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_, err := sem.All("Let's try and see if we can semanticize a sentence.")
+		if err != nil {
+			b.Fatal(err)
+		}
 	}
 }
 

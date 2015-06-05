@@ -14,6 +14,7 @@ type Semanticizer struct {
 	db         *sql.DB
 	ngramcount *countmin.Sketch
 	maxNGram   uint
+	allQuery   *sql.Stmt
 }
 
 // Load a semanticizer (entity linker) from modelpath.
@@ -38,7 +39,13 @@ func Load(modelpath string) (sem *Semanticizer,
 	if err != nil {
 		return
 	}
-	sem = &Semanticizer{db, ngramcount, settings.MaxNGram}
+	allq, err := prepareAllQuery(db)
+	if err != nil {
+		return
+	}
+
+	sem = &Semanticizer{db: db, ngramcount: ngramcount,
+		maxNGram: settings.MaxNGram, allQuery: allq}
 	return
 }
 
@@ -63,12 +70,16 @@ type Entity struct {
 	Length int `json:"length"`
 }
 
+func prepareAllQuery(db *sql.DB) (*sql.Stmt, error) {
+	return db.Prepare(
+		`select (select title from titles where id = targetid), count
+		 from linkstats where ngramhash = ?`)
+}
+
 // Get candidates for hash value h from the database. offset and end index
 // into the original string and are stored on the return values.
 func (sem Semanticizer) candidates(h uint32, offset, end int) (cands []Entity, err error) {
-	q := `select (select title from titles where id = targetid), count
-	      from linkstats where ngramhash = ?`
-	rows, err := sem.db.Query(q, h)
+	rows, err := sem.allQuery.Query(h)
 	if err != nil {
 		return
 	}
