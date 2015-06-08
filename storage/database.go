@@ -122,7 +122,7 @@ func loadModel(db *sql.DB) (s *Settings, err error) {
 		var max64 int64
 		max64, err = strconv.ParseInt(maxNGramStr, 10, 0)
 		if max64 <= 0 {
-			err = fmt.Errorf("invalid value maxngram=%d, must be >0")
+			err = fmt.Errorf("invalid value maxngram=%d, must be >0", max64)
 		} else {
 			s.MaxNGram = uint(max64)
 		}

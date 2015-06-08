@@ -7,7 +7,8 @@ import (
 )
 
 func TestStoreLinks(t *testing.T) {
-	db, _ := storage.MakeDB(":memory:", true, &storage.Settings{"bla", 3})
+	db, _ := storage.MakeDB(":memory:", true,
+		&storage.Settings{Dumpname: "bla", MaxNGram: 3})
 
 	links := make(chan map[wikidump.Link]int)
 	go func() {

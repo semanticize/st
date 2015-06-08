@@ -90,7 +90,7 @@ func main() {
 
 	log.Printf("Creating database at %s", *dbpath)
 	db, err := storage.MakeDB(*dbpath, true,
-		&storage.Settings{*dumppath, uint(*maxNGram)})
+		&storage.Settings{Dumpname: *dumppath, MaxNGram: uint(*maxNGram)})
 	check()
 
 	// The numbers here are completely arbitrary.

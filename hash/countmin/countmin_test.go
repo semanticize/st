@@ -33,7 +33,7 @@ func TestCountMin(t *testing.T) {
 			t.Errorf("difference too big: got %d, want %d", sketch.Get(k), v)
 		}
 		if sketch.Get(k) != sketch1.Get(k) {
-			t.Errorf("different counts for Add and Add1",
+			t.Errorf("different counts for Add and Add1: %d, %d",
 				sketch.Get(k), sketch1.Get(k))
 		}
 	}
@@ -84,11 +84,11 @@ func TestNewFromCounts(t *testing.T) {
 func TestNewFromProb(t *testing.T) {
 	ε, δ := 0.001, .00001
 	cm, _ := NewFromProb(ε, δ)
-	if len(cm.Counts()) != 12 {
-		t.Errorf("expected %d rows, got %d", 12, cm.Counts)
+	if nrows := len(cm.Counts()); nrows != 12 {
+		t.Errorf("expected %d rows, got %d", 12, nrows)
 	}
-	if len(cm.Counts()[0]) != 2719 {
-		t.Errorf("expected %d rows, got %d", 2719, cm.Counts)
+	if ncols := len(cm.Counts()[0]); ncols != 2719 {
+		t.Errorf("expected %d rows, got %d", 2719, ncols)
 	}
 }
 

@@ -61,7 +61,6 @@ func parsePage(d *xml.Decoder, pages chan<- *Page, redirs chan<- *Redirect) {
 			}
 		}
 	}
-	panic("not reached")
 }
 
 // Parse text out of an element. Assumes element has the form

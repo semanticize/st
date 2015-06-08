@@ -5,6 +5,8 @@
 dumpparser
 semanticizest
 semanticizest-dumpparser
+!semanticizest/
+!semanticizest-dumpparser/
 
 # Folders
 _obj
