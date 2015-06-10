@@ -2,9 +2,13 @@ package linking
 
 import (
 	"encoding/json"
+	dumpparser "github.com/semanticize/st/cmd/semanticizest-dumpparser/internal"
 	"github.com/semanticize/st/hash"
 	"github.com/semanticize/st/hash/countmin"
 	"github.com/semanticize/st/storage"
+	"io/ioutil"
+	"log"
+	"os"
 	"reflect"
 	"testing"
 )
@@ -101,5 +105,54 @@ func TestViterbi(t *testing.T) {
 		if e.Target != "foo" && e.Target != "baz" {
 			t.Errorf("unexpected entity %q in best path", e.Target)
 		}
+	}
+}
+
+type tWriter struct {
+	t *testing.T
+}
+
+func (w tWriter) Write(p []byte) (n int, err error) {
+	w.t.Logf("%s", p)
+	return len(p), nil
+}
+
+func testLogger(t *testing.T) *log.Logger {
+	return log.New(tWriter{t}, "", 0)
+}
+
+func makeSemanticizer2(t *testing.T) (dbname string, sem *Semanticizer,
+	settings *storage.Settings, err error) {
+
+	dumppath := "nlwiki-20140927-sample.xml"
+
+	dbfile, err := ioutil.TempFile("", "semanticizer")
+	if err != nil {
+		return
+	}
+	dbname = dbfile.Name()
+
+	err = dumpparser.Main(dbname, dumppath, "", countmin.MaxRows, 32, 7,
+		testLogger(t))
+	if err != nil {
+		return
+	}
+	sem, settings, err = Load(dbname)
+	return
+}
+
+func TestEndToEnd(t *testing.T) {
+	dbname, sem, settings, err := makeSemanticizer2(t)
+	_ = settings
+	defer os.Remove(dbname)
+	if err != nil {
+		t.Fatal(err)
+	}
+	all, err := sem.All("Antwerpen")
+	if len(all) == 0 {
+		t.Error(`expected to get candidate entities for "Antwerpen"`)
+	}
+	for _, entity := range all {
+		t.Logf("%v", entity)
 	}
 }
