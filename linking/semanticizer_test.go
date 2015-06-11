@@ -134,7 +134,7 @@ func testLogger(t *testing.T) *log.Logger {
 func makeSemanticizer2(t *testing.T) (dbname string, sem *Semanticizer,
 	settings *storage.Settings, err error) {
 
-	dumppath := "nlwiki-20140927-sample.xml"
+	dumppath := "../wikidump/nlwiki-20140927-sample.xml"
 
 	dbfile, err := ioutil.TempFile("", "semanticizer")
 	if err != nil {
