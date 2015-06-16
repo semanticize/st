@@ -2,7 +2,7 @@ package linking
 
 import (
 	"encoding/json"
-	dumpparser "github.com/semanticize/st/cmd/semanticizest-dumpparser/internal"
+	dumpparser "github.com/semanticize/st/internal/dumpparser"
 	"github.com/semanticize/st/hash"
 	"github.com/semanticize/st/hash/countmin"
 	"github.com/semanticize/st/storage"

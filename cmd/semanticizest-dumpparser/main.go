@@ -7,7 +7,7 @@
 package main
 
 import (
-	"github.com/semanticize/st/cmd/semanticizest-dumpparser/internal"
+	"github.com/semanticize/st/internal/dumpparser"
 	"github.com/semanticize/st/storage"
 	"gopkg.in/alecthomas/kingpin.v1"
 	"log"
@@ -38,6 +38,6 @@ var (
 func main() {
 	kingpin.Parse()
 
-	internal.Main(*dbpath, *dumppath, *download, *nrows, *ncols, *maxNGram,
+	dumpparser.Main(*dbpath, *dumppath, *download, *nrows, *ncols, *maxNGram,
 		log.New(os.Stderr, "dumpparser ", log.Ldate | log.Ltime))
 }

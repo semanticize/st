@@ -1,4 +1,4 @@
-package internal
+package dumpparser
 
 import (
 	"github.com/semanticize/st/storage"
