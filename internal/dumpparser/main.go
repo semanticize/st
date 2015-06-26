@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"compress/bzip2"
 	"database/sql"
+	"fmt"
 	"github.com/cheggaaa/pb"
 	"github.com/semanticize/st/hash"
 	"github.com/semanticize/st/hash/countmin"
@@ -45,7 +46,12 @@ func Main(dbpath, dumppath, download string, nrows, ncols, maxNGram int,
 
 	defer func() {
 		if r := recover(); r != nil {
-			err = r.(error)
+			switch e := r.(type) {
+			case error:
+				err = e
+			default:
+				err = fmt.Errorf("%v", r)
+			}
 		}
 	}()
 	realMain(dbpath, dumppath, download, nrows, ncols, maxNGram, logger)

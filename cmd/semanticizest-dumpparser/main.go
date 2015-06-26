@@ -38,6 +38,10 @@ var (
 func main() {
 	kingpin.Parse()
 
-	dumpparser.Main(*dbpath, *dumppath, *download, *nrows, *ncols, *maxNGram,
-		log.New(os.Stderr, "dumpparser ", log.Ldate | log.Ltime))
+	l := log.New(os.Stderr, "dumpparser ", log.Ldate | log.Ltime)
+	err := dumpparser.Main(*dbpath, *dumppath, *download, *nrows, *ncols,
+		*maxNGram, l)
+	if err != nil {
+		l.Fatal(err)
+	}
 }
