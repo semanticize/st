@@ -7,13 +7,15 @@
 package main
 
 import (
-	"github.com/semanticize/st/internal/dumpparser"
-	"github.com/semanticize/st/storage"
-	"gopkg.in/alecthomas/kingpin.v1"
 	"log"
 	"os"
 	"runtime"
 	"strconv"
+
+	"gopkg.in/alecthomas/kingpin.v1"
+
+	"github.com/semanticize/st/internal/dumpparser"
+	"github.com/semanticize/st/internal/storage"
 )
 
 func init() {
@@ -38,7 +40,7 @@ var (
 func main() {
 	kingpin.Parse()
 
-	l := log.New(os.Stderr, "dumpparser ", log.Ldate | log.Ltime)
+	l := log.New(os.Stderr, "dumpparser ", log.Ldate|log.Ltime)
 	err := dumpparser.Main(*dbpath, *dumppath, *download, *nrows, *ncols,
 		*maxNGram, l)
 	if err != nil {

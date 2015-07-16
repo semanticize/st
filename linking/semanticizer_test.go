@@ -2,15 +2,16 @@ package linking
 
 import (
 	"encoding/json"
-	dumpparser "github.com/semanticize/st/internal/dumpparser"
-	"github.com/semanticize/st/hash"
-	"github.com/semanticize/st/hash/countmin"
-	"github.com/semanticize/st/storage"
 	"io/ioutil"
 	"log"
 	"os"
 	"reflect"
 	"testing"
+
+	"github.com/semanticize/st/hash"
+	"github.com/semanticize/st/hash/countmin"
+	"github.com/semanticize/st/internal/dumpparser"
+	"github.com/semanticize/st/internal/storage"
 )
 
 var sem = makeSemanticizer()

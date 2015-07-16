@@ -1,9 +1,10 @@
 package dumpparser
 
 import (
-	"github.com/semanticize/st/storage"
-	"github.com/semanticize/st/wikidump"
 	"testing"
+
+	"github.com/semanticize/st/internal/storage"
+	"github.com/semanticize/st/wikidump"
 )
 
 func TestStoreLinks(t *testing.T) {

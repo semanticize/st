@@ -3,11 +3,12 @@ package linking
 
 import (
 	"database/sql"
+	"math"
+
 	"github.com/semanticize/st/hash"
 	"github.com/semanticize/st/hash/countmin"
+	"github.com/semanticize/st/internal/storage"
 	"github.com/semanticize/st/nlp"
-	"github.com/semanticize/st/storage"
-	"math"
 )
 
 type Semanticizer struct {

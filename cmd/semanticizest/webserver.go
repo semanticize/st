@@ -3,11 +3,12 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"github.com/semanticize/st/linking"
-	"github.com/semanticize/st/storage"
 	"html/template"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/semanticize/st/internal/storage"
+	"github.com/semanticize/st/linking"
 )
 
 var infoTemplate = template.Must(template.New("info").Parse(`<html>
