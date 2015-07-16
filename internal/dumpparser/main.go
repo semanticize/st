@@ -7,12 +7,6 @@ import (
 	"compress/bzip2"
 	"database/sql"
 	"fmt"
-	"github.com/cheggaaa/pb"
-	"github.com/semanticize/st/hash"
-	"github.com/semanticize/st/hash/countmin"
-	"github.com/semanticize/st/nlp"
-	"github.com/semanticize/st/storage"
-	"github.com/semanticize/st/wikidump"
 	"io"
 	"log"
 	"os"
@@ -21,6 +15,14 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/cheggaaa/pb"
+
+	"github.com/semanticize/st/hash"
+	"github.com/semanticize/st/hash/countmin"
+	"github.com/semanticize/st/internal/storage"
+	"github.com/semanticize/st/nlp"
+	"github.com/semanticize/st/wikidump"
 )
 
 func open(path string) (r io.ReadCloser, err error) {
