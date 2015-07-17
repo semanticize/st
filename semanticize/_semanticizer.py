@@ -36,7 +36,7 @@ class Semanticizer:
     def _responseGenerator(self, data):
         # Should be a generator instead of returning an array ?
         dataJson = json.loads(data)
-        return dataJson
+        return dataJson if dataJson is not None else []
 
     def __del__(self):
         # Will eventually get called

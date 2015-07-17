@@ -53,3 +53,22 @@ You can also use semanticizest as a command-line tool by omitting ``--http``.
 In that case, it will read paragraphs (double newline-separated) from standard
 input and emit a JSON representation of the candidate entities in each
 paragraph.
+
+Python binding
+==============
+
+Once you have built a semanticizer model, you can use semanticizest from Python
+using the Python wrapper.
+
+You can use the python wrapper as follows:
+
+```
+from semanticize import Semanticizer
+
+sentence = 'Antwerpen'
+sem = Semanticizer(model='nlsample.go.model', stPath='GO/PATH/bin/semanticizest')
+
+candidates = sem.all_candidates(sentence)
+```
+
+You must have build a model first and provide a path for semanticizest.
