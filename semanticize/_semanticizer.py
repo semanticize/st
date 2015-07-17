@@ -29,7 +29,7 @@ class Semanticizer:
          - linkcount
          - ngramcount
         '''
-        self.proc.stdin.write(sentence + '\n\n')
+        self.proc.stdin.write(json.dumps(sentence) + '\n\n')
         stdoutdata = self.proc.stdout.readline()
         return self._responseGenerator(stdoutdata)
 
