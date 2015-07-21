@@ -9,11 +9,13 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"github.com/semanticize/st/linking"
-	"gopkg.in/alecthomas/kingpin.v1"
 	"log"
 	"os"
 	"regexp"
+
+	"gopkg.in/alecthomas/kingpin.v1"
+
+	"github.com/semanticize/st/linking"
 )
 
 var paraEnd = regexp.MustCompile(`\n\s*\n`)
@@ -34,7 +36,10 @@ func splitPara(data []byte, atEOF bool) (advance int, token []byte, err error) {
 
 var (
 	dbpath = kingpin.Arg("model", "path to model file").Required().String()
-	dohttp = kingpin.Flag("http", "HTTP server address").Default("").String()
+	dohttp = kingpin.Flag("http",
+		"HTTP server address; use :0 for a random port").Default("").String()
+	portfile = kingpin.Flag("portfile",
+		"write server port to this file (useful with :0)").Default("").String()
 )
 
 func main() {
@@ -71,6 +76,6 @@ func main() {
 		err = scanner.Err()
 		check()
 	} else {
-		log.Fatal(restServer(*dohttp, sem, settings))
+		log.Fatal(restServer(*dohttp, *portfile, sem, settings))
 	}
 }

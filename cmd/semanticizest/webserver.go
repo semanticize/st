@@ -3,9 +3,12 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"html/template"
 	"io/ioutil"
+	"net"
 	"net/http"
+	"os"
 
 	"github.com/semanticize/st/internal/storage"
 	"github.com/semanticize/st/linking"
@@ -85,12 +88,43 @@ func serveEntities(w http.ResponseWriter, req *http.Request,
 	json.NewEncoder(w).Encode(cands)
 }
 
-func restServer(addr string, sem *linking.Semanticizer, s *storage.Settings) error {
+// Determine actual port used by l and write it to path (followed by a newline).
+//
+// This is useful for random ports, as assigned when using port number 0.
+func writePort(l net.Listener, path string) (err error) {
+	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		return
+	}
+	defer f.Close()
+
+	_, port, err := net.SplitHostPort(l.Addr().String())
+	if err != nil {
+		return
+	}
+	fmt.Fprintln(f, port)
+	return
+}
+
+func restServer(addr, portfile string, sem *linking.Semanticizer,
+	s *storage.Settings) (err error) {
+
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		info(w, s)
 	})
 	http.Handle("/all", allHandler{sem})
 	http.Handle("/bestpath", bestPathHandler{sem})
 	http.Handle("/exactmatch", stringHandler{sem})
-	return http.ListenAndServe(addr, nil)
+
+	l, err := net.Listen("tcp", addr)
+	if err != nil {
+		return err
+	}
+	defer l.Close()
+
+	if portfile != "" {
+		writePort(l, portfile)
+	}
+
+	return http.Serve(l, nil)
 }
