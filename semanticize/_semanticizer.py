@@ -1,20 +1,19 @@
 import json
 import subprocess
+import tempfile
+import urllib2
 
 
-class Semanticizer:
-    ''' Wrapper for semanticizest go implementation. '''
-
-    def __init__(self, model='nl.go.model', stPath='./bin/semanticizest'):
-        ''' Create an instance of Semanticizer.
+class SemanticizerClient:
+    ''' HTTP client for semanticizest go implementation. '''
+    def __init__(self, serverURL):
+        ''' Create an instance of SemanticizerClient.
 
         Arguments:
-        model  -- Language model created by semanticizest-dumpparser
-        stPath -- Path to semanticizest go implementation.
+        serverURL  -- URL of server this client connects to.
         '''
-        args = [stPath, model]
-        self.proc = subprocess.Popen(args, stdin=subprocess.PIPE,
-                                     stdout=subprocess.PIPE)
+        service = 'all'
+        self._url = serverURL + '/' + service
 
     def all_candidates(self, sentence):
         ''' Given a sentence, generate a list of candidate entity links.
@@ -29,18 +28,36 @@ class Semanticizer:
          - linkcount
          - ngramcount
         '''
-        self.proc.stdin.write(json.dumps(sentence) + '\n\n')
-        stdoutdata = self.proc.stdout.readline()
-        return self._responseGenerator(stdoutdata)
+        req = urllib2.Request(self._url)
+        resp = urllib2.urlopen(req, json.dumps(sentence))
+        respLines = resp.readlines()
+        candidates = json.loads(''.join(respLines))
+        return candidates
 
-    def _responseGenerator(self, data):
-        # Should be a generator instead of returning an array ?
-        dataJson = json.loads(data)
-        return dataJson if dataJson is not None else []
 
-    def __del__(self):
-        # Will eventually get called
-        self.proc.terminate()
+class SemanticizerServer:
+    ''' HTTP server wrapper for semanticizest go implementation. '''
+    def __init__(self, model='nl.go.model', stPath='./bin/semanticizest'):
+        ''' Create an instance of SemanticizerServer.
 
-    def __exit__(self):
-        self.__del__()
+        Arguments:
+        model  -- Language model created by semanticizest-dumpparser
+        stPath -- Path to semanticizest go implementation.
+        '''
+        portfile = tempfile.NamedTemporaryFile()
+        args = [stPath, '--http=:0', '--portfile='+portfile.name, model]
+        self._proc = subprocess.Popen(args, stderr=subprocess.PIPE)
+
+        # Wait for port file...
+        port = ''
+        while len(port) == 0:
+            port = portfile.file.readline().strip()
+        self._gourl = 'http://localhost:' + port
+
+    def getURL(self):
+        ''' Retrieve the URL of this server. '''
+        return self._gourl
+
+    def stop(self):
+        ''' Stop the server. Terminate subprocess. '''
+        self._proc.terminate()
