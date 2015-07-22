@@ -13,8 +13,6 @@ to pertinent Wikipedia concepts. You can use these links as a "semantic
 representation" of the text for NLP or machine learning, or just to provide
 some links to background info on the Wikipedia.
 
-This is the Go version of semanticizest.
-
 
 Installing
 ----------
@@ -58,30 +56,29 @@ Python binding
 ==============
 
 Once you have built a semanticizer model, you can use semanticizest from Python
-using the Python wrapper. You can use the python wrapper as follows:
+using the Python wrapper. Install the Python wrapper with::
 
-Assuming you have a serverd running on port 5002 as described above:
-```
-from semanticize import SemanticizerClient
+    python setup.py install
 
-sentence = 'Antwerpen'
-serverURL = 'http://localhost:5002/'
-client = SemanticizerClient(serverURL)
-candidates = client.all_candidates(sentence)
-```
+You can use the python wrapper as follows:
 
-A *SemanticizerServer* class also provides the option of starting the semanticizer
-server from Python, removing dependency on an external server. However, this server
-runs on a random port on localhost and thus may be limited by the hardware of the
-local machine. You must have build a model first and provide a path for semanticizest.
-You can start, use and stop the server as follows:
-```
-from semanticize import SemanticizerServer, SemanticizerClient
+The wrapper can operate in two modes: either you start the semanticizest
+REST server, or you have the wrapper start it for you.
 
-sentence = 'Antwerpen'
-server = SemanticizerServer(model='nlsample.go.model',
-                            stPath='./bin/semanticizest')
-client = SemanticizerClient(server.getURL())
-candidates = client.all_candidates(sentence)
-server.stop()
-```
+If you already have a server running on port 5002, as described above::
+
+    from semanticizest import Client
+
+    sentence = 'Antwerpen'
+    url = 'http://localhost:5002/'
+    client = Client(url)
+    candidates = client.all_candidates(sentence)
+
+To start the server automatically, you need to construct a ``Semanticizer``
+from the path to the model file::
+
+    from semanticizest import Semanticizer
+
+    sentence = 'Antwerpen'
+    semanticizer = Semanticizer('/path/to/model.db')
+    candidates = client.all_candidates(sentence)
