@@ -1,30 +1,37 @@
 import os
-from nose.tools import assert_true
+import os.path
+import re
+import subprocess
 from tempfile import NamedTemporaryFile
-from subprocess import call
 
-from semanticize import SemanticizerServer, SemanticizerClient
+from nose.tools import assert_true
 
-gopath = os.environ['GOPATH']
-modelfile = NamedTemporaryFile()
-wikidump = 'wikidump/nlwiki-20140927-sample.xml'
-semmodel = modelfile.name
-call([gopath + '/bin/semanticizest-dumpparser', semmodel, wikidump])
+from semanticize import Semanticizer, SemanticizerServer
 
 
-def test_semanticizerServer():
-    server = SemanticizerServer(model='nlsample.go.model',
-                                stPath='./bin/semanticizest')
-    url = server.getURL()
-    server.stop()
-    assert_true(len(url) > 0, 'Should have a URL')
+def gobin(name):
+    return os.path.join(os.environ['GOPATH'], 'bin', name)
+
+
+# XXX This leaves junk behind, should clean up.
+modelfile = NamedTemporaryFile(prefix='semanticizer-test-')
+wikidump = '../wikidump/nlwiki-20140927-sample.xml'
+model = modelfile.name
+if subprocess.call([gobin('semanticizest-dumpparser'), model, wikidump]) != 0:
+    raise RuntimeError('dumpparser failed')
+
+
+def test_semanticizer_server():
+    server = SemanticizerServer(model=model,
+                                serverpath=gobin('semanticizest'))
+    server.terminate()
+    assert_true(re.match(r'http://(localhost|127\.0\.0\.1):[0-9]+', server.url))
 
 
 def test_semanticizer():
-    server = SemanticizerServer(model='nlsample.go.model',
-                                stPath='./bin/semanticizest')
-    client = SemanticizerClient(server.getURL())
-    sentence = 'Antwerpen'
-    candidates = client.all_candidates(sentence)
-    server.stop()
+    with SemanticizerServer(model=model,
+                            serverpath=gobin('semanticizest')) as server:
+        client = Semanticizer(server)
+        sentence = 'Antwerpen'
+        candidates = client.all_candidates(sentence)
     assert_true(len(candidates) > 0, 'Should find some candidates')
