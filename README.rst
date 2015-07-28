@@ -53,3 +53,30 @@ You can also use semanticizest as a command-line tool by omitting ``--http``.
 In that case, it will read paragraphs (double newline-separated) from standard
 input and emit a JSON representation of the candidate entities in each
 paragraph.
+
+Python binding
+==============
+
+Once you have built a semanticizer model, you can use semanticizest from Python
+using the Python wrapper. You can use the python wrapper as follows.  Assuming you have a serverd running on port 5002 as described above::
+
+    from semanticize import Semanticizer
+    
+    sentence = 'Antwerpen'
+    serverURL = 'http://localhost:5002/'
+    client = Semanticizer(serverURL)
+    candidates = client.all_candidates(sentence)
+
+A *SemanticizerServer* class also provides the option of starting the semanticizer
+server from Python, removing dependency on an external server. However, this server
+runs on a random port on localhost and thus may be limited by the hardware of the
+local machine. You must have build a model first and provide a path for semanticizest.
+You can start, use and stop the server as follows::
+
+    from semanticize import SemanticizerServer, Semanticizer
+    
+    sentence = 'Antwerpen'
+    server = SemanticizerServer(model='nlsample.go.model', serverpath='./bin/semanticizest')
+    client = Semanticizer(server.url)
+    candidates = client.all_candidates(sentence)
+    server.terminate()
