@@ -12,5 +12,6 @@ setup(
         "Topic :: Scientific/Engineering :: Information Analysis",
         "Topic :: Text Processing",
     ],
-    install_requires=[]
+    install_requires=[],
+    packages=['semanticize']
 )
