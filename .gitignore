@@ -3,6 +3,7 @@
 *.a
 *.so
 *.pyc
+build/
 dumpparser
 !internal/dumpparser/
 semanticizest
