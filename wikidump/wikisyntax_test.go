@@ -8,17 +8,28 @@ import (
 	"testing"
 )
 
-func assertStringEq(t *testing.T, a, b string) {
-	if a != b {
-		t.Errorf("%q != %q", a, b)
-	}
-}
-
 func TestCleanup(t *testing.T) {
-	in := "Hello, table! {|\n|bla\n|bla\n|}"
-	assertStringEq(t, strings.TrimSpace(Cleanup(in)), "Hello, table!")
-	in = `|}Hello,<ref group="note">1</rf> world{{math|bla{{?}}}}!{{bla`
-	assertStringEq(t, Cleanup(in), "Hello, world!")
+	for _, c := range []struct {
+		in, out string
+	}{
+		{
+			in:  "Hello, table! {|\n|bla\n|bla\n|}",
+			out: "Hello, table!",
+		},
+		{
+			in:  `|}Hello,<ref group="note">1</rf> world{{math|bla{{?}}}}!{{bla`,
+			out: "Hello, world!",
+		},
+		{
+			// XXX Is this what we want?
+			in:  "Text before, <references/> and after",
+			out: "Text before,",
+		},
+	} {
+		if out := strings.TrimSpace(Cleanup(c.in)); out != c.out {
+			t.Errorf("expected %q for %q, got %q", c.out, c.in, out)
+		}
+	}
 }
 
 var ws = regexp.MustCompile(`\s+`)
