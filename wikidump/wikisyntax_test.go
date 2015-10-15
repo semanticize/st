@@ -25,6 +25,10 @@ func TestCleanup(t *testing.T) {
 			in:  "Text before, <references/> and after",
 			out: "Text before,",
 		},
+		{
+			in:  "Foo<",
+			out: "Foo<",
+		},
 	} {
 		if out := strings.TrimSpace(Cleanup(c.in)); out != c.out {
 			t.Errorf("expected %q for %q, got %q", c.out, c.in, out)

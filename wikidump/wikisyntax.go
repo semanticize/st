@@ -11,9 +11,8 @@ import (
 )
 
 var (
-	special  = regexp.MustCompile(`{{|{\||\|}|}}|<[a-z][a-z0-9 "=]*/?>|</[a-z]+>`)
-	starttag = regexp.MustCompile(`<[a-z].*>`)
-	endtag   = regexp.MustCompile(`</[a-z]+>`)
+	starttag = regexp.MustCompile(`^<[a-z][^>]*>`)
+	endtag   = regexp.MustCompile(`^</[a-z]+>`)
 )
 
 // Get rid of tables, template calls, quasi-XML. Throws away their content.
@@ -25,38 +24,48 @@ func Cleanup(s string) string {
 	output := bytes.NewBuffer(make([]byte, 0, len(s)))
 
 	for {
-		next := special.FindStringIndex(s)
-		if next == nil {
+		next := strings.IndexAny(s, "{}|<")
+		if next == -1 {
 			if depth == 0 {
 				output.WriteString(s)
 			}
 			break
 		}
-		i, j := next[0], next[1]
 
 		if depth == 0 {
-			output.WriteString(s[:i])
+			output.WriteString(s[:next])
 		}
+		s = s[next:]
 
-		tag := s[i:j]
-		switch {
-		case tag == "{{":
+		var skip int
+		if strings.HasPrefix(s, "{{") || strings.HasPrefix(s, "{|") {
 			depth++
-		case tag == "{|":
-			depth++
-		case starttag.MatchString(tag):
-			depth++
-		case tag == "}}":
-			fallthrough
-		case tag == "|}":
-			fallthrough
-		case endtag.MatchString(tag):
+			skip = 2
+		} else if strings.HasPrefix(s, "|}") || strings.HasPrefix(s, "}}") {
 			if depth > 0 {
 				depth--
 			}
+			skip = 2
+		} else if s[0] != '<' {
+			// This case prevents regexp matching for a 20% speedup.
+			skip = 1
+		} else if span := starttag.FindStringIndex(s); span != nil {
+			depth++
+			skip = span[1]
+		} else if span := endtag.FindStringIndex(s); span != nil {
+			if depth > 0 {
+				depth--
+			}
+			skip = span[1]
+		} else {
+			skip = 1
 		}
 
-		s = s[j:]
+		// If skip == 1, we didn't find a tag/table marker.
+		if skip == 1 && depth == 0 && len(s) > 0 {
+			output.WriteByte(s[0])
+		}
+		s = s[skip:]
 	}
 	return norm.NFC.String(html.UnescapeString(output.String()))
 }
