@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io/ioutil"
 	"os"
+	"strings"
 	"sync"
 	"testing"
 )
@@ -23,6 +24,9 @@ func TestGetPages(t *testing.T) {
 	go func() {
 		for p := range pages {
 			titles = append(titles, p.Title)
+			if strings.HasPrefix(p.Title, "Empty text") && p.Text != "" {
+				t.Errorf("empty text not handled correctly, got %q", p.Text)
+			}
 		}
 		wg.Done()
 	}()
