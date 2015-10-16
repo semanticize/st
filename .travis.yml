@@ -7,4 +7,5 @@ go:
   - tip
 matrix:
   allow_failures:
+    - go: 1.2
     - go: tip
