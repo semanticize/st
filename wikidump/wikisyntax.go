@@ -75,29 +75,35 @@ type Link struct {
 	Anchor, Target string
 }
 
-var (
-	linkRE     = regexp.MustCompile(`(\w*)\[\[([^]]+)\]\](\w*)`)
-	whitespace = regexp.MustCompile(`[\s_]+`)
-)
-
 func normSpace(s string) string {
-	s = whitespace.ReplaceAllLiteralString(s, " ")
-	return strings.TrimSpace(s)
+	parts := strings.FieldsFunc(s, func(c rune) bool {
+		return c == '_' || unicode.IsSpace(c)
+	})
+	return strings.Join(parts, " ")
 }
+
+var linkRE = regexp.MustCompile(`\w*\[\[[^]]+\]\]\w*`)
 
 // Extract all the wikilinks from s. Returns a frequency table.
 func ExtractLinks(s string) map[Link]int {
 	freq := make(map[Link]int)
 
 	for _, candidate := range linkRE.FindAllStringSubmatch(s, -1) {
-		before, l, after := candidate[1], candidate[2], candidate[3]
+		// Parse complex links like "foo[[bar|baz]]quux". We used to do this
+		// with capturing groups in linkRE, but those are *slow*.
+		text := candidate[0]
+		openbrack := strings.IndexByte(text, '[')
+		closebrack := strings.LastIndex(text, "]")
+		before := text[:openbrack]
+		after := text[closebrack+1:]
+		mid := text[openbrack+2:closebrack-1]
 
 		var target, anchor string
-		if pipe := strings.IndexByte(l, '|'); pipe != -1 {
-			target, anchor = l[:pipe], l[pipe+1:]
+		if pipe := strings.IndexByte(mid, '|'); pipe != -1 {
+			target, anchor = mid[:pipe], mid[pipe+1:]
 		} else {
-			target = l
-			anchor = l
+			target = mid
+			anchor = mid
 		}
 
 		// If the anchor contains a colon, assume it's a file or category link.
