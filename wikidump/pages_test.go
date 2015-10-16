@@ -8,12 +8,6 @@ import (
 	"testing"
 )
 
-func assertIntEq(t *testing.T, a, b int) {
-	if a != b {
-		t.Errorf("%d != %d", a, b)
-	}
-}
-
 func TestGetPages(t *testing.T) {
 	input, err := os.Open("nlwiki-20140927-sample.xml")
 	if err != nil {
@@ -22,12 +16,13 @@ func TestGetPages(t *testing.T) {
 	pages, redirs := make(chan *Page), make(chan *Redirect)
 	go GetPages(input, pages, redirs)
 
-	var nredirs, npages int
+	var titles []string
+	var nredirs int
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
-		for _ = range pages {
-			npages++
+		for p := range pages {
+			titles = append(titles, p.Title)
 		}
 		wg.Done()
 	}()
@@ -39,8 +34,12 @@ func TestGetPages(t *testing.T) {
 	}()
 	wg.Wait()
 
-	assertIntEq(t, npages, 22)
-	assertIntEq(t, nredirs, 1)
+	if len(titles) != 22 {
+		t.Errorf("expected 22 titles, got %d: %v", len(titles), titles)
+	}
+	if nredirs != 1 {
+		t.Errorf("expected one redirect, got %d", nredirs)
+	}
 }
 
 func BenchmarkGetPages(b *testing.B) {
