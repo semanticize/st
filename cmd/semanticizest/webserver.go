@@ -123,7 +123,9 @@ func restServer(addr, portfile string, sem *linking.Semanticizer,
 	defer l.Close()
 
 	if portfile != "" {
-		writePort(l, portfile)
+		if err = writePort(l, portfile); err != nil {
+			return
+		}
 	}
 
 	return http.Serve(l, nil)
