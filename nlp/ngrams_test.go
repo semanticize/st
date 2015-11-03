@@ -54,6 +54,29 @@ func TestNGrams(t *testing.T) {
 	}
 }
 
+func TestNGramsPos(t *testing.T) {
+	for minN := 1; minN < 5; minN++ {
+		for maxN := minN; maxN < 8; maxN++ {
+			positions := NGramsPos(tokens, minN, maxN)
+			ngrams := NGrams(tokens, minN, maxN)
+
+			if len(positions) != len(ngrams) {
+				t.Fatalf("%d positions, %d n-grams",
+					len(positions), len(ngrams))
+			}
+
+			for i, ng := range ngrams {
+				frompos := tokens[positions[i][0]:positions[i][1]]
+				for j, token := range ng {
+					if frompos[j] != token {
+						t.Errorf("%v != %v", ng, frompos)
+					}
+				}
+			}
+		}
+	}
+}
+
 // From https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm
 var benchdata = strings.Split(
 	`In computer science, the Rabin–Karp algorithm or Karp–Rabin algorithm is
