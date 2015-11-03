@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"hash"
 	"hash/fnv"
-	"io"
 	"math"
+
+	"github.com/semanticize/st/nlp"
 )
 
 // Count-min sketch: approximate frequency table, indexed by hash values.
@@ -120,12 +121,7 @@ func (sketch *Sketch) AddNGram(key []string) {
 
 	ncols := sketch.ncols()
 	for i, row := range sketch.rows {
-		h := hashes[i]
-		for _, token := range key {
-			io.WriteString(h, token)
-			h.Write([]byte("\x00"))
-		}
-		row[h.Sum32()%ncols]++
+		row[nlp.HashNGram(hashes[i], key) % ncols]++
 	}
 }
 
@@ -157,6 +153,17 @@ func (sketch *Sketch) Get(key []byte) (count uint32) {
 		count = min32(count, row[h.Sum32()%ncols])
 	}
 
+	return
+}
+
+func (sketch *Sketch) GetNGram(key []string) (count uint32) {
+	hashes := sketch.makeHashes()
+	ncols := sketch.ncols()
+
+	count = math.MaxUint32
+	for i, row := range sketch.rows {
+		count = min32(count, row[nlp.HashNGram(hashes[i], key) % ncols])
+	}
 	return
 }
 
