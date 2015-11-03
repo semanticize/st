@@ -7,6 +7,7 @@ import (
 	"compress/bzip2"
 	"database/sql"
 	"fmt"
+	"hash/fnv"
 	"io"
 	"log"
 	"os"
@@ -18,8 +19,7 @@ import (
 
 	"github.com/cheggaaa/pb"
 
-	"github.com/semanticize/st/hash"
-	"github.com/semanticize/st/hash/countmin"
+	"github.com/semanticize/st/countmin"
 	"github.com/semanticize/st/internal/storage"
 	"github.com/semanticize/st/nlp"
 	"github.com/semanticize/st/wikidump"
@@ -196,8 +196,8 @@ func processPages(articles <-chan *wikidump.Page,
 		}
 
 		tokens := nlp.Tokenize(text)
-		for _, h := range hash.NGrams(tokens, 1, maxN) {
-			ngramcount.Add1(h)
+		for _, ng := range nlp.NGrams(tokens, 1, maxN) {
+			ngramcount.AddNGram(ng)
 		}
 		atomic.AddUint32(narticles, 1)
 	}
@@ -226,20 +226,20 @@ func pageProgress(narticles *uint32, logger *log.Logger, wg *sync.WaitGroup) {
 }
 
 type processedLink struct {
-	target       string
-	anchorHashes []uint32
-	freq         float64
+	target string
+	ngrams [][]string
+	freq   float64
 }
 
 func processLink(link *wikidump.Link, freq, maxN int) *processedLink {
 	tokens := nlp.Tokenize(link.Anchor)
 	n := min(maxN, len(tokens))
-	hashes := hash.NGrams(tokens, n, n)
+	ngrams := nlp.NGrams(tokens, n, n)
 	count := float64(freq)
-	if len(hashes) > 1 {
-		count = 1 / float64(len(hashes))
+	if len(ngrams) > 1 {
+		count = 1 / float64(len(ngrams))
 	}
-	return &processedLink{link.Target, hashes, count}
+	return &processedLink{target: link.Target, ngrams: ngrams, freq: count}
 }
 
 // Collect links and store them in the database.
@@ -274,7 +274,9 @@ func storeLinks(db *sql.DB, links <-chan *processedLink) (err error) {
 
 	for link := range links {
 		count := link.freq
-		for _, h := range link.anchorHashes {
+		hash := fnv.New32()
+		for _, ngram := range link.ngrams {
+			h := nlp.HashNGram(hash, ngram)
 			exec(insTitle, link.target)
 			exec(insLink, h, link.target)
 			exec(update, count, h, link.target)

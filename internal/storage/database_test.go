@@ -2,10 +2,12 @@ package storage
 
 import (
 	"database/sql"
-	"github.com/semanticize/st/hash/countmin"
-	"github.com/semanticize/st/wikidump"
 	"reflect"
+	"strconv"
 	"testing"
+
+	"github.com/semanticize/st/countmin"
+	"github.com/semanticize/st/wikidump"
 )
 
 func TestMakeDB(t *testing.T) {
@@ -125,8 +127,8 @@ func TestCM(t *testing.T) {
 	db, err := MakeDB(":memory:", true, &Settings{"foowiki.xml.bz2", 8})
 	check()
 
-	for _, i := range []uint32{1, 6, 13, 7, 8, 20, 44} {
-		cm.Add(i, i+5)
+	for _, i := range []int{1, 6, 13, 7, 8, 20, 44} {
+		cm.Add([]byte(strconv.Itoa(i)))
 	}
 
 	err = StoreCM(db, cm)

@@ -2,14 +2,15 @@ package linking
 
 import (
 	"encoding/json"
+	"hash/fnv"
 	"io/ioutil"
 	"log"
 	"os"
 	"reflect"
 	"testing"
 
-	"github.com/semanticize/st/hash"
-	"github.com/semanticize/st/hash/countmin"
+	"github.com/semanticize/st/countmin"
+	"github.com/semanticize/st/nlp"
 	"github.com/semanticize/st/internal/dumpparser"
 	"github.com/semanticize/st/internal/storage"
 )
@@ -26,14 +27,14 @@ func makeSemanticizer() Semanticizer {
 	allq, _ := prepareAllQuery(db)
 	sem := Semanticizer{db: db, ngramcount: cm, maxNGram: 2, allQuery: allq}
 
-	for _, h := range hash.NGrams([]string{"Hello", "world"}, 2, 2) {
-		_, err := db.Exec(`insert into linkstats values (?, 0, 1)`, h)
-		if err == nil {
-			_, err = db.Exec(`insert into titles values (0, "dmr")`)
-		}
-		if err != nil {
-			panic(err)
-		}
+	h := fnv.New32()
+	_, err := db.Exec(`insert into linkstats values (?, 0, 1)`,
+		nlp.HashNGram(h, []string{"Hello", "world"}))
+	if err == nil {
+		_, err = db.Exec(`insert into titles values (0, "dmr")`)
+	}
+	if err != nil {
+		panic(err)
 	}
 	return sem
 }
@@ -43,7 +44,9 @@ func TestCandidates(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if len(all) != 1 {
+	if len(all) == 0 {
+		t.Fatal("expected one entity mention, got none")
+	} else if len(all) != 1 {
 		t.Errorf("expected one entity mention, got %v", all)
 	} else if tgt := all[0].Target; tgt != "dmr" {
 		t.Errorf(`expected target "dmr", got %q`, tgt)

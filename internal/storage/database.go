@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/cheggaaa/pb"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/semanticize/st/hash/countmin"
+	"github.com/semanticize/st/countmin"
 	"github.com/semanticize/st/wikidump"
 	"log"
 	"os"

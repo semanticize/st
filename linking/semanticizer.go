@@ -5,8 +5,7 @@ import (
 	"database/sql"
 	"math"
 
-	"github.com/semanticize/st/hash"
-	"github.com/semanticize/st/hash/countmin"
+	"github.com/semanticize/st/countmin"
 	"github.com/semanticize/st/internal/storage"
 	"github.com/semanticize/st/nlp"
 )
@@ -79,8 +78,8 @@ func prepareAllQuery(db *sql.DB) (*sql.Stmt, error) {
 
 // Get candidates for hash value h from the database. offset and end index
 // into the original string and are stored on the return values.
-func (sem Semanticizer) candidates(h uint32, offset, end int) (cands []Entity, err error) {
-	rows, err := sem.allQuery.Query(h)
+func (sem Semanticizer) candidates(tokens []string, offset, end int) (cands []Entity, err error) {
+	rows, err := sem.allQuery.Query(tokens)
 	if err != nil {
 		return
 	}
@@ -108,7 +107,7 @@ func (sem Semanticizer) candidates(h uint32, offset, end int) (cands []Entity, e
 
 	for i := range cands {
 		c := &cands[i]
-		c.NGramCount = float64(sem.ngramcount.Get(h))
+		c.NGramCount = float64(sem.ngramcount.GetNGram(tokens))
 		c.Senseprob = c.Commonness / c.NGramCount
 		c.Commonness /= totalLinkCount
 		c.LinkCount = totalLinkCount
@@ -127,19 +126,19 @@ func (sem Semanticizer) All(s string) (cands []Entity, err error) {
 // A candidate entity's anchor text must be exactly s.
 func (sem Semanticizer) ExactMatch(s string) (cands []Entity, err error) {
 	tokens := nlp.Tokenize(s)
-	h := hash.NGrams(tokens, len(tokens), len(tokens))[0]
-	return sem.candidates(h, 0, len(tokens))
+	return sem.candidates(tokens, 0, len(tokens))
 }
 
 // Returns candidates in sorted order.
 func (sem Semanticizer) allFromTokens(tokens []string,
 	tokpos [][]int) (cands []Entity, err error) {
 
-	for _, hpos := range hash.NGramsPos(tokens, int(sem.maxNGram)) {
-		start, end := hpos.Start, hpos.End-1
+	for _, hpos := range nlp.NGramsPos(tokens, 1, int(sem.maxNGram)) {
+		start, end := hpos[0], hpos[1]
+		ngram := tokens[start:end]
 		start, end = tokpos[start][0], tokpos[end][1]
 
-		add, err := sem.candidates(hpos.Hash, start, end)
+		add, err := sem.candidates(ngram, start, end)
 		if err != nil {
 			break
 		}
