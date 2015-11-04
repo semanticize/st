@@ -21,13 +21,21 @@ var trigrams = [...][3]string{
 }
 
 func TestNGrams(t *testing.T) {
-	for i, g := range NGrams(tokens, 1, 1) {
+	uni := NGrams(tokens, 1, 1)
+	if len(uni) != len(tokens) {
+		t.Errorf("expected %d unigrams, got %d", len(tokens), len(uni))
+	}
+	for i, g := range uni {
 		if len(g) != 1 || g[0] != tokens[i] {
 			t.Errorf("expected %s, got %v", tokens[i], g)
 		}
 	}
 
-	for i, b := range NGrams(tokens, 2, 2) {
+	bi := NGrams(tokens, 2, 2)
+	if len(bi) != len(bigrams) {
+		t.Errorf("expected %d bigrams, got %d", len(bigrams), len(bi))
+	}
+	for i, b := range bi {
 		expected := bigrams[i]
 		if len(b) != 2 || b[0] != expected[0] || b[1] != expected[1] {
 			t.Errorf("expected %v, got %v", expected, b)
@@ -35,7 +43,12 @@ func TestNGrams(t *testing.T) {
 	}
 
 	triIdx := 0
-	for i, ng := range NGrams(tokens, 2, 3) {
+	bitri := NGrams(tokens, 2, 3)
+	if len(bitri) != len(bigrams)+len(trigrams) {
+		t.Errorf("expected %d bigrams and trigrams, got %d",
+			len(bigrams)+len(trigrams), len(bitri))
+	}
+	for i, ng := range bitri {
 		switch len(ng) {
 		case 2:
 			exp := bigrams[i-triIdx]
