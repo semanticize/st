@@ -3,6 +3,7 @@ package linking
 
 import (
 	"database/sql"
+	"hash/fnv"
 	"math"
 
 	"github.com/semanticize/st/countmin"
@@ -76,10 +77,11 @@ func prepareAllQuery(db *sql.DB) (*sql.Stmt, error) {
 		 from linkstats where ngramhash = ?`)
 }
 
-// Get candidates for hash value h from the database. offset and end index
+// Get candidates for n-gram tokens from the database. offset and end index
 // into the original string and are stored on the return values.
 func (sem Semanticizer) candidates(tokens []string, offset, end int) (cands []Entity, err error) {
-	rows, err := sem.allQuery.Query(tokens)
+	h := nlp.HashNGram(fnv.New32(), tokens)
+	rows, err := sem.allQuery.Query(h)
 	if err != nil {
 		return
 	}
@@ -136,7 +138,7 @@ func (sem Semanticizer) allFromTokens(tokens []string,
 	for _, hpos := range nlp.NGramsPos(tokens, 1, int(sem.maxNGram)) {
 		start, end := hpos[0], hpos[1]
 		ngram := tokens[start:end]
-		start, end = tokpos[start][0], tokpos[end][1]
+		start, end = tokpos[start][0], tokpos[end-1][1]
 
 		add, err := sem.candidates(ngram, start, end)
 		if err != nil {
