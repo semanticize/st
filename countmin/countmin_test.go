@@ -4,7 +4,10 @@ import (
 	"math"
 	"math/rand"
 	"strconv"
+	"strings"
 	"testing"
+
+	"github.com/semanticize/st/nlp"
 )
 
 func expectError(t *testing.T, sketch *Sketch, err error) {
@@ -117,6 +120,29 @@ func TestCounts(t *testing.T) {
 	}
 	if total != nrows {
 		t.Errorf("expected %d, got %d", nrows, total)
+	}
+}
+
+func TestNGram(t *testing.T) {
+	cm, _ := New(16, 1024)
+	tokens := strings.Split("foo bar baz quux bla barney fred", " ")
+	ngrams := nlp.NGrams(tokens, 1, 5)
+	for _, ng := range ngrams {
+		cm.AddNGram(ng)
+	}
+	counts := make([]uint32, len(ngrams))
+	for i, ng := range ngrams {
+		counts[i] = cm.GetNGram(ng)
+		if counts[i] != 1 {
+			t.Errorf("expected count=1, got %d", counts[i])
+		}
+	}
+	for i, ng := range ngrams {
+		// This test is here because it's too easy to reuse the hash.Hash
+		// instances, changing the hash values for subsequent runs.
+		if cm.GetNGram(ng) != counts[i] {
+			t.Errorf("count estimate for %v not deterministic", ng)
+		}
 	}
 }
 
