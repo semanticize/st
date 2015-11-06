@@ -8,6 +8,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"log"
 	"os"
@@ -31,6 +32,7 @@ func splitPara(data []byte, atEOF bool) (advance int, token []byte, err error) {
 		advance = len(data)
 		token = data
 	}
+	token = bytes.TrimSpace(token)
 	return
 }
 
