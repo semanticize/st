@@ -127,8 +127,13 @@ func TestCM(t *testing.T) {
 	db, err := MakeDB(":memory:", true, &Settings{"foowiki.xml.bz2", 8})
 	check()
 
-	for _, i := range []int{1, 6, 13, 7, 8, 20, 44} {
-		cm.Add([]byte(strconv.Itoa(i)))
+	keys := []int{1, 6, 13, 7, 8, 20, 44}
+	for _, k := range keys {
+		cm.Add([]byte(strconv.Itoa(k)))
+	}
+	freq := make(map[int]uint32)
+	for _, k := range keys {
+		freq[k] = cm.Get([]byte(strconv.Itoa(k)))
 	}
 
 	err = StoreCM(db, cm)
@@ -139,5 +144,11 @@ func TestCM(t *testing.T) {
 
 	if !reflect.DeepEqual(cm.Counts(), got.Counts()) {
 		t.Errorf("expected %v, got %v", cm.Counts(), got)
+	}
+	// Assert that the hash function still works after load-restore.
+	for _, k := range keys {
+		if f := got.Get([]byte(strconv.Itoa(k))); f != freq[k] {
+			t.Errorf("expected count %d for %d, got %d", freq[k], k, f)
+		}
 	}
 }
