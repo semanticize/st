@@ -1,6 +1,7 @@
 package nlp
 
 import (
+	"math/rand"
 	"strings"
 	"testing"
 )
@@ -121,4 +122,21 @@ func BenchmarkNGrams(b *testing.B) {
 			}
 		}
 	}
+}
+
+func BenchmarkNGramsMulti(b *testing.B) {
+	b.StopTimer()
+	var lengths [20]int
+	rng := rand.New(rand.NewSource(42))
+	for i := range lengths {
+		lengths[i] = len(benchdata) - rng.Intn(len(benchdata)/2)
+	}
+
+	b.StartTimer()
+	b.RunParallel(func(pb *testing.PB) {
+		for i := 0; pb.Next(); i++ {
+			NGrams(benchdata[:lengths[i%len(lengths)]], 1, 7)
+			NGrams(benchdata[:lengths[i%len(lengths)]], 2, 7)
+		}
+	})
 }
