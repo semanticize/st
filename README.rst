@@ -26,14 +26,14 @@ On CentOS::
 
     sudo yum -y install git golang
 
+In case your distro has older versions of go, 
+you might consider installing a newer version via `gvm <https://github.com/moovweb/gvm>`_.
+
 Set up a Go workspace, if you haven't already. For example::
 
     mkdir /some/where/go
     cd /some/where/go
     export GOPATH=$(pwd)
-
-In case your distro has older versions of go, 
-you might consider installing a newer version via `gvm <https://github.com/moovweb/gvm>`_.
 
 Fetch and compile::
 
