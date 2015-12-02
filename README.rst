@@ -17,8 +17,8 @@ some links to background info on the Wikipedia.
 Installing
 ----------
 
-Make sure you have a Go compiler (1.2 or newer) and Git.
-On Debian/Ubuntu/Mint, that's::
+Make sure you have a Go compiler (1.4 or newer) and Git.
+On new versions of Debian/Ubuntu/Mint, that's::
 
     sudo apt-get install git golang-go
 
@@ -31,6 +31,9 @@ Set up a Go workspace, if you haven't already. For example::
     mkdir /some/where/go
     cd /some/where/go
     export GOPATH=$(pwd)
+
+In case your distro has older versions of go, 
+you might consider installing a newer version via `gvm <https://github.com/moovweb/gvm>`_.
 
 Fetch and compile::
 
