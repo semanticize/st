@@ -109,7 +109,7 @@ func (sem Semanticizer) candidates(tokens []string, offset, end int) (cands []En
 
 	for i := range cands {
 		c := &cands[i]
-		c.NGramCount = float64(sem.ngramcount.GetNGram(tokens))
+		c.NGramCount = sem.ngramcount.GetMeanNGram(tokens)
 		c.Senseprob = c.Commonness / c.NGramCount
 		c.Commonness /= totalLinkCount
 		c.LinkCount = totalLinkCount

@@ -7,6 +7,7 @@ import (
 	"hash"
 	"hash/fnv"
 	"math"
+	"sort"
 
 	"github.com/semanticize/st/nlp"
 )
@@ -121,7 +122,7 @@ func (sketch *Sketch) AddNGram(key []string) {
 
 	ncols := sketch.ncols()
 	for i, row := range sketch.rows {
-		row[nlp.HashNGram(hashes[i], key) % ncols]++
+		row[nlp.HashNGram(hashes[i], key)%ncols]++
 	}
 }
 
@@ -162,9 +163,71 @@ func (sketch *Sketch) GetNGram(key []string) (count uint32) {
 
 	count = math.MaxUint32
 	for i, row := range sketch.rows {
-		count = min32(count, row[nlp.HashNGram(hashes[i], key) % ncols])
+		count = min32(count, row[nlp.HashNGram(hashes[i], key)%ncols])
 	}
 	return
+}
+
+// Point query for observations of key using count-mean-min rule.
+// Returns an approximate count.
+func (sketch *Sketch) GetMean(key []byte) float64 {
+	hashes := sketch.makeHashes()
+
+	ncols := sketch.ncols()
+
+	nobs := 0.
+	for _, c := range sketch.rows[0] {
+		nobs += float64(c)
+	}
+
+	nrows := len(sketch.rows)
+	estimates := make([]float64, nrows)
+	for i, row := range sketch.rows {
+		h := hashes[i]
+		h.Write(key)
+		c := float64(row[h.Sum32()%ncols])
+		noise := (nobs - c) / (float64(len(sketch.rows[0])) - 1)
+		estimates[i] = c - noise
+	}
+
+	sort.Float64s(estimates)
+	// XXX take min of this and Get
+	if nrows%2 == 1 {
+		return estimates[nrows/2]
+	}
+	return (estimates[nrows/2-1] + estimates[nrows/2]) / 2.
+}
+
+// Point query for observations of key using count-mean-min rule.
+// Returns an approximate count.
+func (sketch *Sketch) GetMeanNGram(key []string) float64 {
+	hashes := sketch.makeHashes()
+
+	ncols := sketch.ncols()
+
+	nobs := 0.
+	for _, c := range sketch.rows[0] {
+		nobs += float64(c)
+	}
+
+	nrows := len(sketch.rows)
+	estimates := make([]float64, nrows)
+	for i, row := range sketch.rows {
+		c := float64(row[nlp.HashNGram(hashes[i], key)%ncols])
+		noise := (nobs - c) / (float64(len(sketch.rows[0])) - 1)
+		estimates[i] = c - noise
+	}
+
+	sort.Float64s(estimates)
+	estimate := estimates[nrows/2]
+	if nrows%2 == 0 {
+		estimate = (estimate + estimates[nrows/2-1]) / 2.
+	}
+	cmest := float64(sketch.GetNGram(key)) // XXX computes all hashes twice
+	if cmest < estimate {
+		estimate = cmest
+	}
+	return estimate
 }
 
 // Add counts of other into sketch.
