@@ -32,7 +32,7 @@ var (
 	nrows = kingpin.Flag("nrows",
 		"number of rows in count-min sketch").Default("16").Int()
 	ncols = kingpin.Flag("ncols",
-		"number of columns in count-min sketch").Default("65536").Int()
+		"number of columns in count-min sketch").Default("16777216").Int()
 	maxNGram = kingpin.Flag("ngram",
 		"max. length of n-grams").Default(strconv.Itoa(storage.DefaultMaxNGram)).Int()
 )
