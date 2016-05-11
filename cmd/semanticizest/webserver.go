@@ -52,12 +52,6 @@ func (h allHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	serveEntities(w, req, h.All)
 }
 
-type bestPathHandler struct{ *linking.Semanticizer }
-
-func (h bestPathHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	serveEntities(w, req, h.BestPath)
-}
-
 type stringHandler struct{ *linking.Semanticizer }
 
 func (h stringHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
@@ -113,7 +107,6 @@ func restServer(addr, portfile string, sem *linking.Semanticizer,
 		info(w, s)
 	})
 	http.Handle("/all", allHandler{sem})
-	http.Handle("/bestpath", bestPathHandler{sem})
 	http.Handle("/exactmatch", stringHandler{sem})
 
 	l, err := net.Listen("tcp", addr)

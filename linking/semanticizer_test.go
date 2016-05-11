@@ -16,10 +16,6 @@ import (
 
 var sem = makeSemanticizer()
 
-func TestBestPath(t *testing.T) {
-	sem.BestPath("   ") // should not crash
-}
-
 func makeSemanticizer() Semanticizer {
 	cm, _ := countmin.New(10, 4)
 	db, _ := storage.MakeDB(":memory:", true, &storage.Settings{MaxNGram: 2})
@@ -99,23 +95,6 @@ func TestJSON(t *testing.T) {
 		t.Error(err)
 	} else if !reflect.DeepEqual(got, in) {
 		t.Errorf("could not unmarshal %q, got %v", enc, got)
-	}
-}
-
-func TestViterbi(t *testing.T) {
-	cands := []Entity{
-		{Target: "foo", Offset: 4, Length: 6, Senseprob: .8},
-		{Target: "bar", Offset: 3, Length: 7, Senseprob: .9},
-		{Target: "baz", Offset: 1, Length: 2, Senseprob: .1},
-	}
-	best := bestPath(cands)
-	if len(best) != 2 {
-		t.Errorf("too many entities in path: %d (wanted 2)", len(best))
-	}
-	for _, e := range best {
-		if e.Target != "foo" && e.Target != "baz" {
-			t.Errorf("unexpected entity %q in best path", e.Target)
-		}
 	}
 }
 
